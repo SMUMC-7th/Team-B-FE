@@ -1,28 +1,31 @@
 package com.example.umc_wireframe.domain.model
 
 data class ShortTermForecastEntity(
-    val response: ResponseEntity?
+    val header: HeaderEntity,
+    val body: BodyEntity
 )
 
-data class ResponseEntity(
-    val body: BodyEntity?
+data class HeaderEntity(
+    val resultCode: String,
+    val resultMsg: String
 )
 
 data class BodyEntity(
-    val items: ItemsEntity?
+    val items: List<ShortTermForecastItemEntity>,
+    val pageNo: Int,
+    val numOfRows: Int,
+    val totalCount: Int
 )
 
-data class ItemsEntity(
-    val item: List<WeatherItemEntity>
+data class ShortTermForecastItemEntity(
+    val date: String,   // 기준 날짜 (YYYYMMDD)
+    val time: String,   // 기준 시간 (HHmm)
+    val category: ShortTermCategory, // 예: "TMP" (기온)
+    val value: Double, // 관측 값 (기온)
+    val locationX: Int,  // X 좌표
+    val locationY: Int   // Y 좌표
 )
 
-data class WeatherItemEntity(
-    val baseDate: String,
-    val baseTime: String,
-    val category: ShortTermCategory,  // 예보 카테고리 (TMP, POP 등)
-    val fcstDate: String,
-    val fcstTime: String,
-    val fcstValue: String, // 예보 값 (온도, 강수확률 등)
-    val nx: Int,
-    val ny: Int
-)
+
+
+

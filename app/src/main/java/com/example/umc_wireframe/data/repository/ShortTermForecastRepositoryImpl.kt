@@ -4,7 +4,6 @@ import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
 import com.example.umc_wireframe.domain.model.ShortTermForecastEntity
 import com.example.umc_wireframe.domain.model.toEntity
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
-import javax.inject.Inject
 
 class ShortTermForecastRepositoryImpl(
     private val datasource: ShortTermForecastDatasource

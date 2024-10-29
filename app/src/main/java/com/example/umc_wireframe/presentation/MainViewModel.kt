@@ -40,12 +40,12 @@ class MainViewModel(
             nx = x,
             ny = y
         ).let { entity ->
-            entity.response?.body?.items?.item?.map {
+            entity?.body?.items?.map {
                 MainItem(
-                    fcstDate = it.fcstDate,
-                    fcstTime = it.fcstTime,
+                    fcstDate = it.date,
+                    fcstTime = it.time,
                     category = it.category,
-                    fcstValue = it.fcstValue
+                    fcstValue = it.value.toString()
                 )
             }?.let { list ->
                 _uiState.emit(list)
