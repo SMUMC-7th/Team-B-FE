@@ -23,7 +23,6 @@ data class MidTermBodyEntity(
 
 data class MidTermForecastItemEntity(
     val regId: String,              // 지역 코드
-    val forecastSummary: String?,    // 날씨 요약
     val taMin3: Int,
     val taMin3Low: Int?,
     val taMin3High: Int?,

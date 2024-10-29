@@ -14,12 +14,13 @@ object RetrofitClient {
         "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
     const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
 
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
     private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    this.level = HttpLoggingInterceptor.Level.BODY
-                })
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(AuthorizationInterceptor(AuthorizationType.SHORT_TERM_FORECAST))
             .build()
     }
@@ -35,10 +36,7 @@ object RetrofitClient {
 
     private val midTermOkHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    this.level = HttpLoggingInterceptor.Level.BODY
-                })
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(AuthorizationInterceptor(AuthorizationType.MID_TERM_FORECAST))
             .build()
     }

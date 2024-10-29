@@ -3,7 +3,7 @@ package com.example.umc_wireframe.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.umc_wireframe.domain.model.MidTermWideRegion
+import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
@@ -61,7 +61,7 @@ class MainViewModel(
     }
 
 
-    fun getMidTermForecast(midTermRegion: MidTermWideRegion) = viewModelScope.launch {
+    fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
         val tmFc = when {
             LocalDateTime.now().hour < 6 -> LocalDateTime.now().minusDays(1)
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
@@ -72,9 +72,8 @@ class MainViewModel(
         }
 
         midTermForecastDatasource.getWeatherForecast(
-            pageNo = 2,
             tmFc = tmFc,
-            stnId = midTermRegion.code.toString()
+            regId = midTermRegion.regId
         ).let { entity ->
             entity?.response?.body?.items?.map {
                 MainItem(

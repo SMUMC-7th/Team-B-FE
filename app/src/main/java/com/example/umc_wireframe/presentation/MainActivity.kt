@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.umc_wireframe.databinding.ActivityMainBinding
-import com.example.umc_wireframe.domain.model.MidTermWideRegion
+import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
 //        getCurrentLocation()
 
-        viewModel.getMidTermForecast(MidTermWideRegion.SEOUL_INCHEON_GYEONGGI)
+        viewModel.getMidTermForecast(MidTermRegion.CHEONGJU)
         initViewModel()
     }
 

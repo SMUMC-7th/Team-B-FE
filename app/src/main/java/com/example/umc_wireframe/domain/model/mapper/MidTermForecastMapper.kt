@@ -47,7 +47,6 @@ fun MidTermBodyResponse?.toEntity() = this?.let {
 fun MidTermForecastItemResponse?.toEntity() = this?.let {
     MidTermForecastItemEntity(
         regId = it.regId ?: "unknown",  // 기본값 설정
-        forecastSummary = it.forecastSummary ?: "No summary",
         taMin3 = it.taMin3 ?: 0,
         taMin3Low = it.taMin3Low ?: 0,
         taMin3High = it.taMin3High ?: 0,
@@ -99,7 +98,6 @@ fun MidTermForecastItemResponse?.toEntity() = this?.let {
     )
 } ?: MidTermForecastItemEntity(
     regId = "unknown",
-    forecastSummary = "No summary",
     taMin3 = 0,
     taMin3Low = 0,
     taMin3High = 0,

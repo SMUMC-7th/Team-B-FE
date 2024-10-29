@@ -30,8 +30,6 @@ data class MidTermItemsResponse(
 data class MidTermForecastItemResponse(
     @SerializedName("regId")
     val regId: String?,           // 지역 코드
-    @SerializedName("wfSv")
-    val forecastSummary: String?,  // 날씨 요약
     @SerializedName("taMin3")
     val taMin3: Int,
     @SerializedName("taMin3Low")

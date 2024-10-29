@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.network
 
+import android.util.Log
 import com.example.umc_wireframe.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -11,13 +12,16 @@ class AuthorizationInterceptor(
         val newUrl = chain.request().url.newBuilder()
             .addQueryParameter("ServiceKey", when(type){
                 AuthorizationType.SHORT_TERM_FORECAST -> BuildConfig.SHORT_TERM_FORECAST_KEY
-                AuthorizationType.MID_TERM_FORECAST -> BuildConfig.MID_TERM_FORECAST_KEY
-            }) // 쿼리 파라미터로 API 키 추가
+                AuthorizationType.MID_TERM_FORECAST -> {
+                    BuildConfig.MID_TERM_FORECAST_KEY
+                }
+            })
             .build()
 
         val newRequest = chain.request().newBuilder()
             .url(newUrl)
             .build()
+
 
         return chain.proceed(newRequest)
     }

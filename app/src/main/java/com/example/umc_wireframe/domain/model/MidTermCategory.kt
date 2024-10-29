@@ -23,7 +23,7 @@ enum class MidTermWideRegion(
 }
 
 
-enum class MidTermRegion(val resId: String, val regionName: String) {
+enum class MidTermRegion(val regId: String, val regionName: String) {
     SEOUL("11B10101", "서울"),
     SEOGWIPO("11G00401", "서귀포"),
     INCHEON("11B20201", "인천"),

@@ -13,13 +13,13 @@ class MidTermForecastRepositoryImpl(
         pageNo: Int,
         numOfRows: Int,
         dataType: String,
-        stnId: String,
+        regId: String,
         tmFc: String
     ): MidTermForecastEntity = datasource.getWeatherForecast(
         pageNo = pageNo,
         numOfRows = numOfRows,
         dataType = dataType,
-        stnId = stnId,
+        regId = regId,
         tmFc = tmFc
     ).toEntity()
 }
