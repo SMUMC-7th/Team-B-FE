@@ -2,25 +2,25 @@ package com.example.umc_wireframe.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class MainViewModel @Inject constructor(
-    private val shortTermForecastRepository: ShortTermForecastRepository,
+class MainViewModel(
 ) : ViewModel() {
     private val _uiState: MutableSharedFlow<List<MainItem>> = MutableSharedFlow()
     val uiState get() = _uiState.asSharedFlow()
 
-    fun getShortTermForecast(x: Int, y:Int) = viewModelScope.launch {
+    private val shortTermForecastRepository: ShortTermForecastRepository =
+        RepositoryFactory().createShortTermForecastRepository()
+
+    fun getShortTermForecast(x: Int, y: Int) = viewModelScope.launch {
         val now = LocalDateTime.now()
         val baseDate = now.toLocalDate().toString().replace("-", "") //YYYYMMDD
-        val baseTime =  when (now.hour) {
+        val baseTime = when (now.hour) {
             in 0..2 -> "2300"
             in 3..5 -> "0200"
             in 6..8 -> "0500"

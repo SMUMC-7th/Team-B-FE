@@ -6,7 +6,7 @@ import com.example.umc_wireframe.domain.model.toEntity
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import javax.inject.Inject
 
-class ShortTermForecastRepositoryImpl @Inject constructor(
+class ShortTermForecastRepositoryImpl(
     private val datasource: ShortTermForecastDatasource
 ) : ShortTermForecastRepository {
     override suspend fun getRegionalTemperature(
