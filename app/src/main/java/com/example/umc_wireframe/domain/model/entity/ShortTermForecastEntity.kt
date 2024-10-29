@@ -1,16 +1,18 @@
-package com.example.umc_wireframe.domain.model
+package com.example.umc_wireframe.domain.model.entity
+
+import com.example.umc_wireframe.domain.model.ShortTermCategory
 
 data class ShortTermForecastEntity(
-    val header: HeaderEntity,
-    val body: BodyEntity
+    val header: ShortTermHeaderEntity,
+    val body: ShortTermBodyEntity
 )
 
-data class HeaderEntity(
+data class ShortTermHeaderEntity(
     val resultCode: String,
     val resultMsg: String
 )
 
-data class BodyEntity(
+data class ShortTermBodyEntity(
     val items: List<ShortTermForecastItemEntity>,
     val pageNo: Int,
     val numOfRows: Int,

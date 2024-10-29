@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.network
 
+import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -9,22 +10,43 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 object RetrofitClient {
-    const val BASE_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+    const val SHORT_TERM_FORECAST_BASE_URL =
+        "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+    const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
 
-    private val okHttpClient by lazy {
+    private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
                     this.level = HttpLoggingInterceptor.Level.BODY
                 })
-            .addInterceptor(AuthorizationInterceptor())
+            .addInterceptor(AuthorizationInterceptor(AuthorizationType.SHORT_TERM_FORECAST))
             .build()
     }
 
-    private val retrofit by lazy {
+    private val shortTermRetrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
+            .baseUrl(SHORT_TERM_FORECAST_BASE_URL)
+            .client(shortTermOkHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+    }
+
+    private val midTermOkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    this.level = HttpLoggingInterceptor.Level.BODY
+                })
+            .addInterceptor(AuthorizationInterceptor(AuthorizationType.MID_TERM_FORECAST))
+            .build()
+    }
+
+    private val midTermRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(MID_TERM_FORECAST_BASE_URL)
+            .client(midTermOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
@@ -32,6 +54,10 @@ object RetrofitClient {
 
 
     val shortTermForecastDatasource: ShortTermForecastDatasource by lazy {
-        retrofit.create(ShortTermForecastDatasource::class.java)
+        shortTermRetrofit.create(ShortTermForecastDatasource::class.java)
+    }
+
+    val midTermForecastDatasource: MidTermForecastDatasource by lazy {
+        midTermRetrofit.create(MidTermForecastDatasource::class.java)
     }
 }

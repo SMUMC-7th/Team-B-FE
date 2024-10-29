@@ -4,10 +4,15 @@ import com.example.umc_wireframe.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthorizationInterceptor : Interceptor {
+class AuthorizationInterceptor(
+    private val type:AuthorizationType
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val newUrl = chain.request().url.newBuilder()
-            .addQueryParameter("serviceKey", BuildConfig.FORCAST_KEY) // 쿼리 파라미터로 API 키 추가
+            .addQueryParameter("ServiceKey", when(type){
+                AuthorizationType.SHORT_TERM_FORECAST -> BuildConfig.SHORT_TERM_FORECAST_KEY
+                AuthorizationType.MID_TERM_FORECAST -> BuildConfig.MID_TERM_FORECAST_KEY
+            }) // 쿼리 파라미터로 API 키 추가
             .build()
 
         val newRequest = chain.request().newBuilder()
@@ -16,4 +21,9 @@ class AuthorizationInterceptor : Interceptor {
 
         return chain.proceed(newRequest)
     }
+}
+
+enum class AuthorizationType {
+    SHORT_TERM_FORECAST,  // 단기 예보
+    MID_TERM_FORECAST     // 중기 예보
 }
