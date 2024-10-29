@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.umc_wireframe.databinding.ActivityMainBinding
+import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -31,8 +31,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        getCurrentLocation()
+//        getCurrentLocation()
 
+        viewModel.getMidTermForecast(MidTermRegion.CHEONGJU)
         initViewModel()
     }
 

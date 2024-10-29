@@ -1,9 +1,9 @@
 package com.example.umc_wireframe.domain.repository
 
-import com.example.umc_wireframe.domain.model.ShortTermForecastEntity
+import com.example.umc_wireframe.domain.model.entity.ShortTermForecastEntity
 
 interface ShortTermForecastRepository {
-    suspend fun getRegionalTemperature(
+    suspend fun getWeatherForecast(
         pageNo: Int,
         numOfRows: Int = 12, // 1시간당 12개의 카테고리
         dataType: String = "JSON",

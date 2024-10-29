@@ -1,14 +1,14 @@
 package com.example.umc_wireframe.data.repository
 
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
-import com.example.umc_wireframe.domain.model.ShortTermForecastEntity
-import com.example.umc_wireframe.domain.model.toEntity
+import com.example.umc_wireframe.domain.model.entity.ShortTermForecastEntity
+import com.example.umc_wireframe.domain.model.mapper.toEntity
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 
 class ShortTermForecastRepositoryImpl(
     private val datasource: ShortTermForecastDatasource
 ) : ShortTermForecastRepository {
-    override suspend fun getRegionalTemperature(
+    override suspend fun getWeatherForecast(
         pageNo: Int,
         numOfRows: Int,
         dataType: String,

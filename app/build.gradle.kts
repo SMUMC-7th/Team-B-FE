@@ -33,7 +33,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        addManifestPlaceholdersAndBuildConfig("FORCAST_KEY")
+        addManifestPlaceholdersAndBuildConfig("SHORT_TERM_FORECAST_KEY")
+        addManifestPlaceholdersAndBuildConfig("MID_TERM_FORECAST_KEY")
     }
 
     buildTypes {

@@ -1,13 +1,17 @@
 package com.example.umc_wireframe.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.umc_wireframe.domain.model.MidTermRegion
+import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MainViewModel(
 ) : ViewModel() {
@@ -16,6 +20,9 @@ class MainViewModel(
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
         RepositoryFactory().createShortTermForecastRepository()
+
+    private val midTermForecastDatasource: MidTermForecastRepository =
+        RepositoryFactory().createMidTermForecastRepository()
 
     fun getShortTermForecast(x: Int, y: Int) = viewModelScope.launch {
         val now = LocalDateTime.now()
@@ -33,7 +40,7 @@ class MainViewModel(
         } //HHMM - 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 만 가능
 
 
-        shortTermForecastRepository.getRegionalTemperature(
+        shortTermForecastRepository.getWeatherForecast(
             pageNo = 3,
             baseDate = baseDate,
             baseTime = baseTime,
@@ -44,12 +51,41 @@ class MainViewModel(
                 MainItem(
                     fcstDate = it.date,
                     fcstTime = it.time,
-                    category = it.category,
+                    category = it.category.toString(),
                     fcstValue = it.value.toString()
                 )
             }?.let { list ->
                 _uiState.emit(list)
             }
+        }
+    }
+
+
+    fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
+        val tmFc = when {
+            LocalDateTime.now().hour < 6 -> LocalDateTime.now().minusDays(1)
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
+            LocalDateTime.now().hour < 18 -> LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0600"
+            else -> LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
+        }
+
+        midTermForecastDatasource.getWeatherForecast(
+            tmFc = tmFc,
+            regId = midTermRegion.regId
+        ).let { entity ->
+            entity?.response?.body?.items?.map {
+                MainItem(
+                    fcstDate = "",
+                    fcstValue = "",
+                    category = midTermRegion.regionName,
+                    fcstTime = it.taMax3.toString()
+                )
+            }?.let { list ->
+                _uiState.emit(list)
+            }
+            Log.d("midTerm", entity.toString())
         }
     }
 }
