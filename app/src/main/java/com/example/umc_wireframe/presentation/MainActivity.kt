@@ -9,20 +9,26 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
-import com.example.umc_wireframe.domain.model.MidTermRegion
+import com.example.umc_wireframe.util.navigateToCalendar
+import com.example.umc_wireframe.util.navigateToHome
+import com.example.umc_wireframe.util.navigateToMy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val fusedLocationClient: FusedLocationProviderClient by lazy{
+    private val viewModel: MainViewModel by viewModels()
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
 
@@ -31,10 +37,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-//        getCurrentLocation()
+        initNavigation()
+    }
 
-        viewModel.getMidTermForecast(MidTermRegion.CHEONGJU)
-        initViewModel()
+    private fun initNavigation() {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(binding.fragmentContainerViewMain.id) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.botNavMain.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_botNav_home -> {
+                    navController.navigateToHome()
+                    true
+                }
+
+                R.id.menu_botNav_calendar -> {
+                    navController.navigateToCalendar()
+                    true
+                }
+
+                R.id.menu_botNav_my -> {
+                    navController.navigateToMy()
+                    true
+                }
+
+                else -> false
+
+            }
+        }
+
     }
 
     private fun getCurrentLocation() {
@@ -58,10 +90,10 @@ class MainActivity : AppCompatActivity() {
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
-                val coordinatesXy = CoordinateConverter().convertToXy(location.latitude,location.longitude)
+                val coordinatesXy =
+                    CoordinateConverter().convertToXy(location.latitude, location.longitude)
                 viewModel.getShortTermForecast(coordinatesXy.nx, coordinatesXy.ny) // 위치 정보 전달
             } ?: run {
-                binding.tvMainTest.text = "location fetch error"
             }
         }
     }
@@ -69,8 +101,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         lifecycleScope.launch {
             viewModel.uiState.collectLatest { uiState ->
-                Log.d("dd", uiState.toString())
-                binding.tvMainTest.text = uiState.toString()
+                Log.d("result", uiState.toString())
             }
         }
     }
