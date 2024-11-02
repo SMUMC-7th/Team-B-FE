@@ -23,16 +23,12 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val fusedLocationClient: FusedLocationProviderClient by lazy {
-        LocationServices.getFusedLocationProviderClient(this)
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         initNavigation()
+        getLocationPermission()
     }
 
     private fun initNavigation() {
@@ -63,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getCurrentLocation() {
+    private fun getLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -81,22 +77,6 @@ class MainActivity : AppCompatActivity() {
             )
             return
         }
-
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val coordinatesXy =
-                    CoordinateConverter().convertToXy(location.latitude, location.longitude)
-                viewModel.getShortTermForecast(coordinatesXy.nx, coordinatesXy.ny) // 위치 정보 전달
-            } ?: run {
-            }
-        }
     }
 
-    private fun initViewModel() {
-        lifecycleScope.launch {
-            viewModel.uiState.collectLatest { uiState ->
-                Log.d("result", uiState.toString())
-            }
-        }
-    }
 }
