@@ -1,28 +1,5 @@
 package com.example.umc_wireframe.domain.model
 
-enum class MidTermWideRegion(
-    val code: Int,
-    val regionName: String
-) {
-    GANGWON(105, "강원도"),
-    ALL(108, "전국"),
-    SEOUL_INCHEON_GYEONGGI(109, "서울, 인천, 경기도"),
-    CHUNGBUK(131, "충청북도"),
-    DAEJEON_SEJONG_CHUNGNAM(133, "대전, 세종, 충청남도"),
-    JEONBUK(146, "전북자치도"),
-    GWANGJU_JEONNAM(156, "광주, 전라남도"),
-    DAEGU_GYEONGBUK(143, "대구, 경상북도"),
-    BUSAN_ULSAN_GYEONGNAM(159, "부산, 울산, 경상남도"),
-    JEJU(184, "제주도");
-
-    companion object {
-        fun fromCode(regionName: String): MidTermWideRegion? {
-            return values().find { it.regionName == regionName }
-        }
-    }
-}
-
-
 enum class MidTermRegion(val regId: String, val regionName: String) {
     SEOUL("11B10101", "서울"),
     SEOGWIPO("11G00401", "서귀포"),
