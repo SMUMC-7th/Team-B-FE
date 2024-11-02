@@ -9,13 +9,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
-import com.example.umc_wireframe.util.navigateToCalendar
-import com.example.umc_wireframe.util.navigateToHome
-import com.example.umc_wireframe.util.navigateToMy
+import com.example.umc_wireframe.util.navigateWithClear
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
@@ -48,22 +45,21 @@ class MainActivity : AppCompatActivity() {
         binding.botNavMain.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_botNav_home -> {
-                    navController.navigateToHome()
+                    navController.navigateWithClear(R.id.navi_home)
                     true
                 }
 
                 R.id.menu_botNav_calendar -> {
-                    navController.navigateToCalendar()
+                    navController.navigateWithClear(R.id.navi_calendar)
                     true
                 }
 
                 R.id.menu_botNav_my -> {
-                    navController.navigateToMy()
+                    navController.navigateWithClear(R.id.navi_my)
                     true
                 }
 
                 else -> false
-
             }
         }
 
