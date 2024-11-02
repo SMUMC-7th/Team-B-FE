@@ -2,12 +2,13 @@ package com.example.umc_wireframe.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
-import com.example.umc_wireframe.presentation.MainItem
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HomeViewModel : ViewModel() {
     private val shortTermForecastRepository: ShortTermForecastRepository =
@@ -33,22 +34,36 @@ class HomeViewModel : ViewModel() {
 
 
         shortTermForecastRepository.getWeatherForecast(
-            pageNo = 3,
+            pageNo = 1,
             baseDate = baseDate,
             baseTime = baseTime,
             nx = x,
             ny = y
         ).let { entity ->
             entity?.body?.items?.map {
-                MainItem(
-                    fcstDate = it.date,
-                    fcstTime = it.time,
-                    category = it.category.toString(),
-                    fcstValue = it.value.toString()
-                )
-            }?.let { list ->
 
             }
+        }
+    }
+
+    fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
+        val tmFc = when {
+            LocalDateTime.now().hour < 6 -> LocalDateTime.now().minusDays(1)
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
+            LocalDateTime.now().hour < 18 -> LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0600"
+            else -> LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
+        }
+
+        midTermForecastDatasource.getWeatherForecast(
+            tmFc = tmFc,
+            regId = midTermRegion.regId
+        ).let { entity ->
+            entity?.response?.body?.items?.map {
+
+            }
+
         }
     }
 }
