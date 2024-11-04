@@ -436,6 +436,11 @@ sealed interface ShortTermRegionObject {
         override val y: Int = 103
     }
 
+    data class Temp(
+        override val region: String,
+        override val x: Int,
+        override val y: Int,
+    ) : ShortTermRegionObject
 }
 
 fun getSeoulRegions(): List<ShortTermRegionObject.Seoul> {
@@ -486,6 +491,20 @@ fun getUlsanRegions(): List<ShortTermRegionObject.Ulsan> {
     return ShortTermRegionObject.Ulsan::class.sealedSubclasses.mapNotNull { it.objectInstance }
 }
 
+fun getIncheonRegions(): List<ShortTermRegionObject.Incheon> {
+    return ShortTermRegionObject.Incheon::class.sealedSubclasses.mapNotNull { it.objectInstance }
+}
 
+fun getGwangjuRegions(): List<ShortTermRegionObject.Gwangju> {
+    return ShortTermRegionObject.Gwangju::class.sealedSubclasses.mapNotNull { it.objectInstance }
+}
 
+fun getGyeongsangbukdoRegions(): List<ShortTermRegionObject.Gyeongsangbukdo> {
+    return ShortTermRegionObject.Gyeongsangbukdo::class.sealedSubclasses.mapNotNull { it.objectInstance }
+}
 
+fun getGyeongsangnamdoRegions(): List<ShortTermRegionObject.Gyeongsangnamdo> {
+    return ShortTermRegionObject.Gyeongsangnamdo::class.sealedSubclasses.mapNotNull { it.objectInstance }
+}
+
+fun List<String>.toShorTermRegion() = this.map { ShortTermRegionObject.Temp(it, 0, 0) }
