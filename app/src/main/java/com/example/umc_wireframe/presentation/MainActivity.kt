@@ -32,8 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNavigation() {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(binding.fragmentContainerViewMain.id) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.botNavMain.setOnItemSelectedListener { item ->

@@ -11,7 +11,7 @@ import com.example.umc_wireframe.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
-    private val binding = requireNotNull(_binding)
+    private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
 
