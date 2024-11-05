@@ -1,6 +1,5 @@
 package com.example.umc_wireframe.presentation.home
 
-import android.content.DialogInterface.OnClickListener
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,15 +9,22 @@ import com.example.umc_wireframe.databinding.ItemRvSelectlocationBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 
 class HomeSelectLocationListAdapter(
-    val clickListener: () -> Unit
+    private val clickListener: (ShortTermRegionObject) -> Unit,
+    private val selectLocationListener: (ShortTermRegionObject) -> Unit
 ) : ListAdapter<ShortTermRegionObject, HomeSelectLocationListAdapter.ViewHolder>(
     SelectLocationDiffUtil()
 ) {
-    class ViewHolder(
+    inner class ViewHolder(
         private val binding: ItemRvSelectlocationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ShortTermRegionObject) = with(binding) {
             btnItemRvLocal.text = item.region
+
+            btnItemRvLocal.setOnClickListener {
+                if(item is ShortTermRegionObject.Temp) clickListener(item)
+                else selectLocationListener(item)
+            }
+
         }
     }
 

@@ -1,12 +1,14 @@
 package com.example.umc_wireframe.presentation.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
@@ -27,6 +29,8 @@ import com.example.umc_wireframe.domain.model.getJeollanamdoRegions
 import com.example.umc_wireframe.domain.model.getSeoulRegions
 import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -36,8 +40,12 @@ class HomeFragment : Fragment() {
 
     private val homeSelectLocationListAdapter: HomeSelectLocationListAdapter by lazy {
         HomeSelectLocationListAdapter(
-            clickListener = {
-
+            clickListener = { clickLocationObject ->
+                homeSelectLocationListAdapter.submitList(getRegionObject(clickLocationObject.region))
+            },
+            selectLocationListener = { selectLocationObject ->
+                binding.tvHomeLocalSelection.text = selectLocationObject.region
+                viewModel.getShortTermForecast(selectLocationObject.x, selectLocationObject.y)
             }
         )
     }
@@ -73,6 +81,7 @@ class HomeFragment : Fragment() {
     private fun initViewModel() = with(viewModel) {
 
     }
+
 
     private fun getRegionObject(region: String): List<ShortTermRegionObject> {
         return when (region) {

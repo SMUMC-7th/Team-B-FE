@@ -1,19 +1,22 @@
 package com.example.umc_wireframe.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
+import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class HomeViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow<HomeItem>(HomeItem.init())
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.init())
     val uiState = _uiState.asStateFlow()
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
@@ -21,6 +24,7 @@ class HomeViewModel : ViewModel() {
 
     private val midTermForecastDatasource: MidTermForecastRepository =
         RepositoryFactory().createMidTermForecastRepository()
+
 
     fun getShortTermForecast(x: Int, y: Int) = viewModelScope.launch {
         val now = LocalDateTime.now()
@@ -46,7 +50,7 @@ class HomeViewModel : ViewModel() {
             ny = y
         ).let { entity ->
             entity?.body?.items?.map {
-
+                Log.d("result", it.toString())
             }
         }
     }
