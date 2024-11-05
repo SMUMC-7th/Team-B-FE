@@ -1,12 +1,10 @@
 package com.example.umc_wireframe.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
-import com.example.umc_wireframe.domain.model.entity.ShortTermForecastEntity
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository

@@ -11,15 +11,15 @@
         android:id="@+id/tv_home_localSelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="@dimen/home_horizon_margin"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:text="서울특별시"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/nestedScroll_home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="서울특별시"
         tools:text="서울특별시" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -30,13 +30,13 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_local_select"
         android:translationZ="1dp"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintStart_toStartOf="@id/tv_home_localSelection"
         app:layout_constraintTop_toBottomOf="@id/tv_home_localSelection"
         app:spanCount="2"
         tools:listitem="@layout/item_rv__selectlocation"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_home_alarm"
@@ -53,7 +53,7 @@
         android:id="@+id/iv_home_hamberger"
         android:layout_width="@dimen/top_ic_size"
         android:layout_height="@dimen/top_ic_size"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="@dimen/home_horizon_margin"
         android:padding="4dp"
         android:src="@drawable/ic_hamberger"
         app:layout_constraintBottom_toBottomOf="@id/tv_home_localSelection"
@@ -105,7 +105,56 @@
                     android:layout_width="match_parent"
                     android:layout_height="900dp"
                     android:src="@drawable/img_home_scrollbg"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="-25dp" />
+
+                <TextView
+                    android:id="@+id/tv_home_clothy1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="80dp"
+                    android:text="그래서 클로디는"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_home_clothy2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="80dp"
+                    android:text="이 옷을 추천해요"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_home_clothy1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_home_recommendedClothes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_horizon_margin"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/tv_home_clothy2"
+                    tools:listitem="@layout/item_rv_recommenedclothes" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_home_recommendedTags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_horizon_margin"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="@id/rv_home_recommendedClothes"
+                    app:layout_constraintStart_toStartOf="@id/rv_home_recommendedClothes"
+                    app:layout_constraintTop_toBottomOf="@id/rv_home_recommendedClothes"
+                    tools:listitem="@layout/item_rv_recommendedtags" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

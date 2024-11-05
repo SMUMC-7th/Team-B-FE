@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="top_ic_size">40dp</dimen>
+
+    <dimen name="home_horizon_margin">20dp</dimen>
 </resources>

@@ -1,15 +1,20 @@
 package com.example.umc_wireframe.presentation.home
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -49,6 +54,14 @@ class HomeFragment : Fragment() {
         )
     }
 
+    private val homeRecommendedClothesListAdapter: HomeRecommendedClothesListAdapter by lazy {
+        HomeRecommendedClothesListAdapter()
+    }
+
+    private val homeTagListAdapter: HomeTagListAdapter by lazy {
+        HomeTagListAdapter()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,8 +73,79 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initView()
+
         selectLocation()
+
         initViewModel()
+
+        example()
+    }
+
+    private fun example() {
+        val imgList = listOf(
+            R.drawable.ic_notification,
+            R.drawable.ic_notification,
+            R.drawable.ic_notification,
+            R.drawable.ic_notification,
+            R.drawable.ic_notification
+        )
+
+        val tagList = listOf(
+            "셔츠",
+            "패딩",
+            "코트"
+        )
+        homeRecommendedClothesListAdapter.submitList(imgList)
+        homeTagListAdapter.submitList(tagList)
+    }
+
+    private fun initView() = with(binding) {
+        fun setClothyString() {
+
+            val fullText = "그래서 클로디는"
+
+            val spannableString = SpannableString(fullText)
+
+            val targetStart = 4 // "클로디"의 시작 인덱스
+            val targetEnd = 7   // "클로디"의 끝 인덱스
+
+            val firstPartEnd = 12 // "이 부분은 크고 빨간색입니다."의 길이
+
+            // 오렌지색으로 설정
+            spannableString.setSpan(
+                ForegroundColorSpan(Color.parseColor("#FFA500")),
+                targetStart,
+                targetEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            // 크기 24sp로 설정
+            spannableString.setSpan(
+                AbsoluteSizeSpan(24, true),
+                targetStart,
+                targetEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            binding.tvHomeClothy1.text = spannableString
+        }
+
+        fun initRecommendedClothesRv() = with(binding.rvHomeRecommendedClothes) {
+            adapter = homeRecommendedClothesListAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+
+        fun initRecommendedTagRv() = with(binding.rvHomeRecommendedTags) {
+            adapter = homeTagListAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+
+        setClothyString()
+        initRecommendedClothesRv()
+        initRecommendedTagRv()
     }
 
     private fun selectLocation() = with(binding) {
