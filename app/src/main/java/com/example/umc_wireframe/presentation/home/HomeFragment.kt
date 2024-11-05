@@ -44,8 +44,7 @@ class HomeFragment : Fragment() {
                 homeSelectLocationListAdapter.submitList(getRegionObject(clickLocationObject.region))
             },
             selectLocationListener = { selectLocationObject ->
-                binding.tvHomeLocalSelection.text = selectLocationObject.region
-                viewModel.getShortTermForecast(selectLocationObject.x, selectLocationObject.y)
+                viewModel.getShortTermForecast(selectLocationObject)
             }
         )
     }
@@ -72,14 +71,27 @@ class HomeFragment : Fragment() {
         tvHomeLocalSelection.setOnClickListener {
             val list = requireContext().resources.getStringArray(R.array.location_list).toList()
             homeSelectLocationListAdapter.submitList(list.toShorTermRegion())
-            if (rvHomeLocalSelection.isVisible) rvHomeLocalSelection.visibility = View.GONE
-            else rvHomeLocalSelection.visibility = View.VISIBLE
+
+            if (rvHomeLocalSelection.isVisible) {
+                rvHomeLocalSelection.visibility = View.GONE
+            } else rvHomeLocalSelection.visibility = View.VISIBLE
         }
 
     }
 
     private fun initViewModel() = with(viewModel) {
+        lifecycleScope.launch {
+            uiState.collectLatest { uiState ->
+                bind(uiState)
+            }
+        }
+    }
 
+    private fun bind(uiState: HomeUiState) = with(binding) {
+        uiState.selectLocation?.let {
+            tvHomeLocalSelection.text = uiState.selectLocation.region
+            tvHomeWeatherDescription.text = uiState.temp + ", " + uiState.pop + ", " + uiState.pcp
+        }
     }
 
 

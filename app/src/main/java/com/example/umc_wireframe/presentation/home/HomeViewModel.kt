@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
+import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.model.entity.ShortTermForecastEntity
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
@@ -26,7 +28,7 @@ class HomeViewModel : ViewModel() {
         RepositoryFactory().createMidTermForecastRepository()
 
 
-    fun getShortTermForecast(x: Int, y: Int) = viewModelScope.launch {
+    fun getShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
         val now = LocalDateTime.now()
         val baseDate = now.toLocalDate().toString().replace("-", "") //YYYYMMDD
         val baseTime = when (now.hour) {
@@ -46,12 +48,26 @@ class HomeViewModel : ViewModel() {
             pageNo = 1,
             baseDate = baseDate,
             baseTime = baseTime,
-            nx = x,
-            ny = y
+            nx = selectLocation.x,
+            ny = selectLocation.y
         ).let { entity ->
-            entity?.body?.items?.map {
-                Log.d("result", it.toString())
+            entity?.body?.items?.let { items ->
+                val tempItem = items.firstOrNull { it.category == ShortTermCategory.TMP }
+                val popItem = items.firstOrNull { it.category == ShortTermCategory.POP }
+                val pcpItem = items.firstOrNull { it.category == ShortTermCategory.PCP }
+
+                if (tempItem != null && popItem != null && pcpItem != null) {
+                    _uiState.update { prev ->
+                        prev.copy(
+                            selectLocation = selectLocation,
+                            temp = tempItem.value,
+                            pop = popItem.value,
+                            pcp = pcpItem.value
+                        )
+                    }
+                }
             }
+
         }
     }
 

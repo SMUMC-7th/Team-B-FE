@@ -4,12 +4,16 @@ import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 
 data class HomeUiState(
     val selectLocation: ShortTermRegionObject?,
-    val temp: Int
+    val temp: String,
+    val pop: String, //강수확률
+    val pcp: String //강수형태
 ) {
     companion object {
         fun init() = HomeUiState(
             selectLocation = null,
-            temp = 0
+            temp = "",
+            "",
+            ""
         )
     }
 }
