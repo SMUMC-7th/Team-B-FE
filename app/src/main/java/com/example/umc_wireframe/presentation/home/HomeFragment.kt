@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.presentation.home
 
 import android.graphics.Color
+import jp.wasabeef.glide.transformations.BlurTransformation
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -15,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -74,9 +76,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-
         selectLocation()
-
         initViewModel()
 
         example()
@@ -102,15 +102,12 @@ class HomeFragment : Fragment() {
 
     private fun initView() = with(binding) {
         fun setClothyString() {
-
             val fullText = "그래서 클로디는"
 
             val spannableString = SpannableString(fullText)
 
             val targetStart = 4 // "클로디"의 시작 인덱스
             val targetEnd = 7   // "클로디"의 끝 인덱스
-
-            val firstPartEnd = 12 // "이 부분은 크고 빨간색입니다."의 길이
 
             // 오렌지색으로 설정
             spannableString.setSpan(
@@ -143,9 +140,17 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
+        fun blurHistoryGradiant() {
+            Glide.with(requireContext())
+                .load(R.drawable.bg_history_gradiant)
+                .transform(BlurTransformation(25, 3))
+                .into(binding.ivHomeHistoryGradiant)
+        }
+
         setClothyString()
         initRecommendedClothesRv()
         initRecommendedTagRv()
+        blurHistoryGradiant()
     }
 
     private fun selectLocation() = with(binding) {

@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/bg_tag_recommended"
+        android:background="@drawable/bg_tag_history"
         android:paddingVertical="5dp"
         android:paddingHorizontal="20dp" />
 
@@ -26,11 +26,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/bg_tag_gradiant"
         android:paddingVertical="5dp"
         android:paddingHorizontal="20dp"
         tools:text="#셔츠"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
