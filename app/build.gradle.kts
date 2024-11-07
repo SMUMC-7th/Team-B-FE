@@ -90,4 +90,11 @@ dependencies {
     //navigation
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+
+    //CameraX
+    implementation("androidx.camera:camera-core:1.1.0")
+    implementation("androidx.camera:camera-camera2:1.1.0")
+    implementation("androidx.camera:camera-lifecycle:1.1.0")
+    implementation("androidx.camera:camera-view:1.0.0-alpha28")
+
 }
