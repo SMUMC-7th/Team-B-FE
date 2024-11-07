@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    kotlin("plugin.serialization") version "1.8.0"
 }
 
 val properties = Properties().apply {
@@ -90,6 +91,17 @@ dependencies {
     //navigation
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+
+    // coroutine 관련 의존성
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
+
+    //glide
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     //CameraX
     implementation("androidx.camera:camera-core:1.1.0")

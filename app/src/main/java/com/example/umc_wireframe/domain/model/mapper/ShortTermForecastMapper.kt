@@ -46,7 +46,7 @@ fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
             date = it.baseDate ?: "unknown",
             time = it.baseTime ?: "unknown",
             category = it.category?.toShortTermCategory() ?: ShortTermCategory.ERROR,
-            value = it.value ?: 0.0, // Default value if null
+            value = it.value ?: "unknown", // Default value if null
             locationX = it.nx ?: 0,
             locationY = it.ny ?: 0
         )
@@ -54,7 +54,7 @@ fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
         date = "unknown",
         time = "unknown",
         category = ShortTermCategory.ERROR,
-        value = 0.0,
+        value = "unknown",
         locationX = 0,
         locationY = 0
     )
