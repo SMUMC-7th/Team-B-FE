@@ -106,17 +106,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_home_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/img_home_scrollbg"
+                android:layout_height="900dp"
+                android:background="@drawable/img_home_bot_speech"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_home_clothy">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="900dp"
-                    android:src="@drawable/img_home_scrollbg"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="-25dp" />
 
                 <TextView
                     android:id="@+id/tv_home_clothy1"
