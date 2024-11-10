@@ -5,21 +5,30 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navi_home">
 
-
+    <!-- HomeFragment -->
     <fragment
         android:id="@+id/navi_home"
         android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
         tools:layout="@layout/fragment_home" />
 
-
+    <!-- CalendarFragment -->
     <fragment
         android:id="@+id/navi_calendar"
         android:name="com.example.umc_wireframe.presentation.calendar.CalendarFragment"
         tools:layout="@layout/fragment_calendar" />
 
-
+    <!-- MyFragment -->
     <fragment
         android:id="@+id/navi_my"
         android:name="com.example.umc_wireframe.presentation.my.MyFragment"
-        tools:layout="@layout/fragment_my" />
+        tools:layout="@layout/fragment_my">
+        <action
+            android:id="@+id/action_myFragment_to_nicknameChangeFragment"
+            app:destination="@id/navi_nickname_change" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navi_nickname_change"
+        android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
+        tools:layout="@layout/fragment_nickname_change" />
 </navigation>

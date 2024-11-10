@@ -23,6 +23,9 @@ fun ApplicationDefaultConfig.addManifestPlaceholdersAndBuildConfig(key: String) 
 android {
     namespace = "com.example.umc_wireframe"
     compileSdk = 34
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.umc_wireframe"
