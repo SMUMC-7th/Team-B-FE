@@ -1,7 +1,6 @@
 package com.example.umc_wireframe.presentation.home
 
 import android.graphics.Color
-import jp.wasabeef.glide.transformations.BlurTransformation
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -36,6 +35,7 @@ import com.example.umc_wireframe.domain.model.getJeollanamdoRegions
 import com.example.umc_wireframe.domain.model.getSeoulRegions
 import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -157,7 +157,7 @@ class HomeFragment : Fragment() {
         rvHomeLocalSelection.adapter = homeSelectLocationListAdapter
         rvHomeLocalSelection.layoutManager = GridLayoutManager(requireContext(), 2)
 
-        tvHomeLocalSelection.setOnClickListener {
+        clHomeLocalSelection.setOnClickListener {
             val list = requireContext().resources.getStringArray(R.array.location_list).toList()
             homeSelectLocationListAdapter.submitList(list.toShorTermRegion())
 

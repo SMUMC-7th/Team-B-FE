@@ -7,20 +7,38 @@
     tools:context=".presentation.home.HomeFragment">
 
 
-    <TextView
-        android:id="@+id/tv_home_localSelection"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_home_localSelection"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/home_horizon_margin"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="서울특별시"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/nestedScroll_home"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="서울특별시" />
+        android:paddingVertical="10dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_home_localSelection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="서울특별시"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="서울특별시" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_arrowdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_home_localSelection"
@@ -38,34 +56,13 @@
         tools:listitem="@layout/item_rv__selectlocation"
         tools:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/iv_home_alarm"
-        android:layout_width="@dimen/top_ic_size"
-        android:layout_height="@dimen/top_ic_size"
-        android:layout_marginEnd="20dp"
-        android:padding="4dp"
-        android:src="@drawable/ic_notification"
-        app:layout_constraintBottom_toBottomOf="@id/tv_home_localSelection"
-        app:layout_constraintEnd_toStartOf="@id/iv_home_hamberger"
-        app:layout_constraintTop_toTopOf="@id/tv_home_localSelection" />
-
-    <ImageView
-        android:id="@+id/iv_home_hamberger"
-        android:layout_width="@dimen/top_ic_size"
-        android:layout_height="@dimen/top_ic_size"
-        android:layout_marginEnd="@dimen/home_horizon_margin"
-        android:padding="4dp"
-        android:src="@drawable/ic_hamberger"
-        app:layout_constraintBottom_toBottomOf="@id/tv_home_localSelection"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_home_localSelection" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_home_localSelection">
+        app:layout_constraintTop_toBottomOf="@id/cl_home_localSecltion">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -101,6 +98,7 @@
                 android:adjustViewBounds="true"
                 android:src="@drawable/img_clothy"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/home_horizon_margin"
                 app:layout_constraintTop_toBottomOf="@id/iv_home_weatherDescription" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
