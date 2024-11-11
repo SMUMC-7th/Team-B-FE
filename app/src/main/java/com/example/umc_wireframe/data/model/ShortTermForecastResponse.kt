@@ -33,5 +33,7 @@ data class ShortTermForecastItemResponse(
     @SerializedName("baseTime") val baseTime: String?, // 기준 시간 (HHmm)
     @SerializedName("nx") val nx: Int?,                // X 좌표
     @SerializedName("ny") val ny: Int?,                // Y 좌표
-    @SerializedName("fcstValue") val value: String?    // 관측 값 (기온 또는 강수 상태)
+    @SerializedName("fcstValue") val value: String?,   // 관측 값 (기온 또는 강수 상태)
+    @SerializedName("fcstDate") val fcstDate: String?,  // 예보 날짜 (YYYYMMDD)
+    @SerializedName("fcstTime") val fcstTime: String?  // 예보 시간 (HHmm)
 )

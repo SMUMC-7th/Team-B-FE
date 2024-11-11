@@ -3,4 +3,6 @@
     <dimen name="top_ic_size">40dp</dimen>
 
     <dimen name="home_horizon_margin">20dp</dimen>
+
+    <dimen name="home_weather_description_tv_size">18sp</dimen>
 </resources>

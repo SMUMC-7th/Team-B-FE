@@ -1,11 +1,15 @@
 package com.example.umc_wireframe.presentation.home
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +55,8 @@ class HomeFragment : Fragment() {
                 homeSelectLocationListAdapter.submitList(getRegionObject(clickLocationObject.region))
             },
             selectLocationListener = { selectLocationObject ->
-                viewModel.getShortTermForecast(selectLocationObject)
+                viewModel.getDailyShortTermForecast(selectLocationObject)
+                binding.rvHomeLocalSelection.visibility = View.GONE
             }
         )
     }
@@ -179,8 +184,37 @@ class HomeFragment : Fragment() {
     private fun bind(uiState: HomeUiState) = with(binding) {
         uiState.selectLocation?.let {
             tvHomeLocalSelection.text = uiState.selectLocation.region
-            tvHomeWeatherDescription.text = uiState.temp + ", " + uiState.pop + ", " + uiState.pcp
         }
+
+        uiState.temp.let {
+            val biggest = it.maxByOrNull { it.second.toInt() }.toString()
+            val smallest = it.minByOrNull { it.second.toInt() }.toString()
+
+            val spannableString = SpannableString("최저 $biggest°C 최고 $smallest°C의")
+
+            // "최저"와 "최고" 텍스트에 대해 스타일 적용
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, 2, 0) // "최저"에 볼드 적용
+            spannableString.setSpan( AbsoluteSizeSpan(12, true), 0, 2, 0) // "최저" 글자 크기 12sp 적용
+
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 7, 9, 0) // "최고"에 볼드 적용
+            spannableString.setSpan( AbsoluteSizeSpan(12, true), 7, 9, 0) // "최고" 글자 크기 12sp 적용
+
+            // "$biggest°C"에 대해 스타일 적용
+            spannableString.setSpan( AbsoluteSizeSpan(24, true), 3, 3+biggest.length, 0) // "$biggest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(ForegroundColorSpan(Color.RED), 3, 3+biggest.length, 0) // "$biggest°C" 빨간색 적용
+
+            // "$smallest°C"에 대해 스타일 적용
+            spannableString.setSpan( AbsoluteSizeSpan(24, true), 9,  9+smallest.length, 0) // "$smallest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(
+                ForegroundColorSpan(Color.BLUE),
+                9,
+                9+smallest.length,
+                0
+            ) // "$smallest°C" 파란색 적용
+
+            tvHomeWeatherDescriptionLine2.text = spannableString
+        }
+        Log.d("result", uiState.temp.toString())
     }
 
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.model.entity.ShortTermForecastItemEntity
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -26,47 +28,36 @@ class HomeViewModel : ViewModel() {
         RepositoryFactory().createMidTermForecastRepository()
 
 
-    fun getShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
-        val now = LocalDateTime.now()
-        val baseDate = now.toLocalDate().toString().replace("-", "") //YYYYMMDD
-        val baseTime = when (now.hour) {
-            in 0..2 -> "2300"
-            in 3..5 -> "0200"
-            in 6..8 -> "0500"
-            in 9..11 -> "0800"
-            in 12..14 -> "1100"
-            in 15..17 -> "1400"
-            in 18..20 -> "1700"
-            in 21..23 -> "2000"
-            else -> "1700" // 기본값으로 설정
-        } //HHMM - 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 만 가능
+    fun getDailyShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
+        val now = LocalDate.now().minusDays(1)
+        val baseDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
-
-        shortTermForecastRepository.getWeatherForecast(
+        val entity = shortTermForecastRepository.getWeatherForecast(
             pageNo = 1,
             baseDate = baseDate,
-            baseTime = baseTime,
+            baseTime = "2300", //"0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300")
             nx = selectLocation.x,
-            ny = selectLocation.y
-        ).let { entity ->
-            entity?.body?.items?.let { items ->
-                val tempItem = items.firstOrNull { it.category == ShortTermCategory.TMP }
-                val popItem = items.firstOrNull { it.category == ShortTermCategory.POP }
-                val pcpItem = items.firstOrNull { it.category == ShortTermCategory.PCP }
+            ny = selectLocation.y,
+            numOfRows = 288
+        )?.body?.items
 
-                if (tempItem != null && popItem != null && pcpItem != null) {
-                    _uiState.update { prev ->
-                        prev.copy(
-                            selectLocation = selectLocation,
-                            temp = tempItem.value,
-                            pop = popItem.value,
-                            pcp = pcpItem.value
-                        )
-                    }
-                }
+        entity?.let { items ->
+            _uiState.update { prev ->
+                prev.copy(
+                    selectLocation = selectLocation,
+                    temp = items.filter { it.category == ShortTermCategory.TMP }
+                        .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
+                        .sortedByDescending { it.first },
+                    pop = items.filter { it.category == ShortTermCategory.POP }
+                        .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
+                        .sortedByDescending { it.first },
+                    pcp = items.filter { it.category == ShortTermCategory.PCP }
+                        .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
+                        .sortedByDescending { it.first }
+                )
             }
-
         }
+
     }
 
     fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
