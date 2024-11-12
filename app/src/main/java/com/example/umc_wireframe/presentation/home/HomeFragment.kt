@@ -145,17 +145,21 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
-        fun blurHistoryGradiant() {
+        fun blurGradiant() {
             Glide.with(requireContext())
                 .load(R.drawable.bg_history_gradiant)
                 .transform(BlurTransformation(25, 3))
-                .into(binding.ivHomeHistoryGradiant)
+                .let{
+                    it.into(binding.ivHomeOotdGradiant)
+                    it.into(binding.ivHomeHistoryGradiant)
+                }
         }
+
 
         setClothyString()
         initRecommendedClothesRv()
         initRecommendedTagRv()
-        blurHistoryGradiant()
+        blurGradiant()
     }
 
     private fun selectLocation() = with(binding) {

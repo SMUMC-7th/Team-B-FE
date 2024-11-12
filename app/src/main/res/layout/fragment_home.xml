@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/home_horizon_margin"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
         android:paddingVertical="10dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -30,15 +30,40 @@
             tools:text="서울특별시" />
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_arrowdown"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_home_ootd"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_btn_ootdstart"
+        android:paddingVertical="15dp"
+        android:text="오늘의 OOTD 저장하기"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_home_ootdGradiant"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:elevation="1dp"
+        android:src="@drawable/bg_history_gradiant"
+        app:layout_constraintBottom_toBottomOf="@id/btn_home_ootd"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="@id/btn_home_ootd"
+        app:layout_constraintStart_toStartOf="@id/btn_home_ootd"
+        app:layout_constraintTop_toTopOf="@id/btn_home_ootd" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_home_localSelection"
@@ -62,7 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_home_localSelection">
+        app:layout_constraintTop_toBottomOf="@id/cl_home_localSelection"
+        android:elevation="-1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -81,47 +107,47 @@
                 android:id="@+id/tv_home_weatherDescriptionLine1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오늘의 기온은"
-                app:layout_constraintStart_toStartOf="@id/iv_home_weatherDescription"
-                app:layout_constraintEnd_toEndOf="@id/iv_home_weatherDescription"
-                app:layout_constraintTop_toTopOf="@id/iv_home_weatherDescription"
                 android:layout_marginTop="50dp"
+                android:layout_marginEnd="50dp"
+                android:text="오늘의 기온은"
                 android:textSize="@dimen/home_weather_description_tv_size"
-                android:layout_marginEnd="50dp"/>
+                app:layout_constraintEnd_toEndOf="@id/iv_home_weatherDescription"
+                app:layout_constraintStart_toStartOf="@id/iv_home_weatherDescription"
+                app:layout_constraintTop_toTopOf="@id/iv_home_weatherDescription" />
 
             <TextView
                 android:id="@+id/tv_home_weatherDescriptionLine2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
                 android:gravity="center"
                 android:text="15 ℃/ 30 ℃로"
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@id/tv_home_weatherDescriptionLine1"
-                app:layout_constraintStart_toStartOf="@id/tv_home_weatherDescriptionLine1"
                 app:layout_constraintEnd_toEndOf="@id/tv_home_weatherDescriptionLine1"
-                android:layout_marginStart="30dp"/>
+                app:layout_constraintStart_toStartOf="@id/tv_home_weatherDescriptionLine1"
+                app:layout_constraintTop_toBottomOf="@id/tv_home_weatherDescriptionLine1" />
 
             <TextView
                 android:id="@+id/tv_home_weatherDescriptionLine3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
                 android:gravity="center"
                 android:text="입니다."
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@id/tv_home_weatherDescriptionLine2"
-                app:layout_constraintStart_toStartOf="@id/tv_home_weatherDescriptionLine2"
                 app:layout_constraintEnd_toEndOf="@id/tv_home_weatherDescriptionLine2"
-                android:layout_marginStart="30dp"/>
+                app:layout_constraintStart_toStartOf="@id/tv_home_weatherDescriptionLine2"
+                app:layout_constraintTop_toBottomOf="@id/tv_home_weatherDescriptionLine2" />
 
             <ImageView
                 android:id="@+id/iv_home_clothy"
                 android:layout_width="200dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="-80dp"
+                android:layout_marginEnd="@dimen/home_horizon_margin"
                 android:adjustViewBounds="true"
                 android:src="@drawable/img_clothy"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="@dimen/home_horizon_margin"
                 app:layout_constraintTop_toBottomOf="@id/iv_home_weatherDescription" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -181,108 +207,116 @@
                     tools:listitem="@layout/item_rv_recommendedtags" />
 
 
-                <ImageView
-                    android:id="@+id/iv_home_magicStick"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:src="@drawable/ic_home_magicstick"
-                    app:layout_constraintStart_toStartOf="@id/rv_home_recommendedTags"
-                    app:layout_constraintTop_toBottomOf="@id/rv_home_recommendedTags" />
-
-                <TextView
-                    android:id="@+id/tv_home_likeThis"
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="비슷한 날씨에 이렇게 입었어요!"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_home_magicStick"
                     app:layout_constraintEnd_toEndOf="@id/rv_home_recommendedTags"
-                    app:layout_constraintStart_toEndOf="@id/iv_home_magicStick"
-                    app:layout_constraintTop_toTopOf="@id/iv_home_magicStick" />
+                    app:layout_constraintStart_toStartOf="@id/rv_home_recommendedTags"
+                    app:layout_constraintTop_toBottomOf="@id/rv_home_recommendedTags">
+
+                    <ImageView
+                        android:id="@+id/iv_home_magicStick"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="20dp"
+                        android:src="@drawable/ic_home_magicstick"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_home_likeThis"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="50dp"
+                        android:text="비슷한 날씨에 이렇게 입었어요!"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_home_magicStick"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_home_magicStick"
+                        app:layout_constraintTop_toTopOf="@id/iv_home_magicStick" />
 
 
-                <ImageView
-                    android:id="@+id/iv_home_historyGradiant"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:src="@drawable/bg_history_gradiant"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_home_myHistory2"
-                    app:layout_constraintDimensionRatio="1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/iv_home_myHistory1" />
+                    <ImageView
+                        android:id="@+id/iv_home_historyGradiant"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:src="@drawable/bg_history_gradiant"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_home_myHistory2"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/iv_home_myHistory1" />
 
-                <ImageView
-                    android:id="@+id/iv_home_myHistory1"
-                    android:layout_width="140dp"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="@dimen/home_horizon_margin"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_historyimage_rounded"
-                    android:clipToOutline="true"
-                    app:layout_constraintStart_toStartOf="@id/iv_home_magicStick"
-                    app:layout_constraintTop_toBottomOf="@id/iv_home_magicStick"
-                    tools:src="@color/black" />
+                    <ImageView
+                        android:id="@+id/iv_home_myHistory1"
+                        android:layout_width="140dp"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="@dimen/home_horizon_margin"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_historyimage_rounded"
+                        android:clipToOutline="true"
+                        app:layout_constraintStart_toStartOf="@id/iv_home_magicStick"
+                        app:layout_constraintTop_toBottomOf="@id/iv_home_magicStick"
+                        tools:src="@color/black" />
 
-                <TextView
-                    android:id="@+id/tv_home_myHistory1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    app:layout_constraintStart_toEndOf="@id/iv_home_myHistory1"
-                    app:layout_constraintTop_toTopOf="@id/iv_home_myHistory1"
-                    tools:text="yyyy년 mm월 dd일" />
+                    <TextView
+                        android:id="@+id/tv_home_myHistory1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintStart_toEndOf="@id/iv_home_myHistory1"
+                        app:layout_constraintTop_toTopOf="@id/iv_home_myHistory1"
+                        tools:text="yyyy년 mm월 dd일" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_home_myHitory1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="@id/tv_home_myHistory1"
-                    app:layout_constraintStart_toStartOf="@id/tv_home_myHistory1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_home_myHistory1"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_rv_historytag" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_home_myHitory1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintEnd_toEndOf="@id/tv_home_myHistory1"
+                        app:layout_constraintStart_toStartOf="@id/tv_home_myHistory1"
+                        app:layout_constraintTop_toBottomOf="@id/tv_home_myHistory1"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_rv_historytag" />
 
 
-                <ImageView
-                    android:id="@+id/iv_home_myHistory2"
-                    android:layout_width="140dp"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="@dimen/home_horizon_margin"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_historyimage_rounded"
-                    android:clipToOutline="true"
-                    app:layout_constraintEnd_toEndOf="@id/tv_home_likeThis"
-                    app:layout_constraintTop_toBottomOf="@id/iv_home_myHistory1"
-                    tools:src="@color/black" />
+                    <ImageView
+                        android:id="@+id/iv_home_myHistory2"
+                        android:layout_width="140dp"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="@dimen/home_horizon_margin"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_historyimage_rounded"
+                        android:clipToOutline="true"
+                        app:layout_constraintEnd_toEndOf="@id/tv_home_likeThis"
+                        app:layout_constraintTop_toBottomOf="@id/iv_home_myHistory1"
+                        tools:src="@color/black" />
 
-                <TextView
-                    android:id="@+id/tv_home_myHistory2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintEnd_toStartOf="@id/iv_home_myHistory2"
-                    app:layout_constraintTop_toTopOf="@id/iv_home_myHistory2"
-                    tools:text="yyyy년 mm월 dd일" />
+                    <TextView
+                        android:id="@+id/tv_home_myHistory2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        app:layout_constraintEnd_toStartOf="@id/iv_home_myHistory2"
+                        app:layout_constraintTop_toTopOf="@id/iv_home_myHistory2"
+                        tools:text="yyyy년 mm월 dd일" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_home_myHitory2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="@id/tv_home_myHistory2"
-                    app:layout_constraintStart_toStartOf="@id/tv_home_myHistory2"
-                    app:layout_constraintTop_toBottomOf="@id/tv_home_myHistory2"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_rv_historytag" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_home_myHitory2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintEnd_toEndOf="@id/tv_home_myHistory2"
+                        app:layout_constraintStart_toStartOf="@id/tv_home_myHistory2"
+                        app:layout_constraintTop_toBottomOf="@id/tv_home_myHistory2"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_rv_historytag" />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
