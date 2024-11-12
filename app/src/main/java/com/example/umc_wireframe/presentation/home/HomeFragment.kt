@@ -7,7 +7,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -39,7 +38,6 @@ import com.example.umc_wireframe.domain.model.getJeollanamdoRegions
 import com.example.umc_wireframe.domain.model.getSeoulRegions
 import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -146,13 +144,6 @@ class HomeFragment : Fragment() {
         }
 
         fun blurGradiant() {
-            Glide.with(requireContext())
-                .load(R.drawable.bg_history_gradiant)
-                .transform(BlurTransformation(25, 3))
-                .let{
-                    it.into(binding.ivHomeOotdGradiant)
-                    it.into(binding.ivHomeHistoryGradiant)
-                }
         }
 
 

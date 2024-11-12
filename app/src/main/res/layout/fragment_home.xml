@@ -21,7 +21,6 @@
             android:id="@+id/tv_home_localSelection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="서울특별시"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,10 +54,10 @@
 
     <ImageView
         android:id="@+id/iv_home_ootdGradiant"
-        android:layout_width="300dp"
-        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:elevation="1dp"
-        android:src="@drawable/bg_history_gradiant"
+        android:src="@drawable/img_blur_btn"
         app:layout_constraintBottom_toBottomOf="@id/btn_home_ootd"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="@id/btn_home_ootd"
@@ -240,9 +239,9 @@
 
                     <ImageView
                         android:id="@+id/iv_home_historyGradiant"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/bg_history_gradiant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/img_blur_history"
                         app:layout_constraintBottom_toBottomOf="@id/iv_home_myHistory2"
                         app:layout_constraintDimensionRatio="1"
                         app:layout_constraintEnd_toEndOf="parent"
