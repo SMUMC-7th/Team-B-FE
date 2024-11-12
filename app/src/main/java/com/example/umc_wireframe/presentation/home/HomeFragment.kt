@@ -187,32 +187,33 @@ class HomeFragment : Fragment() {
         }
 
         uiState.temp.let {
-            val biggest = it.maxByOrNull { it.second.toInt() }.toString()
-            val smallest = it.minByOrNull { it.second.toInt() }.toString()
+            val biggest = it.maxByOrNull { it.second }?.second.toString()
+            val smallest = it.minByOrNull { it.second }?.second.toString()
 
-            val spannableString = SpannableString("최저 $biggest°C 최고 $smallest°C의")
+            val spannableString = SpannableString("최저 $smallest°C 최고 $biggest°C의")
 
             // "최저"와 "최고" 텍스트에 대해 스타일 적용
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, 2, 0) // "최저"에 볼드 적용
-            spannableString.setSpan( AbsoluteSizeSpan(12, true), 0, 2, 0) // "최저" 글자 크기 12sp 적용
+            spannableString.setSpan(AbsoluteSizeSpan(12, true), 0, 2, 0) // "최저" 글자 크기 12sp 적용
 
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 7, 9, 0) // "최고"에 볼드 적용
-            spannableString.setSpan( AbsoluteSizeSpan(12, true), 7, 9, 0) // "최고" 글자 크기 12sp 적용
-
-            // "$biggest°C"에 대해 스타일 적용
-            spannableString.setSpan( AbsoluteSizeSpan(24, true), 3, 3+biggest.length, 0) // "$biggest°C" 글자 크기 24sp 적용
-            spannableString.setSpan(ForegroundColorSpan(Color.RED), 3, 3+biggest.length, 0) // "$biggest°C" 빨간색 적용
+            val startIndex = spannableString.indexOf("최고")
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex+2, 0) // "최고"에 볼드 적용
+            spannableString.setSpan(AbsoluteSizeSpan(12, true), startIndex, startIndex+2, 0) // "최고" 글자 크기 12sp 적용
 
             // "$smallest°C"에 대해 스타일 적용
-            spannableString.setSpan( AbsoluteSizeSpan(24, true), 9,  9+smallest.length, 0) // "$smallest°C" 글자 크기 24sp 적용
-            spannableString.setSpan(
-                ForegroundColorSpan(Color.BLUE),
-                9,
-                9+smallest.length,
-                0
-            ) // "$smallest°C" 파란색 적용
+            val smallestStart = 3
+            val smallestEnd = smallestStart + smallest.length + 2  // "°C" 추가
+            spannableString.setSpan(AbsoluteSizeSpan(24, true), smallestStart, smallestEnd, 0) // "$smallest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(ForegroundColorSpan(Color.BLUE), smallestStart, smallestEnd, 0) // "$smallest°C" 파란색 적용
+
+            // "$biggest°C"에 대해 스타일 적용
+            val biggestStart = smallestEnd + 4
+            val biggestEnd = biggestStart + biggest.length + 2 // "°C" 추가
+            spannableString.setSpan(AbsoluteSizeSpan(24, true), biggestStart, biggestEnd, 0) // "$biggest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(ForegroundColorSpan(Color.RED), biggestStart, biggestEnd, 0) // "$biggest°C" 빨간색 적용
 
             tvHomeWeatherDescriptionLine2.text = spannableString
+
         }
         Log.d("result", uiState.temp.toString())
     }
