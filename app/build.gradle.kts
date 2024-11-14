@@ -98,9 +98,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
 
-    //Coil
-    implementation("io.coil-kt:coil:2.4.0")
-
     //CameraX
     implementation("androidx.camera:camera-core:1.1.0")
     implementation("androidx.camera:camera-camera2:1.1.0")

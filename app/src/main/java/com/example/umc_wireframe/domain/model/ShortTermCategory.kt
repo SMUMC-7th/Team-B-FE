@@ -508,3 +508,19 @@ fun getGyeongsangnamdoRegions(): List<ShortTermRegionObject.Gyeongsangnamdo> {
 }
 
 fun List<String>.toShorTermRegion() = this.map { ShortTermRegionObject.Temp(it, 0, 0) }
+
+
+fun findRegionsByCoordinates(x: Int, y: Int): List<ShortTermRegionObject> {
+    val allRegions = listOf(
+        // 서울 지역
+        ShortTermRegionObject.Seoul.SeoulCity,
+        ShortTermRegionObject.Seoul.Jongno,
+        // ... (위와 동일)
+        // 부산 지역
+        ShortTermRegionObject.Busan.BusanCity,
+        ShortTermRegionObject.Busan.Jung,
+        // ... (위와 동일)
+    )
+
+    return allRegions.filter { it.x == x && it.y == y }
+}

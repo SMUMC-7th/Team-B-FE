@@ -1,7 +1,10 @@
 package com.example.umc_wireframe.presentation.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.location.Location
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -12,13 +15,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -38,12 +44,29 @@ import com.example.umc_wireframe.domain.model.getJeollanamdoRegions
 import com.example.umc_wireframe.domain.model.getSeoulRegions
 import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
+import com.example.umc_wireframe.presentation.CoordinateConverter
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                getLastLocation()
+            } else {
+                Toast.makeText(requireContext(), "위치 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -58,6 +81,7 @@ class HomeFragment : Fragment() {
             }
         )
     }
+
 
     private val homeRecommendedClothesListAdapter: HomeRecommendedClothesListAdapter by lazy {
         HomeRecommendedClothesListAdapter()
@@ -78,6 +102,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getCurrentLocation()
         initView()
         selectLocation()
         initViewModel()
@@ -143,14 +168,9 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
-        fun blurGradiant() {
-        }
-
-
         setClothyString()
         initRecommendedClothesRv()
         initRecommendedTagRv()
-        blurGradiant()
     }
 
     private fun selectLocation() = with(binding) {
@@ -163,7 +183,11 @@ class HomeFragment : Fragment() {
 
             if (rvHomeLocalSelection.isVisible) {
                 rvHomeLocalSelection.visibility = View.GONE
-            } else rvHomeLocalSelection.visibility = View.VISIBLE
+                ivHomeSelectionArrow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrowdown))
+            } else {
+                rvHomeLocalSelection.visibility = View.VISIBLE
+                ivHomeSelectionArrow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up))
+            }
         }
 
     }
@@ -192,25 +216,88 @@ class HomeFragment : Fragment() {
             spannableString.setSpan(AbsoluteSizeSpan(12, true), 0, 2, 0) // "최저" 글자 크기 12sp 적용
 
             val startIndex = spannableString.indexOf("최고")
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), startIndex, startIndex+2, 0) // "최고"에 볼드 적용
-            spannableString.setSpan(AbsoluteSizeSpan(12, true), startIndex, startIndex+2, 0) // "최고" 글자 크기 12sp 적용
+            spannableString.setSpan(
+                StyleSpan(Typeface.BOLD),
+                startIndex,
+                startIndex + 2,
+                0
+            ) // "최고"에 볼드 적용
+            spannableString.setSpan(
+                AbsoluteSizeSpan(12, true),
+                startIndex,
+                startIndex + 2,
+                0
+            ) // "최고" 글자 크기 12sp 적용
 
             // "$smallest°C"에 대해 스타일 적용
             val smallestStart = 3
             val smallestEnd = smallestStart + smallest.length + 2  // "°C" 추가
-            spannableString.setSpan(AbsoluteSizeSpan(24, true), smallestStart, smallestEnd, 0) // "$smallest°C" 글자 크기 24sp 적용
-            spannableString.setSpan(ForegroundColorSpan(Color.BLUE), smallestStart, smallestEnd, 0) // "$smallest°C" 파란색 적용
+            spannableString.setSpan(
+                AbsoluteSizeSpan(24, true),
+                smallestStart,
+                smallestEnd,
+                0
+            ) // "$smallest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(
+                ForegroundColorSpan(Color.BLUE),
+                smallestStart,
+                smallestEnd,
+                0
+            ) // "$smallest°C" 파란색 적용
 
             // "$biggest°C"에 대해 스타일 적용
             val biggestStart = smallestEnd + 4
             val biggestEnd = biggestStart + biggest.length + 2 // "°C" 추가
-            spannableString.setSpan(AbsoluteSizeSpan(24, true), biggestStart, biggestEnd, 0) // "$biggest°C" 글자 크기 24sp 적용
-            spannableString.setSpan(ForegroundColorSpan(Color.RED), biggestStart, biggestEnd, 0) // "$biggest°C" 빨간색 적용
+            spannableString.setSpan(
+                AbsoluteSizeSpan(24, true),
+                biggestStart,
+                biggestEnd,
+                0
+            ) // "$biggest°C" 글자 크기 24sp 적용
+            spannableString.setSpan(
+                ForegroundColorSpan(Color.RED),
+                biggestStart,
+                biggestEnd,
+                0
+            ) // "$biggest°C" 빨간색 적용
 
             tvHomeWeatherDescriptionLine2.text = spannableString
 
         }
         Log.d("result", uiState.temp.toString())
+    }
+
+    private fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getLastLocation()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationClient.lastLocation.addOnCompleteListener { task: Task<Location> ->
+            val location: Location? = task.result
+            if (location != null) {
+                val latitude = location.latitude
+                val longitude = location.longitude
+                val xy = CoordinateConverter().convertToXy(latitude,longitude)
+//                viewModel.getDailyShortTermForecast(ShortTermRegionObject())
+            } else {
+                Toast.makeText(requireContext(), "위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 
