@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.model.findRegionByCoordinates
 import com.example.umc_wireframe.domain.model.getBusanRegions
 import com.example.umc_wireframe.domain.model.getChungcheongbukdoRegions
 import com.example.umc_wireframe.domain.model.getChungcheongnamdoRegions
@@ -183,10 +184,20 @@ class HomeFragment : Fragment() {
 
             if (rvHomeLocalSelection.isVisible) {
                 rvHomeLocalSelection.visibility = View.GONE
-                ivHomeSelectionArrow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrowdown))
+                ivHomeSelectionArrow.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_arrowdown
+                    )
+                )
             } else {
                 rvHomeLocalSelection.visibility = View.VISIBLE
-                ivHomeSelectionArrow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_up))
+                ivHomeSelectionArrow.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_arrow_up
+                    )
+                )
             }
         }
 
@@ -292,8 +303,11 @@ class HomeFragment : Fragment() {
             if (location != null) {
                 val latitude = location.latitude
                 val longitude = location.longitude
-                val xy = CoordinateConverter().convertToXy(latitude,longitude)
-//                viewModel.getDailyShortTermForecast(ShortTermRegionObject())
+                CoordinateConverter().convertToXy(latitude, longitude).run {
+                    findRegionByCoordinates(nx, ny)?.let {
+                        viewModel.getDailyShortTermForecast(it)
+                    }
+                }
             } else {
                 Toast.makeText(requireContext(), "위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
             }

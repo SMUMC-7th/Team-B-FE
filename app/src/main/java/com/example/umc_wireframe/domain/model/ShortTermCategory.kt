@@ -1,5 +1,8 @@
 package com.example.umc_wireframe.domain.model
 
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.primaryConstructor
+
 enum class ShortTermCategory {
     POP, // 강수확률
     PTY, // 강수형태
@@ -437,7 +440,7 @@ sealed interface ShortTermRegionObject {
     }
 
     data class Temp(
-        override val region: String,
+        override val region: String = "current local",
         override val x: Int,
         override val y: Int,
     ) : ShortTermRegionObject
@@ -509,18 +512,28 @@ fun getGyeongsangnamdoRegions(): List<ShortTermRegionObject.Gyeongsangnamdo> {
 
 fun List<String>.toShorTermRegion() = this.map { ShortTermRegionObject.Temp(it, 0, 0) }
 
+fun findRegionByCoordinates(x: Int, y: Int): ShortTermRegionObject? {
+    return ShortTermRegionObject::class.sealedSubclasses
+        .flatMap { subclass ->
+            when {
+                // objectInstance가 있으면 바로 가져옴
+                subclass.objectInstance != null -> listOf(subclass.objectInstance as ShortTermRegionObject)
 
-fun findRegionsByCoordinates(x: Int, y: Int): List<ShortTermRegionObject> {
-    val allRegions = listOf(
-        // 서울 지역
-        ShortTermRegionObject.Seoul.SeoulCity,
-        ShortTermRegionObject.Seoul.Jongno,
-        // ... (위와 동일)
-        // 부산 지역
-        ShortTermRegionObject.Busan.BusanCity,
-        ShortTermRegionObject.Busan.Jung,
-        // ... (위와 동일)
-    )
+                // data object 또는 최종(finite) 클래스로 선언된 경우 인스턴스를 생성
+                subclass.isFinal && !subclass.isData -> listOf(subclass.createInstance() as ShortTermRegionObject)
 
-    return allRegions.filter { it.x == x && it.y == y }
+                // data class의 경우, 매개변수를 명시적으로 제공하여 인스턴스 생성
+                subclass.isData -> listOf(
+                    subclass.primaryConstructor?.call("default", 0, 0) as ShortTermRegionObject
+                )
+
+                // sealed class라면 그 하위 클래스를 다시 flatMap으로 재귀 순회
+                subclass.isSealed -> subclass.sealedSubclasses.mapNotNull {
+                    it.objectInstance as? ShortTermRegionObject
+                }
+
+                else -> emptyList()
+            }
+        }
+        .find { it.x == x && it.y == y }
 }
