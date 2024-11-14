@@ -13,6 +13,7 @@ import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.presentation.MainActivity
+import java.time.LocalDateTime
 import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -50,7 +51,7 @@ class AlarmReceiver : BroadcastReceiver() {
 }
 
 // Alarm 설정 함수
-fun setDailyAlarm(context: Context) {
+fun setDailyAlarm(context: Context, time: LocalDateTime) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     // 알람 수신자 인텐트 생성
@@ -62,9 +63,9 @@ fun setDailyAlarm(context: Context) {
     // 알람을 시간 설정
     val calendar = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, 13)
-        set(Calendar.MINUTE, 30)
-        set(Calendar.SECOND, 0)
+        set(Calendar.HOUR_OF_DAY, time.hour)
+        set(Calendar.MINUTE, time.minute)
+        set(Calendar.SECOND, time.second)
     }
 
     // 설정된 시간이 현재 시간보다 이전일 경우 다음 날로 설정

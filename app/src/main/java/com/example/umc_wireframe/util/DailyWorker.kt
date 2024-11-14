@@ -6,20 +6,30 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class DailyAlarmWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
-        setDailyAlarm(applicationContext)
+        val timeString = inputData.getString("time")
+        val time = LocalDateTime.parse(timeString, DateTimeFormatter.ISO_DATE_TIME)
+
+        setDailyAlarm(applicationContext, time)
         return Result.success()
     }
 }
 
-fun scheduleDailyAlarmWorker(context: Context) {
+fun scheduleDailyAlarmWorker(context: Context, time: LocalDateTime) {
     if (!isWorkerScheduled(context)) {  // 워커가 이미 등록되지 않은 경우에만
+        val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
+        val inputData = workDataOf("time" to timeString)
+
         val dailyWorkRequest = PeriodicWorkRequestBuilder<DailyAlarmWorker>(1, TimeUnit.DAYS)
             .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+            .setInputData(inputData)
             .build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -32,7 +42,7 @@ fun scheduleDailyAlarmWorker(context: Context) {
 
 fun isWorkerScheduled(context: Context): Boolean {
     val workInfo = WorkManager.getInstance(context)
-        .getWorkInfosByTag("DailyAlarmWork")
+        .getWorkInfosForUniqueWork("DailyAlarmWork")
         .get()
         .firstOrNull()
 
@@ -51,4 +61,9 @@ fun calculateInitialDelay(): Long {
         calendar.add(Calendar.DAY_OF_YEAR, 1)
     }
     return calendar.timeInMillis - System.currentTimeMillis()
+}
+
+fun cancelDailyAlarmWorker(context: Context) {
+    WorkManager.getInstance(context).cancelUniqueWork("DailyAlarmWork")
+    cancelDailyAlarm(context)
 }
