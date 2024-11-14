@@ -12,7 +12,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/home_horizon_margin"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/common_top_margin"
         android:paddingVertical="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
