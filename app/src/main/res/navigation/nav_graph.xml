@@ -5,21 +5,69 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navi_home">
 
-
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/navi_home"
         android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
         tools:layout="@layout/fragment_home" />
 
-
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/navi_calendar"
-        android:name="com.example.umc_wireframe.presentation.calendar.RegisterFragment"
+        android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
         tools:layout="@layout/fragment_calendar" />
 
-
+    <!-- My Fragment -->
     <fragment
         android:id="@+id/navi_my"
         android:name="com.example.umc_wireframe.presentation.my.MyFragment"
         tools:layout="@layout/fragment_my" />
+
+    <!-- Register Step 1 -->
+    <fragment
+        android:id="@+id/registerStep1Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep1Fragment"
+        tools:layout="@layout/fragment_register_step1">
+        <action
+            android:id="@+id/action_registerStep1Fragment_to_registerStep2Fragment"
+            app:destination="@id/next1Fragment" />
+    </fragment>
+
+    <!-- Intermediate Fragment for Step 1 -->
+    <fragment
+        android:id="@+id/next1Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep2Fragment"
+        tools:layout="@layout/fragment_register_step2" />
+
+    <!-- Register Step 2 -->
+    <fragment
+        android:id="@+id/registerStep2Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep2Fragment"
+        tools:layout="@layout/fragment_register_step2">
+        <action
+            android:id="@+id/action_registerStep2Fragment_to_registerStep3Fragment"
+            app:destination="@id/next2Fragment" />
+    </fragment>
+
+    <!-- Intermediate Fragment for Step 2 -->
+    <fragment
+        android:id="@+id/next2Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep3Fragment"
+        tools:layout="@layout/fragment_register_step3">
+        <!-- Add action to navigate to LoginFragment -->
+        <action
+            android:id="@+id/action_registerStep3Fragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <!-- Login Fragment -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.umc_wireframe.presentation.register.LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <!-- Add action to navigate to HomeFragment -->
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/navi_home" />
+    </fragment>
 </navigation>

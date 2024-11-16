@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.home
+package com.example.umc_wireframe.presentation.my
 
 
 import android.os.Bundle
