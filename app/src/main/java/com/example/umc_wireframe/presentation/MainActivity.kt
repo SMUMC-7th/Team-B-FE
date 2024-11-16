@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -39,11 +40,20 @@ class MainActivity : AppCompatActivity() {
 
         initNavigation()
     }
-
     private fun initNavigation() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(binding.fragmentContainerViewMain.id) as NavHostFragment
         val navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.registerStep1Fragment,
+                R.id.RegisterStep2Fragment,
+                R.id.RegisterStep3Fragment,
+                R.id.loginFragment -> binding.botNavMain.visibility = View.GONE
+                else -> binding.botNavMain.visibility = View.VISIBLE
+            }
+        }
 
         binding.botNavMain.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -63,11 +73,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 else -> false
-
             }
         }
-
     }
+
 
     private fun getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(

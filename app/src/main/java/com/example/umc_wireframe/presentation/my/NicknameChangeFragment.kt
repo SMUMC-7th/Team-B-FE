@@ -1,47 +1,63 @@
 package com.example.umc_wireframe.presentation.my
 
-
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.umc_wireframe.R
+import androidx.navigation.fragment.findNavController
+import com.example.umc_wireframe.databinding.FragmentNicknameChangeBinding
 
 class NicknameChangeFragment : Fragment() {
 
+    private var _binding: FragmentNicknameChangeBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var nicknameEditText: EditText
     private lateinit var btnCompleteChange: Button
-    private lateinit var tvNickname: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_nickname_change, container, false)
+        _binding = FragmentNicknameChangeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        nicknameEditText = view.findViewById(R.id.nickname_edit_text)
-        btnCompleteChange = view.findViewById(R.id.btn_complete_change)
-        tvNickname = view.findViewById(R.id.tv_nickname)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        nicknameEditText = binding.nicknameEditText
+        btnCompleteChange = binding.btnCompleteChange
+
+        // 버튼 클릭 시 닉네임 변경 처리
         btnCompleteChange.setOnClickListener {
             onCompleteChange()
         }
-
-        return view
     }
 
     private fun onCompleteChange() {
         val newNickname = nicknameEditText.text.toString()
         if (newNickname.isNotBlank()) {
-            // TODO: Handle the nickname change logic, e.g., update database or shared preferences
-            tvNickname.text = newNickname // Update TextView to show the new nickname
-            nicknameEditText.text.clear() // Clear the EditText
+            // 닉네임을 SharedPreferences에 저장
+            val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            with(sharedPref.edit()) {
+                putString("nickname", newNickname)
+                apply()
+            }
+
+            nicknameEditText.text.clear()
+            findNavController().navigateUp()
         } else {
-            // TODO: Show error message to the user (e.g., using a Toast or Snackbar)
+            // TODO: 사용자에게 오류 메시지 표시
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

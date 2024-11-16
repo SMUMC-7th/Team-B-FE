@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.presentation.register
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,14 @@ class RegisterStep2Fragment : Fragment() {
             } else if (gender.isEmpty()) {
                 Toast.makeText(requireContext(), "성별을 선택해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
+                // SharedPreferences에 닉네임과 성별 저장
+                val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().apply {
+                    putString("nickname", nickname)
+                    putString("gender", gender)
+                    apply()
+                }
+
                 // 다음 단계로 이동
                 findNavController().navigate(R.id.action_registerStep2Fragment_to_registerStep3Fragment)
             }
