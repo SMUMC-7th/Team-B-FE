@@ -47,6 +47,10 @@ class MyFragment : Fragment() {
         binding.btnChangeNickname.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_nicknameChangeFragment)
         }
+        // 비밀번호 변경 화면으로 이동
+        binding.btnChangePassword.setOnClickListener {
+            findNavController().navigate(R.id.action_myFragment_to_passwordChangeFragment)
+        }
     }
 
     override fun onDestroyView() {

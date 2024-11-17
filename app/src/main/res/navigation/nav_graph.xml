@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_myFragment_to_nicknameChangeFragment"
             app:destination="@id/navi_nickname_change" />
+        <action
+            android:id="@+id/action_myFragment_to_passwordChangeFragment"
+            app:destination="@id/navi_password_change" />
     </fragment>
 
     <!-- Upload OOTD Fragment -->
@@ -93,4 +96,11 @@
         android:id="@+id/navi_nickname_change"
         android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
+
+    <!-- Password Change Fragment -->
+    <fragment
+        android:id="@+id/navi_password_change"
+        android:name="com.example.umc_wireframe.presentation.my.PasswordChangeFragment"
+        tools:layout="@layout/fragment_password_change" />
+
 </navigation>
