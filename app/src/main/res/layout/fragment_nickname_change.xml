@@ -57,9 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:text="변경 완료"
-        android:backgroundTint="#000000"
-        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/nickname_edit_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp"
+        android:textColor="#000000"
+        android:backgroundTint="#FFFFFF"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
