@@ -9,7 +9,11 @@
     <fragment
         android:id="@+id/navi_home"
         android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navi_home_to_photoFragment"
+            app:destination="@id/navi_uploadOOTD" />
+    </fragment>
 
     <!-- CalendarFragment -->
     <fragment
@@ -26,9 +30,24 @@
             android:id="@+id/action_myFragment_to_nicknameChangeFragment"
             app:destination="@id/navi_nickname_change" />
     </fragment>
+  
+    <fragment
+        android:id="@+id/navi_uploadOOTD"
+        android:name="com.example.umc_wireframe.presentation.ootd.PhotoFragment"
+        android:label="Photo Fragment" >
+        <action
+            android:id="@+id/action_navi_uploadOOTD_to_hashtagFragment"
+            app:destination="@id/navi_hashtag" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navi_hashtag"
+        android:name="com.example.umc_wireframe.presentation.ootd.HashtagFragment"
+        tools:layout="@layout/fragment_hashtag" />
 
     <fragment
         android:id="@+id/navi_nickname_change"
         android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
+  
 </navigation>

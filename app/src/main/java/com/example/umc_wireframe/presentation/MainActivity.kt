@@ -2,21 +2,14 @@ package com.example.umc_wireframe.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.viewModels
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
 import com.example.umc_wireframe.util.navigateWithClear
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
@@ -29,6 +22,22 @@ class MainActivity : AppCompatActivity() {
 
         initNavigation()
         getLocationPermission()
+
+        // "오늘의 OOTD 저장하기" 버튼 클릭 리스너 설정
+        binding.saveOOTDButton.setOnClickListener {
+            navigateToPhotoFragment()
+        }
+        // NavController를 사용해 버튼 가시성 조정
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // 특정 프래그먼트에서 버튼 가시성 변경
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navi_home -> binding.saveOOTDButton.visibility = View.VISIBLE // 메인페이지에서 버튼 보이기
+                else -> binding.saveOOTDButton.visibility = View.GONE // 다른 페이지에서는 버튼 숨기기
+            }
+        }
     }
 
     private fun initNavigation() {
@@ -41,21 +50,17 @@ class MainActivity : AppCompatActivity() {
                     navController.navigateWithClear(R.id.navi_home)
                     true
                 }
-
                 R.id.menu_botNav_calendar -> {
                     navController.navigateWithClear(R.id.navi_calendar)
                     true
                 }
-
                 R.id.menu_botNav_my -> {
                     navController.navigateWithClear(R.id.navi_my)
                     true
                 }
-
                 else -> false
             }
         }
-
     }
 
     private fun getLocationPermission() {
@@ -68,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // 권한 요청
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -78,4 +82,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun navigateToPhotoFragment() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.navi_uploadOOTD) // photoFragment로 이동
+    }
 }
