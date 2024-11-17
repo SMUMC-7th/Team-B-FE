@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.presentation.home
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -25,6 +26,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
@@ -48,13 +51,14 @@ import com.example.umc_wireframe.domain.model.getSeoulRegions
 import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
 import com.example.umc_wireframe.presentation.CoordinateConverter
+import com.example.umc_wireframe.presentation.NavColor
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment()  {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -92,6 +96,13 @@ class HomeFragment : Fragment() {
 
     private val homeTagListAdapter: HomeTagListAdapter by lazy {
         HomeTagListAdapter()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is NavColor) {
+            context.setNavHome()
+        }
     }
 
     override fun onCreateView(
@@ -169,6 +180,10 @@ class HomeFragment : Fragment() {
             adapter = homeTagListAdapter
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+
+        btnHomeOotd.setOnClickListener {
+            findNavController().navigate(R.id.navi_uploadOOTD)
         }
 
         setClothyString()

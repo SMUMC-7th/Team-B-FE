@@ -44,7 +44,7 @@
         android:id="@+id/btn_home_ootd"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="@dimen/bot_nav_height"
         android:background="@drawable/bg_btn_ootdstart"
         android:paddingVertical="15dp"
         android:text="오늘의 OOTD 저장하기"
