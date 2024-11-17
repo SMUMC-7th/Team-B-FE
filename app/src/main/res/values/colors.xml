@@ -2,9 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
     <color name="dark_gray">#929292</color>
     <color name="gray">#DFDFDF</color>
     <color name="tag_text_color">#FBD9BA</color>
     <color name="dark_orange">#EF6D1D</color>
+
+    <color name="button_border_color">#D6D6D6</color> <!-- 옅은 회색 -->
+    <color name="button_pressed_background_color">#ECEFF1</color> <!-- 눌린 상태의 연회색 -->
 </resources>

@@ -18,11 +18,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph" />
 
+    <Button
+        android:id="@+id/saveOOTDButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:padding="15dp"
+        android:backgroundTint="#FF5722"
+        android:text="오늘의 OOTD 저장하기"
+        app:layout_constraintBottom_toTopOf="@id/botNav_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/botNav_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_botnav_main" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

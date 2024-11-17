@@ -314,7 +314,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     private fun getRegionObject(region: String): List<ShortTermRegionObject> {
         return when (region) {
             "서울" -> getSeoulRegions()
@@ -335,5 +334,10 @@ class HomeFragment : Fragment() {
             "제주" -> getJejuRegions()
             else -> emptyList() // 해당 지역이 없을 경우 빈 리스트 반환
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

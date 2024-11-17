@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <!-- 해시태그 제목 -->
+    <TextView
+        android:id="@+id/hashtag_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="해시태그"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"/>
+
+    <!-- 스크롤뷰로 해시태그 리스트 구성 -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/rounded_background"
+        app:layout_constraintTop_toBottomOf="@id/hashtag_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/saveButton">
+
+        <LinearLayout
+            android:id="@+id/hashtagContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <!-- 상의 카테고리 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상의"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 상의 버튼 1 -->
+                <Button
+                    android:id="@+id/topButton1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="15dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:text="#가디건"
+                    android:textSize="12sp"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toStartOf="@id/topButton2"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 상의 버튼 2 -->
+                <Button
+                    android:id="@+id/topButton2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="#니트"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toStartOf="@id/topButton3"
+                    app:layout_constraintStart_toEndOf="@id/topButton1"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 상의 버튼 3 -->
+                <Button
+                    android:id="@+id/topButton3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#후드"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/topButton2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 상의 버튼 4 -->
+                <Button
+                    android:id="@+id/topButton4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="#셔츠"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toStartOf="@id/topButton5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/topButton1" />
+
+                <!-- 상의 버튼 5 -->
+                <Button
+                    android:id="@+id/topButton5"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="#맨투맨"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toStartOf="@id/topButton6"
+                    app:layout_constraintStart_toEndOf="@id/topButton4"
+                    app:layout_constraintTop_toBottomOf="@id/topButton2" />
+
+                <!-- 상의 버튼 6 -->
+                <Button
+                    android:id="@+id/topButton6"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#티셔츠"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/topButton5"
+                    app:layout_constraintTop_toBottomOf="@id/topButton3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 하의 카테고리 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="하의"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 하의 버튼 1 -->
+                <Button
+                    android:id="@+id/bottomButton1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#청바지"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/bottomButton2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread" />
+
+                <!-- 하의 버튼 2 -->
+                <Button
+                    android:id="@+id/bottomButton2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#슬랙스"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/bottomButton1"
+                    app:layout_constraintEnd_toStartOf="@id/bottomButton3"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 하의 버튼 3 -->
+                <Button
+                    android:id="@+id/bottomButton3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#트레이닝바지"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/bottomButton2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 하의 버튼 4 -->
+                <Button
+                    android:id="@+id/bottomButton4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#조거팬츠"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/bottomButton5"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButton1" />
+
+                <!-- 하의 버튼 5 -->
+                <Button
+                    android:id="@+id/bottomButton5"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#치마"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/bottomButton4"
+                    app:layout_constraintEnd_toStartOf="@id/bottomButton6"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButton2" />
+
+                <!-- 하의 버튼 6 -->
+                <Button
+                    android:id="@+id/bottomButton6"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#카고바지"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/bottomButton5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButton3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 아우터 카테고리 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="아우터"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 아우터 버튼 1 -->
+                <Button
+                    android:id="@+id/outerButton1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#패딩"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/outerButton2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread" />
+
+                <!-- 아우터 버튼 2 -->
+                <Button
+                    android:id="@+id/outerButton2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#코트"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/outerButton1"
+                    app:layout_constraintEnd_toStartOf="@id/outerButton3"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 아우터 버튼 3 -->
+                <Button
+                    android:id="@+id/outerButton3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#플리스"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/outerButton2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 아우터 버튼 4 -->
+                <Button
+                    android:id="@+id/outerButton4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#자켓"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/outerButton5"
+                    app:layout_constraintTop_toBottomOf="@id/outerButton1" />
+
+                <!-- 아우터 버튼 5 -->
+                <Button
+                    android:id="@+id/outerButton5"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#점퍼"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/outerButton4"
+                    app:layout_constraintEnd_toStartOf="@id/outerButton6"
+                    app:layout_constraintTop_toBottomOf="@id/outerButton2" />
+
+                <!-- 아우터 버튼 6 -->
+                <Button
+                    android:id="@+id/outerButton6"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#아노락"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/outerButton5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/outerButton3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 신발 카테고리 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="신발"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <!-- 신발 버튼 1 -->
+            <Button
+                android:id="@+id/shoesButton1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#운동화"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/shoesButton2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread" />
+
+            <!-- 신발 버튼 2 -->
+            <Button
+                android:id="@+id/shoesButton2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#부츠"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toEndOf="@id/shoesButton1"
+                app:layout_constraintEnd_toStartOf="@id/shoesButton3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- 신발 버튼 3 -->
+            <Button
+                android:id="@+id/shoesButton3"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#샌들"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                app:layout_constraintStart_toEndOf="@id/shoesButton2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- 신발 버튼 4 -->
+            <Button
+                android:id="@+id/shoesButton4"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#로퍼"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/shoesButton5"
+                app:layout_constraintTop_toBottomOf="@id/shoesButton1" />
+
+            <!-- 신발 버튼 5 -->
+            <Button
+                android:id="@+id/shoesButton5"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#스니커즈"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toEndOf="@id/shoesButton4"
+                app:layout_constraintEnd_toStartOf="@id/shoesButton6"
+                app:layout_constraintTop_toBottomOf="@id/shoesButton2" />
+
+            <!-- 신발 버튼 6 -->
+            <Button
+                android:id="@+id/shoesButton6"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="#워커"
+                android:textSize="12sp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/black"
+                app:strokeColor="#D6D6D6"
+                app:strokeWidth="1dp"
+                app:layout_constraintStart_toEndOf="@+id/shoesButton5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shoesButton3"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 액세서리 카테고리 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="액세서리"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 액세서리 버튼 1 -->
+                <Button
+                    android:id="@+id/accessoryButton1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#캡모자"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/accessoryButton2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread" />
+
+                <!-- 액세서리 버튼 2 -->
+                <Button
+                    android:id="@+id/accessoryButton2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#비니"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/accessoryButton1"
+                    app:layout_constraintEnd_toStartOf="@id/accessoryButton3"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 액세서리 버튼 3 -->
+                <Button
+                    android:id="@+id/accessoryButton3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#버킷햇"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/accessoryButton2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 액세서리 버튼 4 -->
+                <Button
+                    android:id="@+id/accessoryButton4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#장갑"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/accessoryButton5"
+                    app:layout_constraintTop_toBottomOf="@id/accessoryButton1" />
+
+                <!-- 액세서리 버튼 5 -->
+                <Button
+                    android:id="@+id/accessoryButton5"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#목도리"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintStart_toEndOf="@id/accessoryButton4"
+                    app:layout_constraintEnd_toStartOf="@id/accessoryButton6"
+                    app:layout_constraintTop_toBottomOf="@id/accessoryButton2" />
+
+                <!-- 액세서리 버튼 6 -->
+                <Button
+                    android:id="@+id/accessoryButton6"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="#스카프"
+                    android:textSize="12sp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="@color/black"
+                    app:strokeColor="#D6D6D6"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintStart_toEndOf="@id/accessoryButton5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/accessoryButton3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 저장 버튼 -->
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="저장"
+        android:backgroundTint="@android:color/black"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
