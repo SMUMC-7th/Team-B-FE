@@ -22,7 +22,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
@@ -60,6 +62,8 @@ class HomeFragment : Fragment() {
         LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
+    private val viewModel: HomeViewModel by viewModels()
+
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -68,8 +72,6 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "위치 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
-
-    private val viewModel: HomeViewModel by viewModels()
 
     private val homeSelectLocationListAdapter: HomeSelectLocationListAdapter by lazy {
         HomeSelectLocationListAdapter(
@@ -204,14 +206,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViewModel() = with(viewModel) {
-        lifecycleScope.launch {
-            uiState.collectLatest { uiState ->
-                bind(uiState)
-            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { state ->
+                    onBind(state)
+                }
         }
     }
 
-    private fun bind(uiState: HomeUiState) = with(binding) {
+    private fun onBind(uiState: HomeUiState) = with(binding) {
         uiState.selectLocation?.let {
             tvHomeLocalSelection.text = uiState.selectLocation.region
         }
