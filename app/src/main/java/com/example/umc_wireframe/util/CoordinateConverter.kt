@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation
+package com.example.umc_wireframe.util
 
 import kotlin.math.*
 
