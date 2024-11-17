@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment()  {
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _gbinding!!
+    private val binding get() = _binding!!
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
