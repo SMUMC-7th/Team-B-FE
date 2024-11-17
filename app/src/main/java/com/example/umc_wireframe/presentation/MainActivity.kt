@@ -10,13 +10,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
-import com.example.umc_wireframe.util.navigateToCalendar
-import com.example.umc_wireframe.util.navigateToHome
-import com.example.umc_wireframe.util.navigateToMy
+import com.example.umc_wireframe.util.navigateWithClear
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
@@ -26,23 +23,19 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
-    private val viewModel: MainViewModel by viewModels()
-
-    private val fusedLocationClient: FusedLocationProviderClient by lazy {
-        LocationServices.getFusedLocationProviderClient(this)
-    }
-
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         initNavigation()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getLocationPermission()
     }
+
     private fun initNavigation() {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(binding.fragmentContainerViewMain.id) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -58,17 +51,17 @@ class MainActivity : AppCompatActivity() {
         binding.botNavMain.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_botNav_home -> {
-                    navController.navigateToHome()
+                    navController.navigateWithClear(R.id.navi_home)
                     true
                 }
 
                 R.id.menu_botNav_calendar -> {
-                    navController.navigateToCalendar()
+                    navController.navigateWithClear(R.id.navi_calendar)
                     true
                 }
 
                 R.id.menu_botNav_my -> {
-                    navController.navigateToMy()
+                    navController.navigateWithClear(R.id.navi_my)
                     true
                 }
 
@@ -77,8 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun getCurrentLocation() {
+    private fun getLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -95,22 +87,25 @@ class MainActivity : AppCompatActivity() {
                 1
             )
             return
-        }
-
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val coordinatesXy =
-                    CoordinateConverter().convertToXy(location.latitude, location.longitude)
-                viewModel.getShortTermForecast(coordinatesXy.nx, coordinatesXy.ny) // 위치 정보 전달
-            } ?: run {
-            }
+        } else {
+            getCurrentLocation()
         }
     }
 
-    private fun initViewModel() {
-        lifecycleScope.launch {
-            viewModel.uiState.collectLatest { uiState ->
-                Log.d("result", uiState.toString())
+    private fun getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    Log.d("MainActivity", "Current Location: Latitude=${it.latitude}, Longitude=${it.longitude}")
+                } ?: Log.d("MainActivity", "Location is null")
             }
         }
     }

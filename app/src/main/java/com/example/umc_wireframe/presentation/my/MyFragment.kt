@@ -26,9 +26,10 @@ class MyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // SharedPreferences에서 저장된 정보 불러오기
         val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val savedNickname = sharedPref.getString("nickname", "기본 닉네임")
-        val savedGender = sharedPref.getString("gender", "남자")
+        val savedGender = sharedPref.getString("gender", "남자") // 성별 정보 포함
 
         // 닉네임 설정
         binding.tvNickname.text = savedNickname

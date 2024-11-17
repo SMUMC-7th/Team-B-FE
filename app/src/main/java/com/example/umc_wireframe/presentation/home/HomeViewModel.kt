@@ -1,22 +1,23 @@
-package com.example.umc_wireframe.presentation
+package com.example.umc_wireframe.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
+import com.example.umc_wireframe.domain.model.ShortTermCategory
+import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class MainViewModel(
-) : ViewModel() {
-    private val _uiState: MutableSharedFlow<List<MainItem>> = MutableSharedFlow()
-    val uiState get() = _uiState.asSharedFlow()
+class HomeViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.init())
+    val uiState = _uiState.asStateFlow()
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
         RepositoryFactory().createShortTermForecastRepository()
@@ -24,7 +25,8 @@ class MainViewModel(
     private val midTermForecastDatasource: MidTermForecastRepository =
         RepositoryFactory().createMidTermForecastRepository()
 
-    fun getShortTermForecast(x: Int, y: Int) = viewModelScope.launch {
+
+    fun getShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
         val now = LocalDateTime.now()
         val baseDate = now.toLocalDate().toString().replace("-", "") //YYYYMMDD
         val baseTime = when (now.hour) {
@@ -41,32 +43,40 @@ class MainViewModel(
 
 
         shortTermForecastRepository.getWeatherForecast(
-            pageNo = 3,
+            pageNo = 1,
             baseDate = baseDate,
             baseTime = baseTime,
-            nx = x,
-            ny = y
+            nx = selectLocation.x,
+            ny = selectLocation.y
         ).let { entity ->
-            entity?.body?.items?.map {
-                MainItem(
-                    fcstDate = it.date,
-                    fcstTime = it.time,
-                    category = it.category.toString(),
-                    fcstValue = it.value.toString()
-                )
-            }?.let { list ->
-                _uiState.emit(list)
+            entity?.body?.items?.let { items ->
+                val tempItem = items.firstOrNull { it.category == ShortTermCategory.TMP }
+                val popItem = items.firstOrNull { it.category == ShortTermCategory.POP }
+                val pcpItem = items.firstOrNull { it.category == ShortTermCategory.PCP }
+
+                if (tempItem != null && popItem != null && pcpItem != null) {
+                    _uiState.update { prev ->
+                        prev.copy(
+                            selectLocation = selectLocation,
+                            temp = tempItem.value,
+                            pop = popItem.value,
+                            pcp = pcpItem.value
+                        )
+                    }
+                }
             }
+
         }
     }
-
 
     fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
         val tmFc = when {
             LocalDateTime.now().hour < 6 -> LocalDateTime.now().minusDays(1)
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
+
             LocalDateTime.now().hour < 18 -> LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0600"
+
             else -> LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
         }
@@ -76,16 +86,9 @@ class MainViewModel(
             regId = midTermRegion.regId
         ).let { entity ->
             entity?.response?.body?.items?.map {
-                MainItem(
-                    fcstDate = "",
-                    fcstValue = "",
-                    category = midTermRegion.regionName,
-                    fcstTime = it.taMax3.toString()
-                )
-            }?.let { list ->
-                _uiState.emit(list)
+
             }
-            Log.d("midTerm", entity.toString())
+
         }
     }
 }

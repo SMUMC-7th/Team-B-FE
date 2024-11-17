@@ -51,6 +51,12 @@
         android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
         tools:layout="@layout/fragment_home" />
 
+    <!-- Calendar Fragment -->
+    <fragment
+        android:id="@+id/navi_calendar"
+        android:name="com.example.umc_wireframe.presentation.calendar.CalendarFragment"
+        tools:layout="@layout/fragment_calendar" />
+
     <!-- My Fragment -->
     <fragment
         android:id="@+id/navi_my"
@@ -60,13 +66,10 @@
             android:id="@+id/action_myFragment_to_nicknameChangeFragment"
             app:destination="@id/navi_nickname_change" />
     </fragment>
+
+    <!-- Nickname Change Fragment -->
     <fragment
         android:id="@+id/navi_nickname_change"
         android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
-    <!-- Calendar Fragment -->
-    <fragment
-        android:id="@+id/navi_calendar"
-        android:name="com.example.umc_wireframe.presentation.my.MyFragment"
-        tools:layout="@layout/fragment_my" />
 </navigation>

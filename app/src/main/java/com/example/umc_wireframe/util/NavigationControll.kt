@@ -1,10 +1,15 @@
 package com.example.umc_wireframe.util
 
+import androidx.annotation.IdRes
 import androidx.navigation.NavController
-import com.example.umc_wireframe.R
+import androidx.navigation.NavOptions
 
-internal fun NavController.navigateToHome() { navigate(resId = R.id.navi_home) }
 
-internal fun NavController.navigateToMy() { navigate(resId = R.id.navi_my) }
+internal fun NavController.navigateWithClear(@IdRes resId: Int) {
+    val navigationOptions = NavOptions.Builder()
+        .setPopUpTo(destinationId = resId, inclusive = true, saveState = true)
+        .setLaunchSingleTop(true)
+        .build()
 
-internal fun NavController.navigateToCalendar() { navigate(resId = R.id.navi_calendar) }
+    navigate(resId, null, navigationOptions)
+}
