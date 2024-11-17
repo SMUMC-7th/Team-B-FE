@@ -36,18 +36,23 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.botNavMain.setOnItemSelectedListener { item ->
+            val currentDestinationId = navController.currentDestination?.id
+
             when (item.itemId) {
                 R.id.menu_botNav_home -> {
+                    if (currentDestinationId != R.id.menu_botNav_home)
                     navController.navigateWithClear(R.id.navi_home)
                     true
                 }
 
                 R.id.menu_botNav_calendar -> {
+                    if (currentDestinationId != R.id.menu_botNav_calendar)
                     navController.navigateWithClear(R.id.navi_calendar)
                     true
                 }
 
                 R.id.menu_botNav_my -> {
+                    if (currentDestinationId != R.id.menu_botNav_my)
                     navController.navigateWithClear(R.id.navi_my)
                     true
                 }
