@@ -3,9 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navi_home">
+    app:startDestination="@id/registerStep1Fragment">
 
-    <!-- HomeFragment -->
+    <!-- Register Step 1 -->
+    <fragment
+        android:id="@+id/registerStep1Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep1Fragment"
+        tools:layout="@layout/fragment_register_step1">
+        <action
+            android:id="@+id/action_registerStep1Fragment_to_registerStep2Fragment"
+            app:destination="@id/RegisterStep2Fragment" />
+    </fragment>
+
+    <!-- Register Step 2 -->
+    <fragment
+        android:id="@+id/RegisterStep2Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep2Fragment"
+        tools:layout="@layout/fragment_register_step2">
+        <action
+            android:id="@+id/action_registerStep2Fragment_to_registerStep3Fragment"
+            app:destination="@id/RegisterStep3Fragment" />
+    </fragment>
+
+    <!-- Register Step 3 -->
+    <fragment
+        android:id="@+id/RegisterStep3Fragment"
+        android:name="com.example.umc_wireframe.presentation.register.RegisterStep3Fragment"
+        tools:layout="@layout/fragment_register_step3">
+        <action
+            android:id="@+id/action_registerStep3Fragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <!-- Login Fragment -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.umc_wireframe.presentation.register.LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/navi_home" />
+    </fragment>
+
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/navi_home"
         android:name="com.example.umc_wireframe.presentation.home.HomeFragment"
@@ -15,13 +55,13 @@
             app:destination="@id/navi_uploadOOTD" />
     </fragment>
 
-    <!-- CalendarFragment -->
+    <!-- Calendar Fragment -->
     <fragment
         android:id="@+id/navi_calendar"
-        android:name="com.example.umc_wireframe.presentation.calendar.RegisterFragment"
+        android:name="com.example.umc_wireframe.presentation.calendar.CalendarFragment"
         tools:layout="@layout/fragment_calendar" />
 
-    <!-- MyFragment -->
+    <!-- My Fragment -->
     <fragment
         android:id="@+id/navi_my"
         android:name="com.example.umc_wireframe.presentation.my.MyFragment"
@@ -30,24 +70,27 @@
             android:id="@+id/action_myFragment_to_nicknameChangeFragment"
             app:destination="@id/navi_nickname_change" />
     </fragment>
-  
+
+    <!-- Upload OOTD Fragment -->
     <fragment
         android:id="@+id/navi_uploadOOTD"
         android:name="com.example.umc_wireframe.presentation.ootd.PhotoFragment"
-        android:label="Photo Fragment" >
+        tools:layout="@layout/fragment_photo"
+        android:label="Photo Fragment">
         <action
             android:id="@+id/action_navi_uploadOOTD_to_hashtagFragment"
             app:destination="@id/navi_hashtag" />
     </fragment>
 
+    <!-- Hashtag Fragment -->
     <fragment
         android:id="@+id/navi_hashtag"
         android:name="com.example.umc_wireframe.presentation.ootd.HashtagFragment"
         tools:layout="@layout/fragment_hashtag" />
 
+    <!-- Nickname Change Fragment -->
     <fragment
         android:id="@+id/navi_nickname_change"
         android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
-  
 </navigation>
