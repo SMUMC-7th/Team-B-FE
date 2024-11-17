@@ -34,7 +34,7 @@ fun ShortTermBodyResponse?.toEntity(): ShortTermBodyEntity {
         ShortTermBodyEntity(
             items = it.items?.item?.map { item -> item.toEntity() } ?: emptyList(),
             pageNo = it.pageNo ?: 0,
-            numOfRows = it.numOfRows ?:0 ,
+            numOfRows = it.numOfRows ?: 0,
             totalCount = it.totalCount ?: 0
         )
     } ?: ShortTermBodyEntity(items = emptyList(), pageNo = 0, numOfRows = 0, totalCount = 0)
@@ -48,7 +48,9 @@ fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
             category = it.category?.toShortTermCategory() ?: ShortTermCategory.ERROR,
             value = it.value ?: "unknown", // Default value if null
             locationX = it.nx ?: 0,
-            locationY = it.ny ?: 0
+            locationY = it.ny ?: 0,
+            fcstDate = it.fcstDate ?: "unknown",
+            fcstTime = it.fcstTime ?: "unknown"
         )
     } ?: ShortTermForecastItemEntity(
         date = "unknown",
@@ -56,7 +58,9 @@ fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
         category = ShortTermCategory.ERROR,
         value = "unknown",
         locationX = 0,
-        locationY = 0
+        locationY = 0,
+        fcstDate = "unknown",
+        fcstTime = "unknown"
     )
 }
 
@@ -96,6 +100,8 @@ fun ShortTermForecastItemEntity.toResponse(): ShortTermForecastItemResponse {
         baseTime = this.time,
         nx = this.locationX,
         ny = this.locationY,
-        value = this.value
+        value = this.value,
+        fcstDate = fcstDate,
+        fcstTime = fcstTime
     )
 }

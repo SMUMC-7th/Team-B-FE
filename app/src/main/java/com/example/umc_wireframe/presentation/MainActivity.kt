@@ -4,22 +4,26 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
-import com.example.umc_wireframe.presentation.alram.setDailyAlarm
 import com.example.umc_wireframe.util.navigateWithClear
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavColor {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
+    private lateinit var navController: NavController
 
     val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
 
@@ -28,37 +32,67 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigation()
-        getLocationPermission()
 
         requestNotificationPermission(this)
-        setDailyAlarm(this)
     }
 
     private fun initNavigation() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
-        val navController = navHostFragment.navController
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
+        navController = navHostFragment.navController
 
-        binding.botNavMain.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_botNav_home -> {
-                    navController.navigateWithClear(R.id.navi_home)
-                    true
-                }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.registerStep1Fragment,
+                R.id.RegisterStep2Fragment,
+                R.id.RegisterStep3Fragment,
+                R.id.loginFragment -> binding.botNavMain.visibility = View.GONE
 
-                R.id.menu_botNav_calendar -> {
-                    navController.navigateWithClear(R.id.navi_calendar)
-                    true
-                }
-
-                R.id.menu_botNav_my -> {
-                    navController.navigateWithClear(R.id.navi_my)
-                    true
-                }
-
-                else -> false
+                else -> binding.botNavMain.visibility = View.VISIBLE
             }
         }
 
+        val navItems = listOf(
+            binding.navHome,
+            binding.navCalendar,
+            binding.navMypage
+        )
+
+        navItems.forEach { itemLayout ->
+            itemLayout.setOnClickListener {
+                val currentDestinationId = navController.currentDestination?.id
+
+                when (itemLayout.id) {
+                    binding.navHome.id -> {
+                        if (currentDestinationId != R.id.menu_botNav_home)
+                            navController.navigateWithClear(R.id.navi_home)
+                    }
+
+                    binding.navCalendar.id -> {
+                        if (currentDestinationId != R.id.menu_botNav_calendar)
+                            navController.navigateWithClear(R.id.navi_calendar)
+                    }
+
+                    binding.navMypage.id -> {
+                        if (currentDestinationId != R.id.menu_botNav_my)
+                            navController.navigateWithClear(R.id.navi_my)
+                    }
+
+                }
+            }
+        }
+
+        fun setNavGraph(isAlreadyLogin: Boolean) {
+            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+            if (isAlreadyLogin) {
+                navGraph.setStartDestination(R.id.navi_home)
+            } else {
+                navGraph.setStartDestination(R.id.loginFragment)
+            }
+            navController.setGraph(navGraph, null)
+        }
+
+        setNavGraph(true)
     }
 
     fun requestNotificationPermission(context: Context) {
@@ -77,24 +111,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // 권한 요청
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
-            return
+
+    private fun updateNavIconTint(selected: ImageView) {
+        listOf(binding.ivNavHome, binding.ivNavMypage, binding.ivNavCalendar).forEach {
+            it.setImageTintList(ColorStateList.valueOf(Color.GRAY))
         }
+        selected.setImageTintList(ColorStateList.valueOf(Color.BLACK))
+    }
+
+    override fun setNavHome() {
+        updateNavIconTint(binding.ivNavHome)
+    }
+
+    override fun seNavCalendar() {
+        updateNavIconTint(binding.ivNavCalendar)
+    }
+
+    override fun setNavMy() {
+        updateNavIconTint(binding.ivNavMypage)
     }
 
 }

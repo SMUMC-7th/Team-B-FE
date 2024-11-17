@@ -25,7 +25,9 @@ data class ShortTermForecastItemEntity(
     val category: ShortTermCategory, // 예: "TMP" (기온)
     val value: String, // 관측 값 (기온)
     val locationX: Int,  // X 좌표
-    val locationY: Int   // Y 좌표
+    val locationY: Int,   // Y 좌표
+    val fcstDate: String,  // 예보 날짜 (YYYYMMDD)
+    val fcstTime: String,  // 예보 시간 (HHmm)
 )
 
 

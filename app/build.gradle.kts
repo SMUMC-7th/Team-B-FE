@@ -23,7 +23,7 @@ fun ApplicationDefaultConfig.addManifestPlaceholdersAndBuildConfig(key: String) 
 
 android {
     namespace = "com.example.umc_wireframe"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.umc_wireframe"
@@ -109,6 +109,6 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.1.0")
     implementation("androidx.camera:camera-view:1.0.0-alpha28")
 
-    //worker
-    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    //Worker
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
 }
