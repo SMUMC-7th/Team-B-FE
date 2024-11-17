@@ -9,11 +9,19 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentMyBinding
+import com.example.umc_wireframe.presentation.NavColor
 
 class MyFragment : Fragment() {
 
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is NavColor) {
+            context.setNavMy()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
