@@ -8,11 +8,11 @@ import com.example.umc_wireframe.domain.model.entity.ShortTermForecastItemEntity
 import com.example.umc_wireframe.domain.model.entity.ShortTermHeaderEntity
 import com.example.umc_wireframe.domain.model.toShortTermCategory
 
-fun ShortTermForecastResponse?.toEntity(): ShortTermForecastEntity {
+fun ShortTermForecastResponse?.toOotdEntity(): ShortTermForecastEntity {
     return this?.let {
         ShortTermForecastEntity(
-            header = it.response?.header.toEntity(),
-            body = it.response?.body.toEntity()
+            header = it.response?.header.toOotdEntity(),
+            body = it.response?.body.toOotdEntity()
         )
     } ?: ShortTermForecastEntity(
         header = ShortTermHeaderEntity(resultCode = "unknown", resultMsg = "No message"),
@@ -20,7 +20,7 @@ fun ShortTermForecastResponse?.toEntity(): ShortTermForecastEntity {
     )
 }
 
-fun ShortTermHeaderResponse?.toEntity(): ShortTermHeaderEntity {
+fun ShortTermHeaderResponse?.toOotdEntity(): ShortTermHeaderEntity {
     return this?.let {
         ShortTermHeaderEntity(
             resultCode = it.resultCode ?: "unknown",
@@ -29,10 +29,10 @@ fun ShortTermHeaderResponse?.toEntity(): ShortTermHeaderEntity {
     } ?: ShortTermHeaderEntity(resultCode = "unknown", resultMsg = "No message")
 }
 
-fun ShortTermBodyResponse?.toEntity(): ShortTermBodyEntity {
+fun ShortTermBodyResponse?.toOotdEntity(): ShortTermBodyEntity {
     return this?.let {
         ShortTermBodyEntity(
-            items = it.items?.item?.map { item -> item.toEntity() } ?: emptyList(),
+            items = it.items?.item?.map { item -> item.toOotdEntity() } ?: emptyList(),
             pageNo = it.pageNo ?: 0,
             numOfRows = it.numOfRows ?: 0,
             totalCount = it.totalCount ?: 0
@@ -40,7 +40,7 @@ fun ShortTermBodyResponse?.toEntity(): ShortTermBodyEntity {
     } ?: ShortTermBodyEntity(items = emptyList(), pageNo = 0, numOfRows = 0, totalCount = 0)
 }
 
-fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
+fun ShortTermForecastItemResponse?.toOotdEntity(): ShortTermForecastItemEntity {
     return this?.let {
         ShortTermForecastItemEntity(
             date = it.baseDate ?: "unknown",
