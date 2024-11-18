@@ -1,8 +1,10 @@
 package com.example.umc_wireframe.data.remote
 
-import com.example.umc_wireframe.data.model.OOtdResponse
+import com.example.umc_wireframe.data.model.LoginResultResponse
+import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
+import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.domain.model.Hashtag
 import okhttp3.MultipartBody
 import retrofit2.http.GET
@@ -11,7 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 
-interface ServerDatasource {
+interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     //ootd
     @GET("api/recommendation")
@@ -19,7 +21,7 @@ interface ServerDatasource {
         @Header("Authorization") authorization: String,
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int
-    ): OOtdResponse<RecommendedHashtagResultResponse>
+    ): ServerResponse<RecommendedHashtagResultResponse>
 
 
     @GET("api/ootds/past")
@@ -27,7 +29,7 @@ interface ServerDatasource {
         @Header("Authorization") authorization: String,
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int
-    ): OOtdResponse<OotdResultResponse>
+    ): ServerResponse<OotdResultResponse>
 
     @POST("api/ootds")
     suspend fun postOotd(
@@ -36,12 +38,42 @@ interface ServerDatasource {
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int,
         @Query("hashtags") hashtags: List<Hashtag> // 최대 3개
-    ): OOtdResponse<OotdResultResponse>
+    ): ServerResponse<String>
 
     @GET("api/ootds")
     suspend fun getOotdPastForYearMonth(
         @Header("Authorization") authorization: String,
         @Query("year") year: Int,
         @Query("month") month: Int
-    ): OOtdResponse<OotdResultResponse>
+    ): ServerResponse<OotdResultResponse>
+
+    //member(login, join, manage)
+    //join
+
+    //login
+    @POST("api/users/login")
+    suspend fun postLogin(
+        @Query("email") email: String,
+        @Query("password") password: String
+    ): ServerResponse<LoginResultResponse>
+
+    //manage
+    @POST("api/users/withdraw")
+    suspend fun postUserWithdraw(
+        @Header("Authorization") authorization: String
+    ):ServerResponse<String>
+
+
+    @POST("api/users/nickname")
+    suspend fun postNicknameChange(
+        @Header("Authorization") authorization: String,
+        @Query("newNickname") newNickname: String
+    ):ServerResponse<NicknameResultResponse>
+
+    @POST("api/users/alarm")
+    suspend fun postAlarmSet(
+        @Header("Authorization") authorization: String,
+        @Query("alarmStatus") alarmStatus: Boolean, // true 추가, false 삭제
+        @Query("alarmTime") alarmTime: String // "09:00" 무조건 이 형식 5글자
+    ): ServerResponse<String>
 }

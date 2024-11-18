@@ -1,6 +1,8 @@
 package com.example.umc_wireframe.domain.model.entity
 
-data class OOtdEntity<T>(
+import com.google.gson.annotations.SerializedName
+
+data class ServerEntity<T>(
     val status: String,
     val code: String,
     val message: String,
@@ -30,4 +32,11 @@ data class OotdResultEntity(
     )
 }
 
+data class LoginResultEntity(
+    val token: String?
+)
 
+
+data class NicknameResultEntity(
+    val newNickname: String?
+)

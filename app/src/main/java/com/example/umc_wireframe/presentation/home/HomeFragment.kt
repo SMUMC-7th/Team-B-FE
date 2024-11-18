@@ -279,7 +279,6 @@ class HomeFragment : Fragment() {
                 homeTagListAdapter.submitList(hashtag)
                 homeRecommendedClothesListAdapter.submitList(clothesImgUrl)
             }
-
         }
     }
 
