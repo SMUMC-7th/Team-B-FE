@@ -5,7 +5,7 @@ import com.example.umc_wireframe.data.repository.OotdRepositoryImpl
 import com.example.umc_wireframe.data.repository.ShortTermForecastRepositoryImpl
 import com.example.umc_wireframe.network.RetrofitClient
 
-class RepositoryFactory {
+object RepositoryFactory {
     fun createShortTermForecastRepository(): ShortTermForecastRepository {
         val datasource = RetrofitClient.shortTermForecastDatasource
         return ShortTermForecastRepositoryImpl(datasource)

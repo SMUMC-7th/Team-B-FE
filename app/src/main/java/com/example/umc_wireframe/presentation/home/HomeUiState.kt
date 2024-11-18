@@ -1,30 +1,28 @@
 package com.example.umc_wireframe.presentation.home
 
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
+import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import java.time.LocalDateTime
 
 data class HomeUiState(
     val selectLocation: ShortTermRegionObject?,
-    val temp: List<Pair<String, String>>,
+    val maxTemp: Pair<String, String>,
+    val minTemp: Pair<String, String>,
     val pop: List<Pair<String, String>>, // 강수확률
     val pcp: List<Pair<String, String>>, // 강수형태
-    val recommendedClothes: List<String>,
-    val historyList: historyItem?
+    val recommendedClothes: List<RecommendedHashtagResultEntity.Recommendation>,
+    val historyList: List<OotdResultEntity.Ootd>
 ) {
     companion object {
         fun init() = HomeUiState(
             selectLocation = null,
-            temp = emptyList(),
+            maxTemp = "0" to "0",
+            minTemp = "0" to "0",
             pop = emptyList(),
             pcp = emptyList(),
             recommendedClothes = emptyList(),
-            historyList = null
+            historyList = emptyList()
         )
     }
-
-    data class historyItem(
-        val img: String,
-        val tag: List<String>,
-        val registeredTime: LocalDateTime
-    )
 }

@@ -6,6 +6,7 @@ import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
+import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,11 +22,13 @@ class HomeViewModel : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
-        RepositoryFactory().createShortTermForecastRepository()
+        RepositoryFactory.createShortTermForecastRepository()
 
-    private val midTermForecastDatasource: MidTermForecastRepository =
-        RepositoryFactory().createMidTermForecastRepository()
+    private val midTermForecastRepository: MidTermForecastRepository =
+        RepositoryFactory.createMidTermForecastRepository()
 
+    private val ootdRepository: OotdRepository =
+        RepositoryFactory.createOotdRepository()
 
     fun getDailyShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
         val now = LocalDate.now().minusDays(1)
@@ -41,23 +44,43 @@ class HomeViewModel : ViewModel() {
         )?.body?.items
 
         entity?.let { items ->
+            val tempList = items.filter { it.category == ShortTermCategory.TMP }
+                .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
+                .sortedByDescending { it.first }
+
+            val maxTemp = tempList.maxBy { it.second }
+            val minTime = tempList.minBy { it.second }
+
+            val pastOotd = ootdRepository.getOotdPastForTemp(
+                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
+                maxTemperature = maxTemp.second.toInt(),
+                minTemperature = minTime.second.toInt()
+            )
+            val recommendedClothes = ootdRepository.getRecommendedHashtag(
+                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
+                maxTemperature = maxTemp.second.toInt(),
+                minTemperature = minTime.second.toInt()
+            )
+
             _uiState.update { prev ->
                 prev.copy(
                     selectLocation = selectLocation,
-                    temp = items.filter { it.category == ShortTermCategory.TMP }
-                        .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
-                        .sortedByDescending { it.first },
+                    maxTemp = maxTemp,
+                    minTemp = minTime,
                     pop = items.filter { it.category == ShortTermCategory.POP }
                         .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
                         .sortedByDescending { it.first },
                     pcp = items.filter { it.category == ShortTermCategory.PCP }
                         .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
-                        .sortedByDescending { it.first }
+                        .sortedByDescending { it.first },
+                    recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
+                    historyList = pastOotd.result?.ootds ?: emptyList()
                 )
             }
         }
 
     }
+
 
     fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
         val tmFc = when {
@@ -71,7 +94,7 @@ class HomeViewModel : ViewModel() {
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
         }
 
-        midTermForecastDatasource.getWeatherForecast(
+        midTermForecastRepository.getWeatherForecast(
             tmFc = tmFc,
             regId = midTermRegion.regId
         ).let { entity ->

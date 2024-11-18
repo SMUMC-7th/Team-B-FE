@@ -56,7 +56,7 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment()  {
+class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -119,26 +119,8 @@ class HomeFragment : Fragment()  {
         selectLocation()
         initViewModel()
 
-        example()
     }
 
-    private fun example() {
-        val imgList = listOf(
-            R.drawable.ic_notification,
-            R.drawable.ic_notification,
-            R.drawable.ic_notification,
-            R.drawable.ic_notification,
-            R.drawable.ic_notification
-        )
-
-        val tagList = listOf(
-            "셔츠",
-            "패딩",
-            "코트"
-        )
-        homeRecommendedClothesListAdapter.submitList(imgList)
-        homeTagListAdapter.submitList(tagList)
-    }
 
     private fun initView() = with(binding) {
         fun setClothyString() {
@@ -232,9 +214,9 @@ class HomeFragment : Fragment()  {
             tvHomeLocalSelection.text = uiState.selectLocation.region
         }
 
-        uiState.temp.let {
-            val biggest = it.maxByOrNull { it.second }?.second.toString()
-            val smallest = it.minByOrNull { it.second }?.second.toString()
+        uiState.let {
+            val biggest = it.maxTemp.second
+            val smallest = it.minTemp.second
 
             val spannableString = SpannableString("최저 $smallest°C 최고 $biggest°C의")
 
@@ -290,8 +272,15 @@ class HomeFragment : Fragment()  {
 
             tvHomeWeatherDescriptionLine2.text = spannableString
 
+            it.recommendedClothes.let { list ->
+                val hashtag = list.map { it.hashtag }
+                val clothesImgUrl = list.map { it.image }
+
+                homeTagListAdapter.submitList(hashtag)
+                homeRecommendedClothesListAdapter.submitList(clothesImgUrl)
+            }
+
         }
-        Log.d("result", uiState.temp.toString())
     }
 
     private fun getCurrentLocation() {

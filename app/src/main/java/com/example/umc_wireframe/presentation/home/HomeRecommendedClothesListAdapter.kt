@@ -5,16 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.umc_wireframe.databinding.ItemRvRecommenedclothesBinding
 
 class HomeRecommendedClothesListAdapter
-    : ListAdapter<Int, HomeRecommendedClothesListAdapter.ViewHolder>(HomeRecommendedDiffUtil()) {
+    : ListAdapter<String, HomeRecommendedClothesListAdapter.ViewHolder>(HomeRecommendedDiffUtil()) {
 
     inner class ViewHolder(
         private val binding: ItemRvRecommenedclothesBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(resId: Int) {
-            binding.ivItemRecommended.setImageResource(resId)
+        fun bind(url: String) {
+            Glide.with(binding.root)
+                .load(url)
+                .into(binding.ivItemRecommended)
         }
     }
 
@@ -33,12 +36,12 @@ class HomeRecommendedClothesListAdapter
     }
 }
 
-class HomeRecommendedDiffUtil : DiffUtil.ItemCallback<Int>() {
-    override fun areItemsTheSame(oldItem: Int, newItem: Int): Boolean {
+class HomeRecommendedDiffUtil : DiffUtil.ItemCallback<String>() {
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean {
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
         return oldItem == newItem
     }
 }
