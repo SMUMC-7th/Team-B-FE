@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.presentation.MainActivity
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -57,7 +58,7 @@ fun setDailyAlarm(context: Context, time: LocalDateTime) {
     // 알람 수신자 인텐트 생성
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
-        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        context, generateRequestCode(time), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     // 알람을 시간 설정
@@ -96,14 +97,19 @@ fun setDailyAlarm(context: Context, time: LocalDateTime) {
     }
 }
 
+fun generateRequestCode(time: LocalDateTime): Int {
+    val formattedTime = time.format(DateTimeFormatter.ISO_DATE_TIME)
 
-fun cancelDailyAlarm(context: Context) {
+    return formattedTime.hashCode()
+}
+
+fun cancelDailyAlarm(context: Context, time:LocalDateTime) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     // 알람 수신자 인텐트 생성
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
-        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        context, generateRequestCode(time), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     // AlarmManager에서 알람 취소

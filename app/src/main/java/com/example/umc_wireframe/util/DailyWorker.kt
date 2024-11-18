@@ -7,9 +7,9 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class DailyAlarmWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -23,47 +23,32 @@ class DailyAlarmWorker(context: Context, params: WorkerParameters) : Worker(cont
 }
 
 fun scheduleDailyAlarmWorker(context: Context, time: LocalDateTime) {
-    if (!isWorkerScheduled(context)) {  // 워커가 이미 등록되지 않은 경우에만
-        val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
-        val inputData = workDataOf("time" to timeString)
+    val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
+    val uniqueWorkName = "DailyAlarmWork_${timeString}" // 고유한 이름 생성
+    val inputData = workDataOf("time" to timeString)
 
-        val dailyWorkRequest = PeriodicWorkRequestBuilder<DailyAlarmWorker>(1, TimeUnit.DAYS)
-            .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-            .setInputData(inputData)
-            .build()
+    val dailyWorkRequest = PeriodicWorkRequestBuilder<DailyAlarmWorker>(1, TimeUnit.DAYS)
+        .setInitialDelay(calculateInitialDelay(time), TimeUnit.MILLISECONDS)
+        .setInputData(inputData)
+        .build()
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "DailyAlarmWork",  // 고유한 이름
-            ExistingPeriodicWorkPolicy.REPLACE,  // 기존 작업을 덮어씀
-            dailyWorkRequest
-        )
-    }
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+        uniqueWorkName,  // 고유한 이름
+        ExistingPeriodicWorkPolicy.REPLACE,  // 기존 작업을 덮어씀
+        dailyWorkRequest
+    )
 }
 
-fun isWorkerScheduled(context: Context): Boolean {
-    val workInfo = WorkManager.getInstance(context)
-        .getWorkInfosForUniqueWork("DailyAlarmWork")
-        .get()
-        .firstOrNull()
 
-    return workInfo != null && workInfo.state.isFinished.not()
+fun calculateInitialDelay(time: LocalDateTime): Long {
+    val now = LocalDateTime.now()
+    return Duration.between(now, time).toMillis().coerceAtLeast(0)
 }
 
-// 초기 지연 시간 계산 함수
-fun calculateInitialDelay(): Long {
-    val calendar = Calendar.getInstance().apply {
-        timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-    }
-    if (calendar.timeInMillis < System.currentTimeMillis()) {
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-    }
-    return calendar.timeInMillis - System.currentTimeMillis()
-}
 
-fun cancelDailyAlarmWorker(context: Context) {
-    WorkManager.getInstance(context).cancelUniqueWork("DailyAlarmWork")
-    cancelDailyAlarm(context)
+fun cancelAlarmWorker(context: Context, time: LocalDateTime) {
+    val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
+    val uniqueWorkName = "DailyAlarmWork_${timeString}"
+    WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
+    cancelDailyAlarm(context, time)
 }
