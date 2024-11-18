@@ -1,12 +1,12 @@
 package com.example.umc_wireframe.data.repository
 
-import android.graphics.Bitmap
 import com.example.umc_wireframe.domain.model.Hashtag
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.domain.model.entity.OOtdEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
-import com.example.umc_wireframe.domain.model.mapper.toEntity
+import com.example.umc_wireframe.domain.model.mapper.toHashtagEntity
+import com.example.umc_wireframe.domain.model.mapper.toOotdEntity
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import okhttp3.MultipartBody
 
@@ -21,17 +21,17 @@ class OotdRepositoryImpl(
         authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
-    ).toEntity()
+    ).toHashtagEntity()
 
     override suspend fun getOotdPastForTemp(
         authorization: String,
         maxTemperature: Int,
         minTemperature: Int
-    ): OOtdEntity<OotdResultEntity> =datasource.getOotdPastForTemp(
+    ): OOtdEntity<OotdResultEntity> = datasource.getOotdPastForTemp(
         authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
-    ).toEntity()
+    ).toOotdEntity()
 
     override suspend fun postOotd(
         authorization: String,
@@ -45,7 +45,7 @@ class OotdRepositoryImpl(
         maxTemperature = maxTemperature,
         minTemperature = minTemperature,
         hashtags = hashtags
-    ).toEntity()
+    ).toOotdEntity()
 
     override suspend fun getOotdPastForYearMonth(
         authorization: String,
@@ -55,5 +55,5 @@ class OotdRepositoryImpl(
         authorization = authorization,
         year = year,
         month = month
-    ).toEntity()
+    ).toOotdEntity()
 }

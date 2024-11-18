@@ -7,9 +7,9 @@ import com.example.umc_wireframe.domain.model.entity.MidTermForecastItemEntity
 import com.example.umc_wireframe.domain.model.entity.MidTermHeaderEntity
 import com.example.umc_wireframe.domain.model.entity.MidTermResponseEntity
 
-fun MidTermForecastResponse?.toEntity() = this?.let {
+fun MidTermForecastResponse?.toOotdEntity() = this?.let {
     MidTermForecastEntity(
-        response = it.response.toEntity()
+        response = it.response.toOotdEntity()
     )
 } ?: MidTermForecastEntity(
     response = MidTermResponseEntity(
@@ -18,33 +18,33 @@ fun MidTermForecastResponse?.toEntity() = this?.let {
     )
 )
 
-fun MidTermResponse?.toEntity() = this?.let {
+fun MidTermResponse?.toOotdEntity() = this?.let {
     MidTermResponseEntity(
-        header = it.header.toEntity(),
-        body = it.body.toEntity()
+        header = it.header.toOotdEntity(),
+        body = it.body.toOotdEntity()
     )
 } ?: MidTermResponseEntity(
     header = MidTermHeaderEntity(resultCode = "unknown", resultMsg = "No message"),
     body = MidTermBodyEntity(items = listOf(), pageNo = 0, numOfRows = 0, totalCount = 0)
 )
 
-fun MidTermHeaderResponse?.toEntity() = this?.let {
+fun MidTermHeaderResponse?.toOotdEntity() = this?.let {
     MidTermHeaderEntity(
         resultCode = it.resultCode ?: "unknown",
         resultMsg = it.resultMsg ?: "No message"
     )
 } ?: MidTermHeaderEntity(resultCode = "unknown", resultMsg = "No message")
 
-fun MidTermBodyResponse?.toEntity() = this?.let {
+fun MidTermBodyResponse?.toOotdEntity() = this?.let {
     MidTermBodyEntity(
-        items = it.items?.item?.map { item -> item.toEntity() } ?: emptyList(),
+        items = it.items?.item?.map { item -> item.toOotdEntity() } ?: emptyList(),
         pageNo = it.pageNo ?: 0,
         numOfRows = it.numOfRows ?: 0,
         totalCount = it.totalCount ?: 0
     )
 } ?: MidTermBodyEntity(items = listOf(), pageNo = 0, numOfRows = 0, totalCount = 0)
 
-fun MidTermForecastItemResponse?.toEntity() = this?.let {
+fun MidTermForecastItemResponse?.toOotdEntity() = this?.let {
     MidTermForecastItemEntity(
         regId = it.regId ?: "unknown",  // 기본값 설정
         taMin3 = it.taMin3 ?: 0,

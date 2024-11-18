@@ -7,27 +7,27 @@ import com.example.umc_wireframe.domain.model.entity.OOtdEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 
-fun OOtdResponse<RecommendedHashtagResultResponse>.toEntity(): OOtdEntity<RecommendedHashtagResultEntity> {
+fun OOtdResponse<RecommendedHashtagResultResponse>.toHashtagEntity(): OOtdEntity<RecommendedHashtagResultEntity> {
     return OOtdEntity(
         status = this.status ?: "",
         code = this.code ?: "",
         message = this.message ?: "",
         isSuccess = this.isSuccess ?: false,
-        result = this.result?.toEntity()
+        result = this.result?.toOotdEntity()
     )
 }
 
-fun OOtdResponse<OotdResultResponse>.toEntity(): OOtdEntity<OotdResultEntity> {
+fun OOtdResponse<OotdResultResponse>.toOotdEntity(): OOtdEntity<OotdResultEntity> {
     return OOtdEntity(
         status = this.status ?: "",
         code = this.code ?: "",
         message = this.message ?: "",
         isSuccess = this.isSuccess ?: false,
-        result = this.result?.toEntity()
+        result = this.result?.toOotdEntity()
     )
 }
 
-fun RecommendedHashtagResultResponse.toEntity(): RecommendedHashtagResultEntity {
+fun RecommendedHashtagResultResponse.toOotdEntity(): RecommendedHashtagResultEntity {
     return RecommendedHashtagResultEntity(
         recommendations = this.recommendations?.map { recommendation ->
             RecommendedHashtagResultEntity.Recommendation(
@@ -38,7 +38,7 @@ fun RecommendedHashtagResultResponse.toEntity(): RecommendedHashtagResultEntity 
     )
 }
 
-fun OotdResultResponse.toEntity(): OotdResultEntity {
+fun OotdResultResponse.toOotdEntity(): OotdResultEntity {
     return OotdResultEntity(
         ootds = this.ootds?.map { ootd ->
             OotdResultEntity.Ootd(
