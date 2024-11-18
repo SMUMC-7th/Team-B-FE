@@ -1,13 +1,14 @@
 package com.example.umc_wireframe.data.repository
 
 import android.graphics.Bitmap
-import com.example.umc_wireframe.data.model.Hashtag
+import com.example.umc_wireframe.domain.model.Hashtag
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.domain.model.entity.OOtdEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import com.example.umc_wireframe.domain.model.mapper.toEntity
 import com.example.umc_wireframe.domain.repository.OotdRepository
+import okhttp3.MultipartBody
 
 class OotdRepositoryImpl(
     private val datasource: ServerDatasource
@@ -34,7 +35,7 @@ class OotdRepositoryImpl(
 
     override suspend fun postOotd(
         authorization: String,
-        image: Bitmap,
+        image: MultipartBody.Part,
         maxTemperature: Int,
         minTemperature: Int,
         hashtags: List<Hashtag>

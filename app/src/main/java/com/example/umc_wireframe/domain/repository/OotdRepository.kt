@@ -1,10 +1,11 @@
 package com.example.umc_wireframe.domain.repository
 
 import android.graphics.Bitmap
-import com.example.umc_wireframe.data.model.Hashtag
+import com.example.umc_wireframe.domain.model.Hashtag
 import com.example.umc_wireframe.domain.model.entity.OOtdEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
+import okhttp3.MultipartBody
 
 interface OotdRepository {
     suspend fun getRecommendedHashtag(
@@ -21,7 +22,7 @@ interface OotdRepository {
 
     suspend fun postOotd(
         authorization: String,
-        image: Bitmap,
+        image: MultipartBody.Part,
         maxTemperature: Int,
         minTemperature: Int,
         hashtags: List<Hashtag>

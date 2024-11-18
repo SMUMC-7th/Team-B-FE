@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.data.model
+package com.example.umc_wireframe.domain.model
 
 enum class Hashtag(val kor: String) {
     ADDED_COAT("패딩"),
