@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.network
 
 import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
+import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -12,7 +13,10 @@ import retrofit2.create
 object RetrofitClient {
     const val SHORT_TERM_FORECAST_BASE_URL =
         "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+
     const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
+
+    const val SERVER_BASE_URL = "http://43.202.248.120:8080/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -50,6 +54,21 @@ object RetrofitClient {
             .build()
     }
 
+    private val serverOkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    private val serverRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(SERVER_BASE_URL)
+            .client(serverOkHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+    }
+
 
     val shortTermForecastDatasource: ShortTermForecastDatasource by lazy {
         shortTermRetrofit.create(ShortTermForecastDatasource::class.java)
@@ -57,5 +76,9 @@ object RetrofitClient {
 
     val midTermForecastDatasource: MidTermForecastDatasource by lazy {
         midTermRetrofit.create(MidTermForecastDatasource::class.java)
+    }
+
+    val serverDatasource: ServerDatasource by lazy {
+        serverRetrofit.create(ServerDatasource::class.java)
     }
 }
