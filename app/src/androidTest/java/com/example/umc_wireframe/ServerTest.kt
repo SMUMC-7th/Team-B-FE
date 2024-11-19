@@ -101,4 +101,12 @@ class TestServerInstrumented {
 
         checkOotdData()
     }
+
+    suspend fun testWithdraw(){
+        memberRepository.postUserWithdraw(
+            authorization = token
+        ).let {
+            Log.d("withdraw success", it.toString())
+        }
+    }
 }
