@@ -35,7 +35,8 @@ data class OotdResultEntity(
 }
 
 data class LoginResultEntity(
-    val token: String?
+    val accessToken: String?,
+    val refreshToken: String?
 )
 
 

@@ -34,8 +34,9 @@ data class OotdResultResponse(
 }
 
 data class LoginResultResponse(
-    @SerializedName("token") val token: String?
-)
+    @SerializedName("accessToken") val accessToken: String?,
+    @SerializedName("refreshToken") val refreshToken: String
+    )
 
 data class NicknameResultResponse(
     @SerializedName("newNickname") val newNickname: String?

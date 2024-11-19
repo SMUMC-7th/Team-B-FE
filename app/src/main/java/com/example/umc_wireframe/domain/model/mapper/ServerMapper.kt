@@ -115,7 +115,8 @@ fun OotdResultResponse.toEntity(): OotdResultEntity {
 
 fun LoginResultResponse.toEntity(): LoginResultEntity {
     return LoginResultEntity(
-        token = this.token
+        accessToken = this.accessToken,
+        refreshToken = refreshToken
     )
 }
 
