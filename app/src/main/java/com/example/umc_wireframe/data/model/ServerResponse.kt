@@ -41,3 +41,15 @@ data class NicknameResultResponse(
     @SerializedName("newNickname") val newNickname: String?
 )
 
+data class JoinRequestResultResponse(
+    @SerializedName("userId") val userId: Long?
+)
+
+data class MyProfileResultResponse(
+    val email: String,
+    val name: String,
+    val nickname: String,
+    val gender: String,
+    val alarmStatus: Boolean,
+    val alarmTime: String
+)

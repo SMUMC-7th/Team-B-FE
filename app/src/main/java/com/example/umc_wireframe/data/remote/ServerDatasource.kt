@@ -1,6 +1,8 @@
 package com.example.umc_wireframe.data.remote
 
+import com.example.umc_wireframe.data.model.JoinRequestResultResponse
 import com.example.umc_wireframe.data.model.LoginResultResponse
+import com.example.umc_wireframe.data.model.MyProfileResultResponse
 import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
@@ -49,6 +51,25 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     //member(login, join, manage)
     //join
+    @POST("api/users/signup/request-and-verify")
+    suspend fun postJoinResquest(
+        @Query("email") email: String,
+        @Query("password") password: String
+    ): ServerResponse<JoinRequestResultResponse>
+
+    @POST("api/users/signup/verify-code")
+    suspend fun postVerifyJoin(
+        @Query("email") email: String,
+        @Query("verificationCode") verificationCode: String
+    ): ServerResponse<String>
+
+    @POST("api/users/signup")
+    suspend fun postJoinSuccess(
+        @Query("email") email: String,
+        @Query("password") password: String,
+        @Query("nickname") nickname: String,
+        @Query("gender") gender: String
+    ): ServerResponse<String>
 
     //login
     @POST("api/users/login")
@@ -63,6 +84,20 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
         @Header("Authorization") authorization: String
     ):ServerResponse<String>
 
+    @POST("api/users/password/change/request")
+    suspend fun postPasswordChange(
+        @Header("Authorization") authorization: String
+    ): ServerResponse<String>
+
+    @POST("api/users/password/change/verify")
+    suspend fun postPasswordVerify(
+        @Query("verificationCode") verificationCode: String
+    ): ServerResponse<String>
+
+    @POST("/api/users/password/change/complete")
+    suspend fun postPasswordSuccess(
+        @Query("newPassword") newPassword: String
+    ): ServerResponse<String>
 
     @POST("api/users/nickname")
     suspend fun postNicknameChange(
@@ -76,4 +111,9 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
         @Query("alarmStatus") alarmStatus: Boolean, // true 추가, false 삭제
         @Query("alarmTime") alarmTime: String // "09:00" 무조건 이 형식 5글자
     ): ServerResponse<String>
+
+    @GET("api/users")
+    suspend fun getMyProfile(
+        @Header("Authorization") authorization: String
+    ): ServerResponse<MyProfileResultResponse>
 }

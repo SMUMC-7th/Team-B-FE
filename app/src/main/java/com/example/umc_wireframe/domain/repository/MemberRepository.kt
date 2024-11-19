@@ -1,7 +1,11 @@
 package com.example.umc_wireframe.domain.repository
 
 import com.example.umc_wireframe.data.model.ServerResponse
+import com.example.umc_wireframe.domain.model.Gender
+import com.example.umc_wireframe.domain.model.SetAlarm
+import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
 import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
+import com.example.umc_wireframe.domain.model.entity.MyProfileResultEntity
 import com.example.umc_wireframe.domain.model.entity.NicknameResultEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import retrofit2.http.Header
@@ -10,16 +14,44 @@ import retrofit2.http.Query
 
 interface MemberRepository {
     //join
+    suspend fun postJoinResquest(
+        email: String,
+        password: String
+    ): ServerEntity<JoinRequestResultEntity>
+
+    suspend fun postVerifyJoin(
+        email: String,
+        verificationCode: String
+    ): ServerEntity<String>
+
+    suspend fun postJoinSuccess(
+        email: String,
+        password: String,
+        nickname: String,
+        gender: Gender
+    ): ServerEntity<String>
 
     //login
     suspend fun postLogin(
-        email:String,
-        password:String
+        email: String,
+        password: String
     ): ServerEntity<LoginResultEntity>
 
     //manage
     suspend fun postUserWithdraw(
         authorization: String
+    ): ServerEntity<String>
+
+    suspend fun postPasswordChange(
+        authorization: String
+    ): ServerEntity<String>
+
+    suspend fun postPasswordVerify(
+         verificationCode: String
+    ): ServerEntity<String>
+
+    suspend fun postPasswordSuccess(
+        newPassword: String
     ): ServerEntity<String>
 
     suspend fun postNicknameChange(
@@ -29,7 +61,11 @@ interface MemberRepository {
 
     suspend fun postAlarmSet(
         authorization: String,
-        alarmStatus: Boolean,
+        alarmStatus: SetAlarm,
         alarmTime: String
     ): ServerEntity<String>
+
+    suspend fun getMyProfile(
+        authorization: String
+    ): ServerEntity<MyProfileResultEntity>
 }

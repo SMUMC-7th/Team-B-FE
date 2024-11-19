@@ -15,3 +15,15 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 }
+
+fun main(){
+    val testId = "test"
+    val testPassword = "1234"
+}
+
+class TestServer(val testId: String, val testPassword: String){
+
+}
+
+fun getToken(){
+}

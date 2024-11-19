@@ -1,6 +1,8 @@
 package com.example.umc_wireframe.domain.model.entity
 
+import com.example.umc_wireframe.domain.model.Gender
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 data class ServerEntity<T>(
     val status: String,
@@ -40,3 +42,21 @@ data class LoginResultEntity(
 data class NicknameResultEntity(
     val newNickname: String?
 )
+
+data class JoinRequestResultEntity(
+    val isSuccess: Boolean
+)
+
+data class MyProfileResultEntity(
+    val email: String,
+    val name: String,
+    val nickname: String,
+    val gender: Gender,
+    val alarmStatus: Boolean,
+    val alarmTime: AlarmTime
+){
+    data class AlarmTime(
+        val hour: Int,
+        val min: Int
+    )
+}
