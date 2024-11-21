@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.presentation.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
@@ -9,6 +10,7 @@ import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -51,17 +53,6 @@ class HomeViewModel : ViewModel() {
             val maxTemp = tempList.maxBy { it.second }
             val minTime = tempList.minBy { it.second }
 
-//            val pastOotd = ootdRepository.getOotdPastForTemp(
-//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-//                maxTemperature = maxTemp.second.toInt(),
-//                minTemperature = minTime.second.toInt()
-//            )
-//            val recommendedClothes = ootdRepository.getRecommendedHashtag(
-//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-//                maxTemperature = maxTemp.second.toInt(),
-//                minTemperature = minTime.second.toInt()
-//            )
-
             _uiState.update { prev ->
                 prev.copy(
                     selectLocation = selectLocation,
@@ -72,10 +63,28 @@ class HomeViewModel : ViewModel() {
                         .sortedByDescending { it.first },
                     pcp = items.filter { it.category == ShortTermCategory.PCP }
                         .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
-                        .sortedByDescending { it.first },
-//                    recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
-//                    historyList = pastOotd.result?.ootds ?: emptyList()
+                        .sortedByDescending { it.first }
                 )
+            }
+
+            val sharedPref = UmcClothsOfTempApplication.context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            sharedPref.getString("jwt_token", null)?.let {
+                val pastOotd = ootdRepository.getOotdPastForTemp(
+                    authorization = it,
+                    maxTemperature = maxTemp.second.toInt(),
+                    minTemperature = minTime.second.toInt()
+                )
+                val recommendedClothes = ootdRepository.getRecommendedHashtag(
+                    authorization = it,
+                    maxTemperature = maxTemp.second.toInt(),
+                    minTemperature = minTime.second.toInt()
+                )
+                _uiState.update { prev->
+                    prev.copy(
+                        recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
+                        historyList = pastOotd.result?.ootds ?: emptyList()
+                    )
+                }
             }
         }
 
