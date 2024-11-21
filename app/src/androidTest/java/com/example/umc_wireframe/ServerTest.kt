@@ -2,8 +2,9 @@ package com.example.umc_wireframe
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.umc_wireframe.domain.model.Hashtag
-import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
+import com.example.umc_wireframe.data.remote.JoinInfo
+import com.example.umc_wireframe.domain.model.Gender
+import com.example.umc_wireframe.domain.model.SetAlarm
 import com.example.umc_wireframe.domain.repository.MemberRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
@@ -20,9 +21,14 @@ class TestServerInstrumented {
 
     private val testId = "test"
     private val testPassword = "1234"
+
+    private val testJoinId = "didehddnjs89@gmail.com"
+    private val testJoinPassword = "1234"
     private lateinit var memberRepository: MemberRepository
     private lateinit var ootdRepository: OotdRepository
-    private var token: String = ""
+    private var token: String =
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWRlaGRkbmpzODlAZ21haWwuY29tIiwiaWQiOjcsImlhdCI6MTczMjE2MzIyMiwiZXhwIjoxNzMyMTY2ODIyfQ.9WG1w4TKf5094o-5WuEK9zbEH6ksyJISxlKQzuvXz0w"
+    private var refreshToken: String = ""
 
     @Before
     fun setup() {
@@ -34,35 +40,92 @@ class TestServerInstrumented {
     @Test
     fun test() {
         runBlocking {
-            testLoginSuccess()
+//            testJoinRequest()
+//            testJoinVerify("451697")
+//            testJoinSuccess()
+//            testWithdraw()
 
-            if(token != ""){
-                testOotdCheck()
+
+//            testLoginSuccess()
+
+            if (token != "") {
+//                postRefreshToken()
+//                testOotdCheck()
+
+//                postChangeNickname()
+                postAlaramSet()
+                getMyInfo()
+
+//                testChangePwRequest()
+//            testChangePwVerify("165144")
+//                testChangePwSuccess() // 오류, front 측에선 문제를 찾지 못했음.
             }
         }
     }
 
     suspend fun testLoginSuccess() {
         try {
-
             val loginResponse = memberRepository.postLogin(
-                email = testId,
-                password = testPassword
+                email = testJoinId,
+                password = testJoinPassword
             )
 
             val loginResult = loginResponse.result
             assertNotNull(loginResult)
 
-            loginResult?.accessToken?.let {
-                token = "Bearer $it"
-                Log.d("Login success", "Token: $token")
+            loginResult?.let {
+                token = "Bearer ${it.accessToken}"
+                refreshToken = "${it.refreshToken}"
+                Log.d("LoginSuccess", "Token: $token")
             } ?: fail("Login result does not contain a token")
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    suspend fun testOotdCheck(){
+    suspend fun testJoinRequest() {
+        memberRepository.postJoinResquest(
+            email = "didehddnjs89@gmail.com",
+            password = "22961051"
+        ).let {
+            Log.d("joinRequest", it.toString())
+        }
+    }
+
+    suspend fun testJoinVerify(code: String) {
+        memberRepository.postJoinVerify(
+            email = "didehddnjs89@gmail.com",
+            verificationCode = code
+        ).let {
+            Log.d("joinVerify", it.toString())
+        }
+    }
+
+    suspend fun testJoinSuccess() {
+        memberRepository.postJoinSuccess(
+            email = "didehddnjs89@gmail.com",
+            name = "teset!",
+            gender = Gender.MALE,
+            nickname = "test"
+        ).let {
+            Log.d("joinSuccess", it.toString())
+        }
+    }
+
+    suspend fun testWithdraw() {
+        val token = memberRepository.postLogin(
+            email = testJoinId,
+            password = "string"
+        ).result?.accessToken
+
+        memberRepository.postUserWithdraw(
+            authorization = "Bearer $token"
+        ).let {
+            Log.d("withdraw success", it.toString())
+        }
+    }
+
+    suspend fun testOotdCheck() {
         val maxTemp = 10
         val minTemp = 2
 
@@ -85,11 +148,13 @@ class TestServerInstrumented {
                 month = 11
             )
 
-            Log.d("checkOotd success", "$hashTagResponse" +
-                    "\n$pastOotdResponseForTemp" +
-                    "\n$pastOotdResponseForMonth")
+            Log.d(
+                "checkOotdSuccess", "$hashTagResponse" +
+                        "\n$pastOotdResponseForTemp" +
+                        "\n$pastOotdResponseForMonth"
+            )
         }
-//        fun postOotdData() {
+//        suspend fun postOotdData() {
 //            ootdRepository.postOotd(
 //                authorization = token,
 //                maxTemperature = maxTemp,
@@ -102,11 +167,77 @@ class TestServerInstrumented {
         checkOotdData()
     }
 
-    suspend fun testWithdraw(){
-        memberRepository.postUserWithdraw(
+
+    suspend fun testChangePwRequest() {
+        memberRepository.postPasswordChange(
             authorization = token
         ).let {
-            Log.d("withdraw success", it.toString())
+            Log.d("cahngePw", it.toString())
+        }
+    }
+
+    suspend fun testChangePwVerify(code: String) {
+        memberRepository.postPasswordVerify(
+            authorization = token,
+            verificationCode = code
+        ).let {
+            Log.d("cahngePw", it.toString())
+        }
+    }
+
+    suspend fun testChangePwSuccess() {
+        try {
+            memberRepository.postPasswordSuccess(
+                authorization = token,
+                newPassword = "1234"
+            ).let {
+                Log.d("cahngePw", it.toString())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun getMyInfo() {
+        memberRepository.getMyProfile(
+            authorization = token
+        )
+    }
+
+    suspend fun postRefreshToken() {
+        memberRepository.postRefreshToken(
+            authorization = token,
+            refreshToken = refreshToken
+        ).let {
+            it.result?.let {
+                token = "Bearer ${it.accessToken}"
+                refreshToken = "${it.refreshToken}"
+            }
+        }
+    }
+
+    suspend fun postChangeNickname() {
+        try {
+            memberRepository.postNicknameChange(
+                authorization = token,
+                newNickname = "change success"
+            ).let {
+                Log.d("cahngeNickname", it.toString())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun postAlaramSet() {
+        try {
+            memberRepository.postAlarmSet(
+                authorization = token,
+                alarmStatus = SetAlarm.POST,
+                alarmTime = "14:00"
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

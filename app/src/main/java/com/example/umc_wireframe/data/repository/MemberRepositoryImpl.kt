@@ -1,7 +1,14 @@
 package com.example.umc_wireframe.data.repository
 
-import com.example.umc_wireframe.data.model.ServerResponse
+import com.example.umc_wireframe.data.remote.AccountRequest
+import com.example.umc_wireframe.data.remote.AlarmSet
+import com.example.umc_wireframe.data.remote.JoinInfo
+import com.example.umc_wireframe.data.remote.JoinVerify
+import com.example.umc_wireframe.data.remote.NewNickname
+import com.example.umc_wireframe.data.remote.NewPassword
+import com.example.umc_wireframe.data.remote.RefreshToken
 import com.example.umc_wireframe.data.remote.ServerDatasource
+import com.example.umc_wireframe.data.remote.VerifyCode
 import com.example.umc_wireframe.domain.model.Gender
 import com.example.umc_wireframe.domain.model.SetAlarm
 import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
@@ -15,6 +22,7 @@ import com.example.umc_wireframe.domain.model.mapper.toMyProfileEntity
 import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
 import com.example.umc_wireframe.domain.repository.MemberRepository
+import retrofit2.http.Header
 
 class MemberRepositoryImpl(
     private val datasource: ServerDatasource
@@ -24,28 +32,34 @@ class MemberRepositoryImpl(
         email: String,
         password: String
     ): ServerEntity<JoinRequestResultEntity> = datasource.postJoinResquest(
-        email = email,
-        password = password
+        loginRequest = AccountRequest(
+            email = email,
+            password = password
+        )
     ).toJoinRequestEntity()
 
-    override suspend fun postVerifyJoin(
+    override suspend fun postJoinVerify(
         email: String,
         verificationCode: String
-    ): ServerEntity<String> = datasource.postVerifyJoin(
-        email = email,
-        verificationCode = verificationCode
+    ): ServerEntity<String> = datasource.postJoinVerify(
+        JoinVerify(
+            email = email,
+            verificationCode = verificationCode
+        )
     ).toTempEntity()
 
     override suspend fun postJoinSuccess(
         email: String,
-        password: String,
+        name: String,
         nickname: String,
         gender: Gender
     ): ServerEntity<String> = datasource.postJoinSuccess(
-        email = email,
-        password = password,
-        nickname = nickname,
-        gender = gender.toString()
+        JoinInfo(
+            email = email,
+            name = name,
+            nickname = nickname,
+            gender = gender.toString()
+        )
     ).toTempEntity()
 
     //login
@@ -53,8 +67,10 @@ class MemberRepositoryImpl(
         email: String,
         password: String
     ): ServerEntity<LoginResultEntity> = datasource.postLogin(
-        email = email,
-        password = password
+        loginRequest = AccountRequest(
+            email = email,
+            password = password
+        )
     ).toLoginEntity()
 
     //manage
@@ -71,15 +87,21 @@ class MemberRepositoryImpl(
     ).toTempEntity()
 
     override suspend fun postPasswordVerify(
+        authorization: String,
         verificationCode: String
     ): ServerEntity<String> = datasource.postPasswordVerify(
-        verificationCode
+        authorization = authorization,
+        VerifyCode(
+            verificationCode
+        )
     ).toTempEntity()
 
     override suspend fun postPasswordSuccess(
+        authorization: String,
         newPassword: String
     ): ServerEntity<String> = datasource.postPasswordSuccess(
-        newPassword
+        authorization = authorization,
+        newPassword = NewPassword(newPassword)
     ).toTempEntity()
 
     override suspend fun postNicknameChange(
@@ -87,7 +109,7 @@ class MemberRepositoryImpl(
         newNickname: String
     ): ServerEntity<NicknameResultEntity> = datasource.postNicknameChange(
         authorization = authorization,
-        newNickname = newNickname
+        newNickname = NewNickname(newNickname)
     ).toNicknameEntity()
 
     override suspend fun postAlarmSet(
@@ -96,8 +118,10 @@ class MemberRepositoryImpl(
         alarmTime: String
     ): ServerEntity<String> = datasource.postAlarmSet(
         authorization = authorization,
-        alarmStatus = alarmStatus.setType,
-        alarmTime = alarmTime
+        alarmSet = AlarmSet(
+            alarmStatus = alarmStatus.setType,
+            alarmTime = alarmTime
+        )
     ).toTempEntity()
 
     override suspend fun getMyProfile(
@@ -105,4 +129,12 @@ class MemberRepositoryImpl(
     ): ServerEntity<MyProfileResultEntity> = datasource.getMyProfile(
         authorization
     ).toMyProfileEntity()
+
+    override suspend fun postRefreshToken(
+        authorization: String,
+        refreshToken: String
+    ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
+        authorization = authorization,
+        refreshToken = RefreshToken(refreshToken)
+    ).toLoginEntity()
 }

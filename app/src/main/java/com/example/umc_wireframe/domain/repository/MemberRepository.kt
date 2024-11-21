@@ -1,6 +1,6 @@
 package com.example.umc_wireframe.domain.repository
 
-import com.example.umc_wireframe.data.model.ServerResponse
+import com.example.umc_wireframe.data.remote.RefreshToken
 import com.example.umc_wireframe.domain.model.Gender
 import com.example.umc_wireframe.domain.model.SetAlarm
 import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
@@ -8,9 +8,9 @@ import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
 import com.example.umc_wireframe.domain.model.entity.MyProfileResultEntity
 import com.example.umc_wireframe.domain.model.entity.NicknameResultEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
+import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 interface MemberRepository {
     //join
@@ -19,14 +19,14 @@ interface MemberRepository {
         password: String
     ): ServerEntity<JoinRequestResultEntity>
 
-    suspend fun postVerifyJoin(
+    suspend fun postJoinVerify(
         email: String,
         verificationCode: String
     ): ServerEntity<String>
 
     suspend fun postJoinSuccess(
         email: String,
-        password: String,
+        name: String,
         nickname: String,
         gender: Gender
     ): ServerEntity<String>
@@ -47,10 +47,12 @@ interface MemberRepository {
     ): ServerEntity<String>
 
     suspend fun postPasswordVerify(
-         verificationCode: String
+        authorization: String,
+        verificationCode: String
     ): ServerEntity<String>
 
     suspend fun postPasswordSuccess(
+        authorization: String,
         newPassword: String
     ): ServerEntity<String>
 
@@ -68,4 +70,9 @@ interface MemberRepository {
     suspend fun getMyProfile(
         authorization: String
     ): ServerEntity<MyProfileResultEntity>
+
+    suspend fun postRefreshToken(
+        authorization: String,
+        refreshToken: String
+    ):ServerEntity<LoginResultEntity>
 }

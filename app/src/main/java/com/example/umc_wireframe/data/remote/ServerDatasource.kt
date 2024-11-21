@@ -9,6 +9,7 @@ import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.domain.model.Hashtag
 import okhttp3.MultipartBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -53,36 +54,30 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     //join
     @POST("api/users/signup/request-and-verify")
     suspend fun postJoinResquest(
-        @Query("email") email: String,
-        @Query("password") password: String
+        @Body loginRequest: AccountRequest
     ): ServerResponse<JoinRequestResultResponse>
 
     @POST("api/users/signup/verify-code")
-    suspend fun postVerifyJoin(
-        @Query("email") email: String,
-        @Query("verificationCode") verificationCode: String
+    suspend fun postJoinVerify(
+        @Body joinVerify: JoinVerify
     ): ServerResponse<String>
 
     @POST("api/users/signup")
     suspend fun postJoinSuccess(
-        @Query("email") email: String,
-        @Query("password") password: String,
-        @Query("nickname") nickname: String,
-        @Query("gender") gender: String
+        @Body joinInfo: JoinInfo
     ): ServerResponse<String>
 
     //login
     @POST("api/users/login")
     suspend fun postLogin(
-        @Query("email") email: String,
-        @Query("password") password: String
+        @Body loginRequest: AccountRequest
     ): ServerResponse<LoginResultResponse>
 
     //manage
     @POST("api/users/withdraw")
     suspend fun postUserWithdraw(
         @Header("Authorization") authorization: String
-    ):ServerResponse<String>
+    ): ServerResponse<String>
 
     @POST("api/users/password/change/request")
     suspend fun postPasswordChange(
@@ -91,29 +86,79 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @POST("api/users/password/change/verify")
     suspend fun postPasswordVerify(
-        @Query("verificationCode") verificationCode: String
+        @Header("Authorization") authorization: String,
+        @Body verificationCode: VerifyCode
     ): ServerResponse<String>
 
-    @POST("/api/users/password/change/complete")
+    @POST("api/users/password/change/complete")
     suspend fun postPasswordSuccess(
-        @Query("newPassword") newPassword: String
+        @Header("Authorization") authorization: String,
+        @Body newPassword: NewPassword
     ): ServerResponse<String>
 
     @POST("api/users/nickname")
     suspend fun postNicknameChange(
         @Header("Authorization") authorization: String,
-        @Query("newNickname") newNickname: String
-    ):ServerResponse<NicknameResultResponse>
+        @Body newNickname: NewNickname
+    ): ServerResponse<NicknameResultResponse>
 
-    @POST("api/users/alarm")
+    @POST("api/users/alarm-settings")
     suspend fun postAlarmSet(
         @Header("Authorization") authorization: String,
-        @Query("alarmStatus") alarmStatus: Boolean, // true 추가, false 삭제
-        @Query("alarmTime") alarmTime: String // "09:00" 무조건 이 형식 5글자
+        @Body alarmSet: AlarmSet
     ): ServerResponse<String>
 
-    @GET("api/users")
+    @GET("api/users/profile")
     suspend fun getMyProfile(
         @Header("Authorization") authorization: String
     ): ServerResponse<MyProfileResultResponse>
+
+    @POST("api/users/token/reissue")
+    suspend fun postRefreshToken(
+        @Header("Authorization") authorization: String,
+        @Body refreshToken: RefreshToken
+    ): ServerResponse<LoginResultResponse>
 }
+
+data class AccountRequest(
+    @Query("email") val email: String,
+    @Query("password") val password: String
+)
+
+data class JoinVerify(
+    @Query("email") val email: String,
+    @Query("verificationCode") val verificationCode: String
+)
+
+data class JoinInfo(
+    @Query("email") val email: String,
+    @Query("name") val name: String,
+    @Query("nickname") val nickname: String,
+    @Query("gender") val gender: String
+)
+
+data class MaxMinTemperature(
+    @Query("maxTemperature") val maxTemperature: Int,
+    @Query("minTemperature") val minTemperature: Int
+)
+
+data class VerifyCode(
+    @Query("verificationCode") val verificationCode: String
+)
+
+data class NewPassword(
+    @Query("newPassword") val newPassword: String
+)
+
+data class RefreshToken(
+    @Query("refreshToken") val refreshToken: String
+)
+
+data class NewNickname(
+    @Query("newNickname") val newNickname: String
+)
+
+data class AlarmSet(
+    @Query("alarmStatus") val alarmStatus: Boolean, // true 추가, false 삭제
+    @Query("alarmTime") val alarmTime: String // "09:00" 무조건 이 형식 5글자
+)
