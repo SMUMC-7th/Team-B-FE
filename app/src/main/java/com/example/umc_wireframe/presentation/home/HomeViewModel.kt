@@ -1,20 +1,20 @@
 package com.example.umc_wireframe.presentation.home
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.repository.MemberRepository
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
-import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -22,6 +22,9 @@ import java.time.format.DateTimeFormatter
 class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.init())
     val uiState = _uiState.asStateFlow()
+
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Login("j", "j"))
+    val loginState = _loginState.asStateFlow()
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
         RepositoryFactory.createShortTermForecastRepository()
@@ -31,6 +34,9 @@ class HomeViewModel : ViewModel() {
 
     private val ootdRepository: OotdRepository =
         RepositoryFactory.createOotdRepository()
+
+    private val memberRepository: MemberRepository =
+        RepositoryFactory.createMemberRepository()
 
     fun getDailyShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
         val now = LocalDate.now().minusDays(1)
@@ -67,29 +73,61 @@ class HomeViewModel : ViewModel() {
                 )
             }
 
-            val sharedPref = UmcClothsOfTempApplication.context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            sharedPref.getString("jwt_token", null)?.let {
-                val pastOotd = ootdRepository.getOotdPastForTemp(
-                    authorization = it,
-                    maxTemperature = maxTemp.second.toInt(),
-                    minTemperature = minTime.second.toInt()
-                )
-                val recommendedClothes = ootdRepository.getRecommendedHashtag(
-                    authorization = it,
-                    maxTemperature = maxTemp.second.toInt(),
-                    minTemperature = minTime.second.toInt()
-                )
-                _uiState.update { prev->
-                    prev.copy(
-                        recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
-                        historyList = pastOotd.result?.ootds ?: emptyList()
-                    )
-                }
-            }
+            getOotd()
         }
 
     }
 
+
+    fun getOotd() = viewModelScope.launch {
+        if (loginState.value is LoginState.Login) {
+            try {
+                val pastOotd = ootdRepository.getOotdPastForTemp(
+                    authorization = (loginState.value as LoginState.Login).jwtToken,
+                    maxTemperature = uiState.value.maxTemp.second.toInt(),
+                    minTemperature = uiState.value.minTemp.second.toInt()
+                )
+                val recommendedClothes = ootdRepository.getRecommendedHashtag(
+                    authorization = (loginState.value as LoginState.Login).jwtToken,
+                    maxTemperature = uiState.value.maxTemp.second.toInt(),
+                    minTemperature = uiState.value.minTemp.second.toInt()
+                )
+                _uiState.update { prev ->
+                    prev.copy(
+                        recommendedClothes = recommendedClothes.result?.recommendations
+                            ?: emptyList(),
+                        historyList = pastOotd.result?.ootds ?: emptyList()
+                    )
+                }
+            } catch (e: Exception) {
+                if (e is HttpException && e.code() == 401)
+                    (loginState.value as? LoginState.Login)?.let {
+                        _loginState.update { prev ->
+                            LoginState.RefreshRequire(
+                                jwtToken = it.jwtToken,
+                                refreshToken = it.refreshToken
+                            )
+                        }
+                    } else LoginState.LoginRequire
+            }
+        }
+    }
+
+    fun refreshToken() = viewModelScope.launch {
+        try {
+            (loginState.value as? LoginState.RefreshRequire)?.let {
+                memberRepository.postRefreshToken(
+                    authorization = it.jwtToken,
+                    refreshToken = it.refreshToken
+                )
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            _loginState.update { prev->
+                LoginState.LoginRequire
+            }
+        }
+    }
 
     fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
         val tmFc = when {
