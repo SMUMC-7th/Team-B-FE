@@ -12,6 +12,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
@@ -90,20 +91,20 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
         @Body verificationCode: VerifyCode
     ): ServerResponse<String>
 
-    @POST("api/users/password/change/complete")
-    suspend fun postPasswordSuccess(
+    @PATCH("api/users/password/change/complete")
+    suspend fun patchPasswordSuccess(
         @Header("Authorization") authorization: String,
         @Body newPassword: NewPassword
     ): ServerResponse<String>
 
-    @POST("api/users/nickname")
-    suspend fun postNicknameChange(
+    @PATCH("api/users/nickname")
+    suspend fun patchNicknameChange(
         @Header("Authorization") authorization: String,
         @Body newNickname: NewNickname
     ): ServerResponse<NicknameResultResponse>
 
-    @POST("api/users/alarm-settings")
-    suspend fun postAlarmSet(
+    @PATCH("api/users/alarm-settings")
+    suspend fun patchAlarmSet(
         @Header("Authorization") authorization: String,
         @Body alarmSet: AlarmSet
     ): ServerResponse<String>
