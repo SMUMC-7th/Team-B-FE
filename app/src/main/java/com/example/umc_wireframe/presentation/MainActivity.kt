@@ -129,7 +129,6 @@ class MainActivity : AppCompatActivity(), NavColor {
                     LoginState.Init -> {}
                     is LoginState.Login -> {
                         navGraph.setStartDestination(R.id.navi_home)
-                        viewModel.getOotd()
                     }
                     LoginState.LoginRequire -> {
                         navGraph.setStartDestination(R.id.loginFragment)
