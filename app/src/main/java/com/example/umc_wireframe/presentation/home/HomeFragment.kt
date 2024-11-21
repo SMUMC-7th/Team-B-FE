@@ -12,7 +12,6 @@ import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +95,11 @@ class HomeFragment : Fragment() {
         HomeTagListAdapter()
     }
 
+    private val homeHistoryTagListAdapterList = listOf(
+        HomeHistoryTagListAdapter(),
+        HomeHistoryTagListAdapter()
+    )
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is NavColor) {
@@ -162,6 +166,18 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
+        fun initHistoryTagRv() {
+            binding.rvHomeMyHitory1.run {
+                adapter = homeHistoryTagListAdapterList[0]
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            binding.rvHomeMyHitory2.run {
+                adapter = homeHistoryTagListAdapterList[1]
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
+
         btnHomeOotd.setOnClickListener {
             findNavController().navigate(R.id.navi_uploadOOTD)
         }
@@ -169,6 +185,7 @@ class HomeFragment : Fragment() {
         setClothyString()
         initRecommendedClothesRv()
         initRecommendedTagRv()
+        initHistoryTagRv()
     }
 
     private fun selectLocation() = with(binding) {
@@ -279,7 +296,6 @@ class HomeFragment : Fragment() {
                 homeTagListAdapter.submitList(hashtag)
                 homeRecommendedClothesListAdapter.submitList(clothesImgUrl)
             }
-
         }
     }
 

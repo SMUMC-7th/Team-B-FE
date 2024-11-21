@@ -51,16 +51,16 @@ class HomeViewModel : ViewModel() {
             val maxTemp = tempList.maxBy { it.second }
             val minTime = tempList.minBy { it.second }
 
-            val pastOotd = ootdRepository.getOotdPastForTemp(
-                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-                maxTemperature = maxTemp.second.toInt(),
-                minTemperature = minTime.second.toInt()
-            )
-            val recommendedClothes = ootdRepository.getRecommendedHashtag(
-                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-                maxTemperature = maxTemp.second.toInt(),
-                minTemperature = minTime.second.toInt()
-            )
+//            val pastOotd = ootdRepository.getOotdPastForTemp(
+//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
+//                maxTemperature = maxTemp.second.toInt(),
+//                minTemperature = minTime.second.toInt()
+//            )
+//            val recommendedClothes = ootdRepository.getRecommendedHashtag(
+//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
+//                maxTemperature = maxTemp.second.toInt(),
+//                minTemperature = minTime.second.toInt()
+//            )
 
             _uiState.update { prev ->
                 prev.copy(
@@ -73,8 +73,8 @@ class HomeViewModel : ViewModel() {
                     pcp = items.filter { it.category == ShortTermCategory.PCP }
                         .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
                         .sortedByDescending { it.first },
-                    recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
-                    historyList = pastOotd.result?.ootds ?: emptyList()
+//                    recommendedClothes = recommendedClothes.result?.recommendations ?: emptyList(),
+//                    historyList = pastOotd.result?.ootds ?: emptyList()
                 )
             }
         }

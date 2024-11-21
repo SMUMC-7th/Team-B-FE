@@ -1,8 +1,7 @@
 package com.example.umc_wireframe.domain.repository
 
-import android.graphics.Bitmap
 import com.example.umc_wireframe.domain.model.Hashtag
-import com.example.umc_wireframe.domain.model.entity.OOtdEntity
+import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import okhttp3.MultipartBody
@@ -12,13 +11,13 @@ interface OotdRepository {
         authorization: String,
         maxTemperature: Int,
         minTemperature: Int
-    ): OOtdEntity<RecommendedHashtagResultEntity>
+    ): ServerEntity<RecommendedHashtagResultEntity>
 
     suspend fun getOotdPastForTemp(
         authorization: String,
         maxTemperature: Int,
         minTemperature: Int
-    ): OOtdEntity<OotdResultEntity>
+    ): ServerEntity<OotdResultEntity>
 
     suspend fun postOotd(
         authorization: String,
@@ -26,11 +25,11 @@ interface OotdRepository {
         maxTemperature: Int,
         minTemperature: Int,
         hashtags: List<Hashtag>
-    ): OOtdEntity<OotdResultEntity>
+    ): ServerEntity<String>
 
     suspend fun getOotdPastForYearMonth(
         authorization: String,
         year: Int,
         month: Int
-    ): OOtdEntity<OotdResultEntity>
+    ): ServerEntity<OotdResultEntity>
 }

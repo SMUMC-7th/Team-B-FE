@@ -3,7 +3,7 @@ package com.example.umc_wireframe.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class OOtdResponse<T>(
+data class ServerResponse<T>(
     @SerializedName("status") val status: String?,
     @SerializedName("code") val code: String?,
     @SerializedName("message") val message: String?,
@@ -32,3 +32,25 @@ data class OotdResultResponse(
         @SerializedName("date") val date: String?
     )
 }
+
+data class LoginResultResponse(
+    @SerializedName("accessToken") val accessToken: String?,
+    @SerializedName("refreshToken") val refreshToken: String
+    )
+
+data class NicknameResultResponse(
+    @SerializedName("newNickname") val newNickname: String?
+)
+
+data class JoinRequestResultResponse(
+    @SerializedName("userId") val userId: Long?
+)
+
+data class MyProfileResultResponse(
+    val email: String,
+    val name: String,
+    val nickname: String,
+    val gender: String,
+    val alarmStatus: Boolean,
+    val alarmTime: String
+)
