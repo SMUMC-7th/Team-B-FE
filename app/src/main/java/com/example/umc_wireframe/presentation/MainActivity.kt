@@ -20,38 +20,48 @@ import com.example.umc_wireframe.databinding.ActivityMainBinding
 import com.example.umc_wireframe.util.navigateWithClear
 
 class MainActivity : AppCompatActivity(), NavColor {
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var navController: NavController
 
-    val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         initNavigation()
-
-        requestNotificationPermission(this)
+        requestNotificationPermission()
     }
 
     private fun initNavigation() {
+        // 네비게이션 호스트 설정
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
         navController = navHostFragment.navController
 
+        // 화면 전환에 따른 하단 네비게이션 바 가시성 설정
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
+            binding.botNavMain.visibility = when (destination.id) {
                 R.id.registerStep1Fragment,
                 R.id.RegisterStep2Fragment,
                 R.id.RegisterStep3Fragment,
-                R.id.loginFragment -> binding.botNavMain.visibility = View.GONE
-
-                else -> binding.botNavMain.visibility = View.VISIBLE
+                R.id.loginFragment -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
+        // 하단 네비게이션 아이템 클릭 리스너 설정
+        setBottomNavigationListeners()
+
+        // 회원가입 토큰 기반 네비게이션 설정
+        val token = getRegistrationToken()
+        setNavGraph(token)
+    }
+
+    private fun setBottomNavigationListeners() {
         val navItems = listOf(
             binding.navHome,
             binding.navCalendar,
@@ -77,40 +87,41 @@ class MainActivity : AppCompatActivity(), NavColor {
                         if (currentDestinationId != R.id.menu_botNav_my)
                             navController.navigateWithClear(R.id.navi_my)
                     }
-
                 }
             }
         }
-
-        fun setNavGraph(isAlreadyLogin: Boolean) {
-            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-            if (isAlreadyLogin) {
-                navGraph.setStartDestination(R.id.navi_home)
-            } else {
-                navGraph.setStartDestination(R.id.loginFragment)
-            }
-            navController.setGraph(navGraph, null)
-        }
-
-        setNavGraph(true)
     }
 
-    fun requestNotificationPermission(context: Context) {
+    private fun setNavGraph(token: String?) {
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        if (!token.isNullOrEmpty()) {
+            navGraph.setStartDestination(R.id.navi_home)
+        } else {
+            navGraph.setStartDestination(R.id.registerStep1Fragment)
+        }
+        navController.setGraph(navGraph, null)
+    }
+
+    private fun getRegistrationToken(): String? {
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("registration_token", null)
+    }
+
+    private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    context,
+                    this,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
-                    context as Activity,
+                    this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
             }
         }
     }
-
 
     private fun updateNavIconTint(selected: ImageView) {
         listOf(binding.ivNavHome, binding.ivNavMypage, binding.ivNavCalendar).forEach {
@@ -130,5 +141,4 @@ class MainActivity : AppCompatActivity(), NavColor {
     override fun setNavMy() {
         updateNavIconTint(binding.ivNavMypage)
     }
-
 }

@@ -29,7 +29,9 @@ class NicknameChangeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack() // 이전 화면으로 돌아감
+        }
         nicknameEditText = binding.nicknameEditText
         btnCompleteChange = binding.btnCompleteChange
 
