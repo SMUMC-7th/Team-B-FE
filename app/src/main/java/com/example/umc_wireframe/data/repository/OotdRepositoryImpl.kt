@@ -2,11 +2,12 @@ package com.example.umc_wireframe.data.repository
 
 import com.example.umc_wireframe.domain.model.Hashtag
 import com.example.umc_wireframe.data.remote.ServerDatasource
-import com.example.umc_wireframe.domain.model.entity.OOtdEntity
+import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import com.example.umc_wireframe.domain.model.mapper.toHashtagEntity
-import com.example.umc_wireframe.domain.model.mapper.toOotdEntity
+import com.example.umc_wireframe.domain.model.mapper.toEntity
+import com.example.umc_wireframe.domain.model.mapper.toTempEntity
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import okhttp3.MultipartBody
 
@@ -17,7 +18,7 @@ class OotdRepositoryImpl(
         authorization: String,
         maxTemperature: Int,
         minTemperature: Int
-    ): OOtdEntity<RecommendedHashtagResultEntity> = datasource.getRecommendedHashtag(
+    ): ServerEntity<RecommendedHashtagResultEntity> = datasource.getRecommendedHashtag(
         authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
@@ -27,11 +28,11 @@ class OotdRepositoryImpl(
         authorization: String,
         maxTemperature: Int,
         minTemperature: Int
-    ): OOtdEntity<OotdResultEntity> = datasource.getOotdPastForTemp(
+    ): ServerEntity<OotdResultEntity> = datasource.getOotdPastForTemp(
         authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
-    ).toOotdEntity()
+    ).toEntity()
 
     override suspend fun postOotd(
         authorization: String,
@@ -39,21 +40,21 @@ class OotdRepositoryImpl(
         maxTemperature: Int,
         minTemperature: Int,
         hashtags: List<Hashtag>
-    ): OOtdEntity<OotdResultEntity> = datasource.postOotd(
+    ): ServerEntity<String> = datasource.postOotd(
         authorization = authorization,
         image = image,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature,
         hashtags = hashtags
-    ).toOotdEntity()
+    ).toTempEntity()
 
     override suspend fun getOotdPastForYearMonth(
         authorization: String,
         year: Int,
         month: Int
-    ): OOtdEntity<OotdResultEntity> = datasource.getOotdPastForYearMonth(
+    ): ServerEntity<OotdResultEntity> = datasource.getOotdPastForYearMonth(
         authorization = authorization,
         year = year,
         month = month
-    ).toOotdEntity()
+    ).toEntity()
 }
