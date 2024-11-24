@@ -7,65 +7,103 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
+import com.example.umc_wireframe.data.remote.ServerDatasource
+import com.example.umc_wireframe.data.remote.AccountRequest
+import com.example.umc_wireframe.data.remote.JoinVerify
 import com.example.umc_wireframe.databinding.FragmentRegisterStep1Binding
-
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 class RegisterStep1Fragment : Fragment() {
 
     private var _binding: FragmentRegisterStep1Binding? = null
     private val binding get() = _binding!!
+    private lateinit var serverDatasource: ServerDatasource
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterStep1Binding.inflate(inflater, container, false)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://43.202.248.120:8080/") // 서버 URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        serverDatasource = retrofit.create(ServerDatasource::class.java)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // "다음" 버튼 클릭 이벤트 설정
-        binding.loginButton.setOnClickListener {
-            val email = binding.tvEmailInput.text.toString() // 입력된 이메일 가져오기
-            val password = binding.passwordInput.text.toString() // 입력된 비밀번호 가져오기
+        binding.tvGetVerificationNumber.setOnClickListener {
+            val email = binding.tvEmailInput.text.toString().trim()
+            val password = binding.passwordInput.text.toString().trim()
 
-            if (email.isEmpty()) {
-                Toast.makeText(requireContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show()
-            } else if (password.isEmpty()) {
-                Toast.makeText(requireContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show()
-            } else {
-                savePassword(password)
-                findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("이메일과 비밀번호를 모두 입력해주세요.")
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+                try {
+                    val requestBody = AccountRequest(email, password)
+                    val response = serverDatasource.postJoinResquest(requestBody)
+                    if (response.isSuccess == true) {
+                        showToast("인증번호가 발송되었습니다. 이메일을 확인해주세요.")
+                        binding.getVerificationCode.visibility = View.VISIBLE
+                        binding.verifyCodeButton.visibility = View.VISIBLE
+                    } else {
+                        showToast(response.message ?: "인증번호 발송 실패. 다시 시도해주세요.")
+                    }
+                } catch (e: Exception) {
+                    showToast("오류 발생: ${e.message}")
+                }
             }
         }
 
-        // 이메일 인증번호 받기 클릭 이벤트
-        binding.tvGetVerificationNumber.setOnClickListener {
-            if (binding.getVerificationCode.visibility == View.GONE) {
-                // 인증번호 입력 필드를 표시
-                binding.getVerificationCode.visibility = View.VISIBLE
+        binding.verifyCodeButton.setOnClickListener {
+            val email = binding.tvEmailInput.text.toString().trim()
+            val verificationCode = binding.getVerificationCode.text.toString().trim()
 
-                // 이메일과 비밀번호 입력 필드에 blur 효과 적용
-                binding.tvEmailInput.alpha = 0.3f
-                binding.passwordInput.alpha = 0.3f
-
-                // 추가적으로 클릭 이벤트 차단 (선택사항)
-                binding.tvEmailInput.isEnabled = false
-                binding.passwordInput.isEnabled = false
-
-                Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
+            if (verificationCode.isEmpty()) {
+                showToast("인증번호를 입력해주세요.")
+                return@setOnClickListener
             }
+
+            lifecycleScope.launch {
+                try {
+                    val requestBody = JoinVerify(email, verificationCode)
+                    val response = serverDatasource.postJoinVerify(requestBody)
+                    if (response.isSuccess == true) {
+                        showToast("인증이 완료되었습니다.")
+                        saveEmail(email)
+                        findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
+                    } else {
+                        showToast(response.message ?: "인증 실패. 다시 시도해주세요.")
+                    }
+                } catch (e: Exception) {
+                    showToast("오류 발생: ${e.message}")
+                }
+            }
+        }
+
+    }
+    private fun saveEmail(email: String) {
+        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("email", email)
+            apply()
         }
     }
 
-    private fun savePassword(password: String) {
-        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("password", password)
-        editor.apply()
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

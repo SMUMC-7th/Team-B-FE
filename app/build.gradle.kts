@@ -112,4 +112,7 @@ dependencies {
 
     //Worker
     implementation("androidx.work:work-runtime-ktx:2.8.0")
+
+    implementation ("com.google.code.gson:gson:2.8.9")
+
 }
