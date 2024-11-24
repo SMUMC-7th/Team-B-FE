@@ -1,33 +1,19 @@
 package com.example.umc_wireframe.data.repository
 
-import com.example.umc_wireframe.data.remote.AccountRequest
-import com.example.umc_wireframe.data.remote.AlarmSet
-import com.example.umc_wireframe.data.remote.JoinInfo
-import com.example.umc_wireframe.data.remote.JoinVerify
-import com.example.umc_wireframe.data.remote.NewNickname
-import com.example.umc_wireframe.data.remote.NewPassword
-import com.example.umc_wireframe.data.remote.RefreshToken
-import com.example.umc_wireframe.data.remote.ServerDatasource
-import com.example.umc_wireframe.data.remote.VerifyCode
+import com.example.umc_wireframe.data.remote.*
 import com.example.umc_wireframe.domain.model.Gender
 import com.example.umc_wireframe.domain.model.SetAlarm
-import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
-import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
-import com.example.umc_wireframe.domain.model.entity.MyProfileResultEntity
-import com.example.umc_wireframe.domain.model.entity.NicknameResultEntity
-import com.example.umc_wireframe.domain.model.entity.ServerEntity
-import com.example.umc_wireframe.domain.model.mapper.toJoinRequestEntity
-import com.example.umc_wireframe.domain.model.mapper.toLoginEntity
-import com.example.umc_wireframe.domain.model.mapper.toMyProfileEntity
-import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
-import com.example.umc_wireframe.domain.model.mapper.toTempEntity
+import com.example.umc_wireframe.domain.model.entity.*
+import com.example.umc_wireframe.domain.model.mapper.*
 import com.example.umc_wireframe.domain.repository.MemberRepository
-import retrofit2.http.Header
+import com.example.umc_wireframe.util.SharedPreferencesManager
 
 class MemberRepositoryImpl(
-    private val datasource: ServerDatasource
+    private val datasource: ServerDatasource,
+    private val sharedPreferencesManager: SharedPreferencesManager // SharedPreferencesManager 주입
 ) : MemberRepository {
-    //join
+
+    // Join
     override suspend fun postJoinResquest(
         email: String,
         password: String
@@ -62,18 +48,30 @@ class MemberRepositoryImpl(
         )
     ).toTempEntity()
 
-    //login
+    // Login
     override suspend fun postLogin(
         email: String,
         password: String
-    ): ServerEntity<LoginResultEntity> = datasource.postLogin(
-        loginRequest = AccountRequest(
-            email = email,
-            password = password
+    ): ServerEntity<LoginResultEntity> {
+        val response = datasource.postLogin(
+            loginRequest = AccountRequest(
+                email = email,
+                password = password
+            )
         )
-    ).toLoginEntity()
 
-    //manage
+        // 토큰 저장 로직 추가
+        if (response.isSuccess == true) {
+            response.result?.let {
+                sharedPreferencesManager.saveAccessToken(it.accessToken ?: "")
+                sharedPreferencesManager.saveRefreshToken(it.refreshToken)
+            }
+        }
+
+        return response.toLoginEntity()
+    }
+
+    // Manage
     override suspend fun postUserWithdraw(
         authorization: String
     ): ServerEntity<String> = datasource.postUserWithdraw(
@@ -99,10 +97,21 @@ class MemberRepositoryImpl(
     override suspend fun postPasswordSuccess(
         authorization: String,
         newPassword: String
-    ): ServerEntity<String> = datasource.postPasswordSuccess(
-        authorization = authorization,
-        newPassword = NewPassword(newPassword)
-    ).toTempEntity()
+    ): ServerEntity<String> {
+        val response = datasource.postPasswordSuccess(
+            authorization = authorization,
+            newPassword = NewPassword(newPassword)
+        )
+
+        // 토큰 저장 로직 추가 (필요하다면)
+        if (response.isSuccess == true) {
+            response.result?.let {
+                sharedPreferencesManager.saveAccessToken(it) // 필요한 경우 저장
+            }
+        }
+
+        return response.toTempEntity()
+    }
 
     override suspend fun postNicknameChange(
         authorization: String,
@@ -133,8 +142,20 @@ class MemberRepositoryImpl(
     override suspend fun postRefreshToken(
         authorization: String,
         refreshToken: String
-    ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
-        authorization = authorization,
-        refreshToken = RefreshToken(refreshToken)
-    ).toLoginEntity()
+    ): ServerEntity<LoginResultEntity> {
+        val response = datasource.postRefreshToken(
+            authorization = authorization,
+            refreshToken = RefreshToken(refreshToken)
+        )
+
+        // 토큰 저장 로직 추가
+        if (response.isSuccess == true) {
+            response.result?.let {
+                sharedPreferencesManager.saveAccessToken(it.accessToken ?: "")
+                sharedPreferencesManager.saveRefreshToken(it.refreshToken ?: "")
+            }
+        }
+
+        return response.toLoginEntity()
+    }
 }
