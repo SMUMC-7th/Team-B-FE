@@ -17,6 +17,7 @@ import com.example.umc_wireframe.databinding.FragmentRegisterStep1Binding
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 class RegisterStep1Fragment : Fragment() {
 
     private var _binding: FragmentRegisterStep1Binding? = null
@@ -69,6 +70,7 @@ class RegisterStep1Fragment : Fragment() {
 
         binding.verifyCodeButton.setOnClickListener {
             val email = binding.tvEmailInput.text.toString().trim()
+            val password = binding.passwordInput.text.toString().trim()
             val verificationCode = binding.getVerificationCode.text.toString().trim()
 
             if (verificationCode.isEmpty()) {
@@ -82,7 +84,7 @@ class RegisterStep1Fragment : Fragment() {
                     val response = serverDatasource.postJoinVerify(requestBody)
                     if (response.isSuccess == true) {
                         showToast("인증이 완료되었습니다.")
-                        saveEmail(email)
+                        saveEmailAndPassword(email, password)
                         findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
                     } else {
                         showToast(response.message ?: "인증 실패. 다시 시도해주세요.")
@@ -92,12 +94,13 @@ class RegisterStep1Fragment : Fragment() {
                 }
             }
         }
-
     }
-    private fun saveEmail(email: String) {
+
+    private fun saveEmailAndPassword(email: String, password: String) {
         val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("email", email)
+            putString("password", password)
             apply()
         }
     }

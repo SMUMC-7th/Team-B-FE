@@ -1,3 +1,4 @@
+/*
 package com.example.umc_wireframe.presentation.register
 
 import android.content.Context
@@ -32,7 +33,7 @@ class RegisterStep2Fragment : Fragment() {
         _binding = FragmentRegisterStep2Binding.inflate(inflater, container, false)
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://43.202.248.120:8080/")
+            .baseUrl("http://43.202.248.120:8080/") // 서버 URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         serverDatasource = retrofit.create(ServerDatasource::class.java)
@@ -66,16 +67,22 @@ class RegisterStep2Fragment : Fragment() {
             }
 
             val joinInfo = JoinInfo(email, name, nickname, gender)
+
+            // 서버에 요청 보내기
             lifecycleScope.launch {
                 try {
                     val response = serverDatasource.postJoinSuccess(joinInfo)
-                    if (response.isSuccess==true && !isNavigated) {
+                    if (response.isSuccess == true && !isNavigated) {
                         isNavigated = true
+                        // 성공 메시지 표시
+                        showToast("회원가입이 완료되었습니다.")
+                        // 다음 단계로 이동
                         findNavController().navigate(R.id.action_registerStep2Fragment_to_registerStep3Fragment)
                     } else {
                         showToast(response.message ?: "회원가입에 실패했습니다.")
                     }
                 } catch (e: Exception) {
+                    // 예외 처리
                     showToast("오류 발생: ${e.message}")
                 }
             }
@@ -94,4 +101,69 @@ class RegisterStep2Fragment : Fragment() {
         _binding = null
     }
 }
+*/
+package com.example.umc_wireframe.presentation.register
 
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.umc_wireframe.R
+import com.example.umc_wireframe.databinding.FragmentRegisterStep2Binding
+
+class RegisterStep2Fragment : Fragment() {
+
+    private var _binding: FragmentRegisterStep2Binding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentRegisterStep2Binding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // "다음" 버튼 클릭 이벤트 설정
+        binding.loginButton.setOnClickListener {
+            val name = binding.tvNameInput.text.toString()
+            val nickname = binding.tvNicknameInput.text.toString()
+            val gender = when {
+                binding.maleRadioButton.isChecked -> "남자"
+                binding.femaleRadioButton.isChecked -> "여자"
+                else -> ""
+            }
+
+            if (name.isEmpty()) {
+                Toast.makeText(requireContext(), "이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            } else if (nickname.isEmpty()) {
+                Toast.makeText(requireContext(), "닉네임을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            } else if (gender.isEmpty()) {
+                Toast.makeText(requireContext(), "성별을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                // SharedPreferences에 닉네임과 성별 저장
+                val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().apply {
+                    putString("nickname", nickname)
+                    putString("gender", gender)
+                    apply()
+                }
+
+                // 다음 단계로 이동
+                findNavController().navigate(R.id.action_registerStep2Fragment_to_registerStep3Fragment)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

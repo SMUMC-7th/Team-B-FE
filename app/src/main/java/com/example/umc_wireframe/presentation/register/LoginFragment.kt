@@ -30,7 +30,6 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        // Initialize Retrofit and ServerDatasource
         val retrofit = Retrofit.Builder()
             .baseUrl("http://43.202.248.120:8080/") // 서버 URL
             .addConverterFactory(GsonConverterFactory.create())
@@ -46,11 +45,23 @@ class LoginFragment : Fragment() {
 
         binding.tvError.visibility = View.GONE
 
+        // SharedPreferences에서 저장된 이메일과 비밀번호 가져오기
+        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val registeredEmail = sharedPref.getString("email", null)
+        val registeredPassword = sharedPref.getString("password", null)
+
         binding.loginButton.setOnClickListener {
             val email = binding.tvEmailInput.text.toString().trim()
             val password = binding.tvPasswordInput.text.toString().trim()
 
-            validateAndLogin(email, password)
+            // 입력한 정보와 저장된 정보 비교
+            if (email == registeredEmail && password == registeredPassword) {
+                // 정보가 일치하면 로그인 요청
+                validateAndLogin(email, password)
+            } else {
+                binding.tvError.text = "이메일 또는 비밀번호가 일치하지 않습니다."
+                binding.tvError.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -67,7 +78,7 @@ class LoginFragment : Fragment() {
                 val requestBody = AccountRequest(email, password)
                 val response = serverDatasource.postLogin(requestBody)
 
-                if (response.isSuccess==true) {
+                if (response.isSuccess == true) {
                     // 로그인 성공
                     saveTokens(response.result?.accessToken, response.result?.refreshToken)
                     Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
