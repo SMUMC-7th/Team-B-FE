@@ -5,6 +5,7 @@
 
     <string name="jwt_token">jwtToken</string>
     <string name="refresh_token">refreshToken</string>
+    <string name="join"><u>회원가입</u></string>
     <string-array name="location_list">
         <item>서울</item>
         <item>부산</item>

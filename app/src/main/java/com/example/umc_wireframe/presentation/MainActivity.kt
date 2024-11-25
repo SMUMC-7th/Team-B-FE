@@ -1,7 +1,6 @@
 package com.example.umc_wireframe.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -41,9 +40,8 @@ class MainActivity : AppCompatActivity(), NavColor {
 
         initNavigation()
 
-        requestNotificationPermission(this)
-
         initViewModel()
+        requestNotificationPermission()
     }
 
     private fun initNavigation() {
@@ -62,6 +60,15 @@ class MainActivity : AppCompatActivity(), NavColor {
             }
         }
 
+        // 하단 네비게이션 아이템 클릭 리스너 설정
+        setBottomNavigationListeners()
+
+        // 회원가입 토큰 기반 네비게이션 설정
+        val token = getRegistrationToken()
+        setNavGraph(token)
+    }
+
+    private fun setBottomNavigationListeners() {
         val navItems = listOf(
             binding.navHome,
             binding.navCalendar,
@@ -91,29 +98,32 @@ class MainActivity : AppCompatActivity(), NavColor {
                 }
             }
         }
-
-        fun setNavGraph(isAlreadyLogin: Boolean) {
-            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-            if (isAlreadyLogin) {
-                navGraph.setStartDestination(R.id.navi_home)
-            } else {
-                navGraph.setStartDestination(R.id.loginFragment)
-            }
-            navController.setGraph(navGraph, null)
-        }
-
-        setNavGraph(true)
     }
 
-    fun requestNotificationPermission(context: Context) {
+    private fun setNavGraph(token: String?) {
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        if (!token.isNullOrEmpty()) {
+            navGraph.setStartDestination(R.id.navi_home)
+        } else {
+            navGraph.setStartDestination(R.id.loginFragment)
+        }
+        navController.setGraph(navGraph, null)
+    }
+
+    private fun getRegistrationToken(): String? {
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("registration_token", null)
+    }
+
+    private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    context,
+                    this,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
-                    context as Activity,
+                    this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
@@ -159,4 +169,5 @@ class MainActivity : AppCompatActivity(), NavColor {
     override fun setNavMy() {
         updateNavIconTint(binding.ivNavMypage)
     }
+
 }
