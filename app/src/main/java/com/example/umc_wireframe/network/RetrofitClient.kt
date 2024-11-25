@@ -1,21 +1,17 @@
 package com.example.umc_wireframe.network
 
-import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object RetrofitClient {
     const val SHORT_TERM_FORECAST_BASE_URL =
         "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
 
-    const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
 
     const val SERVER_BASE_URL = "http://43.202.248.120:8080/"
 
@@ -23,31 +19,26 @@ object RetrofitClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val shortTermOkHttpClient by lazy {
+
+    private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(UmcClothsOfTempApplication.context, AuthorizationType.SHORT_TERM_FORECAST))
+            .addInterceptor(AuthorizationInterceptor(UmcClothsOfTempApplication.context))
             .build()
     }
 
     private val shortTermRetrofit by lazy {
         Retrofit.Builder()
             .baseUrl(SHORT_TERM_FORECAST_BASE_URL)
-            .client(shortTermOkHttpClient)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    private val serverOkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
             .build()
     }
 
     private val serverRetrofit by lazy {
         Retrofit.Builder()
             .baseUrl(SERVER_BASE_URL)
-            .client(serverOkHttpClient)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
