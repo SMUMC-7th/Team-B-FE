@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.runner.RunWith
+import java.time.LocalDateTime
 
 
 @RunWith(AndroidJUnit4::class)
@@ -26,8 +27,7 @@ class TestServerInstrumented {
     private val testJoinPassword = "1234"
     private lateinit var memberRepository: MemberRepository
     private lateinit var ootdRepository: OotdRepository
-    private var token: String =
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWRlaGRkbmpzODlAZ21haWwuY29tIiwiaWQiOjcsImlhdCI6MTczMjE2MzIyMiwiZXhwIjoxNzMyMTY2ODIyfQ.9WG1w4TKf5094o-5WuEK9zbEH6ksyJISxlKQzuvXz0w"
+    private var token: String = ""
     private var refreshToken: String = ""
 
     @Before
@@ -46,19 +46,19 @@ class TestServerInstrumented {
 //            testWithdraw()
 
 
-//            testLoginSuccess()
+            testLoginSuccess()
 
             if (token != "") {
 //                postRefreshToken()
 //                testOotdCheck()
 
 //                postChangeNickname()
-                postAlaramSet()
-                getMyInfo()
+//                postAlaramSet()
+//                getMyInfo()
 
 //                testChangePwRequest()
 //            testChangePwVerify("165144")
-//                testChangePwSuccess() // 오류, front 측에선 문제를 찾지 못했음.
+                testChangePwSuccess() // 오류, front 측에선 문제를 찾지 못했음.
             }
         }
     }
@@ -187,7 +187,7 @@ class TestServerInstrumented {
 
     suspend fun testChangePwSuccess() {
         try {
-            memberRepository.postPasswordSuccess(
+            memberRepository.patchPasswordSuccess(
                 authorization = token,
                 newPassword = "1234"
             ).let {
@@ -218,7 +218,7 @@ class TestServerInstrumented {
 
     suspend fun postChangeNickname() {
         try {
-            memberRepository.postNicknameChange(
+            memberRepository.patchNicknameChange(
                 authorization = token,
                 newNickname = "change success"
             ).let {
@@ -231,10 +231,10 @@ class TestServerInstrumented {
 
     suspend fun postAlaramSet() {
         try {
-            memberRepository.postAlarmSet(
+            memberRepository.patchAlarmSet(
                 authorization = token,
                 alarmStatus = SetAlarm.POST,
-                alarmTime = "14:00"
+                alarmTime = LocalDateTime.now()
             )
         } catch (e: Exception) {
             e.printStackTrace()

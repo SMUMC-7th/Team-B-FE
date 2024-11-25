@@ -33,6 +33,10 @@ class LoginFragment : Fragment() {
 
             validateLogin(email, password)
         }
+
+        binding.tvLoginJoin.setOnClickListener {
+            findNavController().navigate(R.id.registerStep1Fragment)
+        }
     }
 
     private fun validateLogin(email: String, password: String) {

@@ -12,11 +12,6 @@ object RepositoryFactory {
         return ShortTermForecastRepositoryImpl(datasource)
     }
 
-    fun createMidTermForecastRepository(): MidTermForecastRepository {
-        val datasource = RetrofitClient.midTermForecastDatasource
-        return MidTermForecastRepositoryImpl(datasource)
-    }
-
     fun createOotdRepository(): OotdRepository {
         return OotdRepositoryImpl(RetrofitClient.serverDatasource)
     }

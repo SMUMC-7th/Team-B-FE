@@ -24,26 +24,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/notification_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_notification"
-            app:layout_constraintTop_toTopOf="@id/title"
-            app:layout_constraintEnd_toStartOf="@id/menu_icon"
-            android:layout_marginEnd="16dp"/>
-
-        <ImageView
-            android:id="@+id/menu_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_menu"
-            app:layout_constraintTop_toTopOf="@id/title"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="16dp"/>
-
-        <!-- 프로필 이미지 -->
-
-        <ImageView
             android:id="@+id/iv_profile_man"
             android:layout_width="80dp"
             android:layout_height="80dp"

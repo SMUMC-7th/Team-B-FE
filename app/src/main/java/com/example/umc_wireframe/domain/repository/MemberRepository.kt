@@ -11,6 +11,7 @@ import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import java.time.LocalDateTime
 
 interface MemberRepository {
     //join
@@ -51,20 +52,20 @@ interface MemberRepository {
         verificationCode: String
     ): ServerEntity<String>
 
-    suspend fun postPasswordSuccess(
+    suspend fun patchPasswordSuccess(
         authorization: String,
         newPassword: String
     ): ServerEntity<String>
 
-    suspend fun postNicknameChange(
+    suspend fun patchNicknameChange(
         authorization: String,
         newNickname: String
     ): ServerEntity<NicknameResultEntity>
 
-    suspend fun postAlarmSet(
+    suspend fun patchAlarmSet(
         authorization: String,
         alarmStatus: SetAlarm,
-        alarmTime: String
+        alarmTime: LocalDateTime
     ): ServerEntity<String>
 
     suspend fun getMyProfile(
