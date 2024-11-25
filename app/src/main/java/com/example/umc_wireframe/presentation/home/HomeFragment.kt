@@ -12,7 +12,6 @@ import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -96,6 +96,11 @@ class HomeFragment : Fragment() {
         HomeTagListAdapter()
     }
 
+    private val homeHistoryTagListAdapterList = listOf(
+        HomeHistoryTagListAdapter(),
+        HomeHistoryTagListAdapter()
+    )
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is NavColor) {
@@ -162,6 +167,18 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
+        fun initHistoryTagRv() {
+            binding.rvHomeMyHitory1.run {
+                adapter = homeHistoryTagListAdapterList[0]
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            binding.rvHomeMyHitory2.run {
+                adapter = homeHistoryTagListAdapterList[1]
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
+
         btnHomeOotd.setOnClickListener {
             findNavController().navigate(R.id.navi_uploadOOTD)
         }
@@ -169,6 +186,7 @@ class HomeFragment : Fragment() {
         setClothyString()
         initRecommendedClothesRv()
         initRecommendedTagRv()
+        initHistoryTagRv()
     }
 
     private fun selectLocation() = with(binding) {
@@ -280,6 +298,30 @@ class HomeFragment : Fragment() {
                 homeRecommendedClothesListAdapter.submitList(clothesImgUrl)
             }
 
+
+
+
+            it.historyList.let {
+                if (it.size < 2) {
+                    tvHomeNoHistory.visibility = View.VISIBLE
+                    clHomeHistory.visibility = View.INVISIBLE
+                } else {
+                    tvHomeNoHistory.visibility = View.INVISIBLE
+                    clHomeHistory.visibility = View.VISIBLE
+
+                    Glide.with(requireContext())
+                        .load(it[0].image) // 로드할 이미지 URL
+                        .into(ivHomeMyHistory1)
+                    tvHomeMyHistory1.text = it[0].date
+                    homeHistoryTagListAdapterList[0].submitList(it[0].hashtags)
+
+                    Glide.with(requireContext())
+                        .load(it[1].image) // 로드할 이미지 URL
+                        .into(ivHomeMyHistory2)
+                    tvHomeMyHistory2.text = it[1].date
+                    homeHistoryTagListAdapterList[1].submitList(it[1].hashtags)
+                }
+            }
         }
     }
 

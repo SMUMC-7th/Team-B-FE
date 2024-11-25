@@ -8,11 +8,11 @@ import com.example.umc_wireframe.domain.model.entity.ShortTermForecastItemEntity
 import com.example.umc_wireframe.domain.model.entity.ShortTermHeaderEntity
 import com.example.umc_wireframe.domain.model.toShortTermCategory
 
-fun ShortTermForecastResponse?.toOotdEntity(): ShortTermForecastEntity {
+fun ShortTermForecastResponse?.toEntity(): ShortTermForecastEntity {
     return this?.let {
         ShortTermForecastEntity(
-            header = it.response?.header.toOotdEntity(),
-            body = it.response?.body.toOotdEntity()
+            header = it.response?.header.toEntity(),
+            body = it.response?.body.toEntity()
         )
     } ?: ShortTermForecastEntity(
         header = ShortTermHeaderEntity(resultCode = "unknown", resultMsg = "No message"),
@@ -20,7 +20,7 @@ fun ShortTermForecastResponse?.toOotdEntity(): ShortTermForecastEntity {
     )
 }
 
-fun ShortTermHeaderResponse?.toOotdEntity(): ShortTermHeaderEntity {
+fun ShortTermHeaderResponse?.toEntity(): ShortTermHeaderEntity {
     return this?.let {
         ShortTermHeaderEntity(
             resultCode = it.resultCode ?: "unknown",
@@ -29,10 +29,10 @@ fun ShortTermHeaderResponse?.toOotdEntity(): ShortTermHeaderEntity {
     } ?: ShortTermHeaderEntity(resultCode = "unknown", resultMsg = "No message")
 }
 
-fun ShortTermBodyResponse?.toOotdEntity(): ShortTermBodyEntity {
+fun ShortTermBodyResponse?.toEntity(): ShortTermBodyEntity {
     return this?.let {
         ShortTermBodyEntity(
-            items = it.items?.item?.map { item -> item.toOotdEntity() } ?: emptyList(),
+            items = it.items?.item?.map { item -> item.toEntity() } ?: emptyList(),
             pageNo = it.pageNo ?: 0,
             numOfRows = it.numOfRows ?: 0,
             totalCount = it.totalCount ?: 0
@@ -40,7 +40,7 @@ fun ShortTermBodyResponse?.toOotdEntity(): ShortTermBodyEntity {
     } ?: ShortTermBodyEntity(items = emptyList(), pageNo = 0, numOfRows = 0, totalCount = 0)
 }
 
-fun ShortTermForecastItemResponse?.toOotdEntity(): ShortTermForecastItemEntity {
+fun ShortTermForecastItemResponse?.toEntity(): ShortTermForecastItemEntity {
     return this?.let {
         ShortTermForecastItemEntity(
             date = it.baseDate ?: "unknown",

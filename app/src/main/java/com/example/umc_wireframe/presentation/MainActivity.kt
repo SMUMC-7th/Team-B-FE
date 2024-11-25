@@ -1,7 +1,6 @@
 package com.example.umc_wireframe.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -10,46 +9,54 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.navigateWithClear
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavColor {
-
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var navController: NavController
 
-    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+    val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         initNavigation()
+
+        initViewModel()
         requestNotificationPermission()
     }
 
     private fun initNavigation() {
-        // 네비게이션 호스트 설정
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
         navController = navHostFragment.navController
 
-        // 화면 전환에 따른 하단 네비게이션 바 가시성 설정
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.botNavMain.visibility = when (destination.id) {
+            when (destination.id) {
                 R.id.registerStep1Fragment,
                 R.id.RegisterStep2Fragment,
                 R.id.RegisterStep3Fragment,
-                R.id.loginFragment -> View.GONE
-                else -> View.VISIBLE
+                R.id.loginFragment -> binding.botNavMain.visibility = View.GONE
+
+                else -> binding.botNavMain.visibility = View.VISIBLE
             }
         }
 
@@ -87,6 +94,7 @@ class MainActivity : AppCompatActivity(), NavColor {
                         if (currentDestinationId != R.id.menu_botNav_my)
                             navController.navigateWithClear(R.id.navi_my)
                     }
+
                 }
             }
         }
@@ -97,7 +105,7 @@ class MainActivity : AppCompatActivity(), NavColor {
         if (!token.isNullOrEmpty()) {
             navGraph.setStartDestination(R.id.navi_home)
         } else {
-            navGraph.setStartDestination(R.id.registerStep1Fragment)
+            navGraph.setStartDestination(R.id.loginFragment)
         }
         navController.setGraph(navGraph, null)
     }
@@ -123,6 +131,26 @@ class MainActivity : AppCompatActivity(), NavColor {
         }
     }
 
+    private fun initViewModel() = with(viewModel) {
+        lifecycleScope.launch {
+            viewModel.loginState.collectLatest { loginState ->
+                val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                when (loginState) {
+                    LoginState.Init -> {}
+                    is LoginState.Login -> {
+                        navGraph.setStartDestination(R.id.navi_home)
+                    }
+                    LoginState.LoginRequire -> {
+                        navGraph.setStartDestination(R.id.loginFragment)
+                    }
+                    is LoginState.RefreshRequire -> {
+                        viewModel.refreshToken()
+                    }
+                }
+            }
+        }
+    }
+
     private fun updateNavIconTint(selected: ImageView) {
         listOf(binding.ivNavHome, binding.ivNavMypage, binding.ivNavCalendar).forEach {
             it.setImageTintList(ColorStateList.valueOf(Color.GRAY))
@@ -141,4 +169,5 @@ class MainActivity : AppCompatActivity(), NavColor {
     override fun setNavMy() {
         updateNavIconTint(binding.ivNavMypage)
     }
+
 }

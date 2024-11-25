@@ -244,11 +244,35 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/img_blur_history"
-                        app:layout_constraintBottom_toBottomOf="@id/iv_home_myHistory2"
                         app:layout_constraintDimensionRatio="1"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/iv_home_myHistory1" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="-160dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_home_noHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="@id/cl_home_history"
+                        app:layout_constraintBottom_toBottomOf="@id/cl_home_history"
+                        app:layout_constraintStart_toStartOf="@id/cl_home_history"
+                        app:layout_constraintEnd_toEndOf="@id/cl_home_history"
+                        android:text="과거의 정보가 \n       존재하지 않습니다."
+                        android:layout_marginBottom="240dp"
+                        android:textSize="24sp"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_home_history"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="@id/iv_home_magicStick"
+                        app:layout_constraintEnd_toEndOf="@id/tv_home_likeThis"
+                        app:layout_constraintTop_toBottomOf="@id/iv_home_magicStick"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:visibility="invisible">
 
                     <ImageView
                         android:id="@+id/iv_home_myHistory1"
@@ -258,8 +282,8 @@
                         android:layout_marginTop="20dp"
                         android:background="@drawable/bg_historyimage_rounded"
                         android:clipToOutline="true"
-                        app:layout_constraintStart_toStartOf="@id/iv_home_magicStick"
-                        app:layout_constraintTop_toBottomOf="@id/iv_home_magicStick"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:src="@color/black" />
 
                     <TextView
@@ -291,7 +315,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@drawable/bg_historyimage_rounded"
                         android:clipToOutline="true"
-                        app:layout_constraintEnd_toEndOf="@id/tv_home_likeThis"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/iv_home_myHistory1"
                         tools:src="@color/black" />
 
@@ -314,7 +338,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_home_myHistory2"
                         tools:itemCount="3"
                         tools:listitem="@layout/item_rv_historytag" />
-
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

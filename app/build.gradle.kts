@@ -67,13 +67,15 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     //viewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.activity:activity-ktx:1.9.3")
 
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

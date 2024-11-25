@@ -2,7 +2,7 @@ package com.example.umc_wireframe.data.repository
 
 import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.domain.model.entity.MidTermForecastEntity
-import com.example.umc_wireframe.domain.model.mapper.toOotdEntity
+import com.example.umc_wireframe.domain.model.mapper.toEntity
 import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 
 class MidTermForecastRepositoryImpl(
@@ -20,5 +20,5 @@ class MidTermForecastRepositoryImpl(
         dataType = dataType,
         regId = regId,
         tmFc = tmFc
-    ).toOotdEntity()
+    ).toEntity()
 }
