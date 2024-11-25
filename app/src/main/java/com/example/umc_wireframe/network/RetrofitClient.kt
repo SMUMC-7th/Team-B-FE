@@ -34,23 +34,6 @@ object RetrofitClient {
             .baseUrl(SHORT_TERM_FORECAST_BASE_URL)
             .client(shortTermOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
-    }
-
-    private val midTermOkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(AuthorizationType.MID_TERM_FORECAST))
-            .build()
-    }
-
-    private val midTermRetrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(MID_TERM_FORECAST_BASE_URL)
-            .client(midTermOkHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 
@@ -65,7 +48,6 @@ object RetrofitClient {
             .baseUrl(SERVER_BASE_URL)
             .client(serverOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 
@@ -74,9 +56,6 @@ object RetrofitClient {
         shortTermRetrofit.create(ShortTermForecastDatasource::class.java)
     }
 
-    val midTermForecastDatasource: MidTermForecastDatasource by lazy {
-        midTermRetrofit.create(MidTermForecastDatasource::class.java)
-    }
 
     val serverDatasource: ServerDatasource by lazy {
         serverRetrofit.create(ServerDatasource::class.java)

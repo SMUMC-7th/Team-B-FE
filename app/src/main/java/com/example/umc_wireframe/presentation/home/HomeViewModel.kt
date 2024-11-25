@@ -29,9 +29,6 @@ class HomeViewModel : ViewModel() {
     private val shortTermForecastRepository: ShortTermForecastRepository =
         RepositoryFactory.createShortTermForecastRepository()
 
-    private val midTermForecastRepository: MidTermForecastRepository =
-        RepositoryFactory.createMidTermForecastRepository()
-
     private val ootdRepository: OotdRepository =
         RepositoryFactory.createOotdRepository()
 
@@ -140,26 +137,4 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getMidTermForecast(midTermRegion: MidTermRegion) = viewModelScope.launch {
-        val tmFc = when {
-            LocalDateTime.now().hour < 6 -> LocalDateTime.now().minusDays(1)
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
-
-            LocalDateTime.now().hour < 18 -> LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0600"
-
-            else -> LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "1800"
-        }
-
-        midTermForecastRepository.getWeatherForecast(
-            tmFc = tmFc,
-            regId = midTermRegion.regId
-        ).let { entity ->
-            entity?.response?.body?.items?.map {
-
-            }
-
-        }
-    }
 }
