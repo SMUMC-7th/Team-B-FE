@@ -10,14 +10,20 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.navigateWithClear
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavColor {
     private val binding: ActivityMainBinding by lazy {
@@ -27,6 +33,8 @@ class MainActivity : AppCompatActivity(), NavColor {
 
     val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
 
+    private val viewModel: HomeViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -34,6 +42,8 @@ class MainActivity : AppCompatActivity(), NavColor {
         initNavigation()
 
         requestNotificationPermission(this)
+
+        initViewModel()
     }
 
     private fun initNavigation() {
@@ -111,6 +121,25 @@ class MainActivity : AppCompatActivity(), NavColor {
         }
     }
 
+    private fun initViewModel() = with(viewModel) {
+        lifecycleScope.launch {
+            viewModel.loginState.collectLatest { loginState ->
+                val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                when (loginState) {
+                    LoginState.Init -> {}
+                    is LoginState.Login -> {
+                        navGraph.setStartDestination(R.id.navi_home)
+                    }
+                    LoginState.LoginRequire -> {
+                        navGraph.setStartDestination(R.id.loginFragment)
+                    }
+                    is LoginState.RefreshRequire -> {
+                        viewModel.refreshToken()
+                    }
+                }
+            }
+        }
+    }
 
     private fun updateNavIconTint(selected: ImageView) {
         listOf(binding.ivNavHome, binding.ivNavMypage, binding.ivNavCalendar).forEach {
@@ -130,5 +159,4 @@ class MainActivity : AppCompatActivity(), NavColor {
     override fun setNavMy() {
         updateNavIconTint(binding.ivNavMypage)
     }
-
 }

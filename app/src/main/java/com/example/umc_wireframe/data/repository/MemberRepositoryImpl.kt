@@ -21,8 +21,9 @@ import com.example.umc_wireframe.domain.model.mapper.toLoginEntity
 import com.example.umc_wireframe.domain.model.mapper.toMyProfileEntity
 import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
+import com.example.umc_wireframe.domain.model.toPatchAlarmTime
 import com.example.umc_wireframe.domain.repository.MemberRepository
-import retrofit2.http.Header
+import java.time.LocalDateTime
 
 class MemberRepositoryImpl(
     private val datasource: ServerDatasource
@@ -96,31 +97,31 @@ class MemberRepositoryImpl(
         )
     ).toTempEntity()
 
-    override suspend fun postPasswordSuccess(
+    override suspend fun patchPasswordSuccess(
         authorization: String,
         newPassword: String
-    ): ServerEntity<String> = datasource.postPasswordSuccess(
+    ): ServerEntity<String> = datasource.patchPasswordSuccess(
         authorization = authorization,
         newPassword = NewPassword(newPassword)
     ).toTempEntity()
 
-    override suspend fun postNicknameChange(
+    override suspend fun patchNicknameChange(
         authorization: String,
         newNickname: String
-    ): ServerEntity<NicknameResultEntity> = datasource.postNicknameChange(
+    ): ServerEntity<NicknameResultEntity> = datasource.patchNicknameChange(
         authorization = authorization,
         newNickname = NewNickname(newNickname)
     ).toNicknameEntity()
 
-    override suspend fun postAlarmSet(
+    override suspend fun patchAlarmSet(
         authorization: String,
         alarmStatus: SetAlarm,
-        alarmTime: String
-    ): ServerEntity<String> = datasource.postAlarmSet(
+        alarmTime: LocalDateTime
+    ): ServerEntity<String> = datasource.patchAlarmSet(
         authorization = authorization,
         alarmSet = AlarmSet(
             alarmStatus = alarmStatus.setType,
-            alarmTime = alarmTime
+            alarmTime = alarmTime.toPatchAlarmTime()
         )
     ).toTempEntity()
 
