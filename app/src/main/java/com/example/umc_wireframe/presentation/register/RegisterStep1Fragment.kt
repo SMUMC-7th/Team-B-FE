@@ -32,37 +32,44 @@ class RegisterStep1Fragment : Fragment() {
             val email = binding.tvEmailInput.text.toString() // 입력된 이메일 가져오기
             val password = binding.passwordInput.text.toString() // 입력된 비밀번호 가져오기
 
-            // 이메일이 비어 있는 경우 사용자에게 알림
             if (email.isEmpty()) {
                 Toast.makeText(requireContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show()
-            }
-            // 비밀번호가 비어 있는 경우 사용자에게 알림
-            else if (password.isEmpty()) {
+            } else if (password.isEmpty()) {
                 Toast.makeText(requireContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                savePassword(password)
+                findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
             }
-            // 이메일과 비밀번호가 모두 입력된 경우
-            else {
-                savePassword(password) // 비밀번호를 SharedPreferences에 저장
-                findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment) // 다음 단계로 이동
+        }
+
+        // 이메일 인증번호 받기 클릭 이벤트
+        binding.tvGetVerificationNumber.setOnClickListener {
+            if (binding.getVerificationCode.visibility == View.GONE) {
+                // 인증번호 입력 필드를 표시
+                binding.getVerificationCode.visibility = View.VISIBLE
+
+                // 이메일과 비밀번호 입력 필드에 blur 효과 적용
+                binding.tvEmailInput.alpha = 0.3f
+                binding.passwordInput.alpha = 0.3f
+
+                // 추가적으로 클릭 이벤트 차단 (선택사항)
+                binding.tvEmailInput.isEnabled = false
+                binding.passwordInput.isEnabled = false
+
+                Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    //입력받은 비밀번호를 SharedPreferences에 저장하는 함수
-    // @param password 사용자가 입력한 비밀번호
-
     private fun savePassword(password: String) {
-        // SharedPreferences 객체 생성 ("user_prefs" 이름으로 파일 생성)
         val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-
-        // SharedPreferences에 데이터를 저장하기 위한 에디터 객체 생성
         val editor = sharedPref.edit()
-        editor.putString("password", password) // "password" 키로 비밀번호 저장
-        editor.apply() // 저장 적용
+        editor.putString("password", password)
+        editor.apply()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // 뷰 바인딩 해제
+        _binding = null
     }
 }

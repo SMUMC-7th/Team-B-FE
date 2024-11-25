@@ -1,7 +1,6 @@
 package com.example.umc_wireframe.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -10,14 +9,20 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.navigateWithClear
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavColor {
     private val binding: ActivityMainBinding by lazy {
@@ -27,13 +32,16 @@ class MainActivity : AppCompatActivity(), NavColor {
 
     val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
 
+    private val viewModel: HomeViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         initNavigation()
 
-        requestNotificationPermission(this)
+        initViewModel()
+        requestNotificationPermission()
     }
 
     private fun initNavigation() {
@@ -52,6 +60,15 @@ class MainActivity : AppCompatActivity(), NavColor {
             }
         }
 
+        // 하단 네비게이션 아이템 클릭 리스너 설정
+        setBottomNavigationListeners()
+
+        // 회원가입 토큰 기반 네비게이션 설정
+        val token = getRegistrationToken()
+        setNavGraph(token)
+    }
+
+    private fun setBottomNavigationListeners() {
         val navItems = listOf(
             binding.navHome,
             binding.navCalendar,
@@ -81,29 +98,32 @@ class MainActivity : AppCompatActivity(), NavColor {
                 }
             }
         }
-
-        fun setNavGraph(isAlreadyLogin: Boolean) {
-            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-            if (isAlreadyLogin) {
-                navGraph.setStartDestination(R.id.navi_home)
-            } else {
-                navGraph.setStartDestination(R.id.loginFragment)
-            }
-            navController.setGraph(navGraph, null)
-        }
-
-        setNavGraph(true)
     }
 
-    fun requestNotificationPermission(context: Context) {
+    private fun setNavGraph(token: String?) {
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        if (!token.isNullOrEmpty()) {
+            navGraph.setStartDestination(R.id.navi_home)
+        } else {
+            navGraph.setStartDestination(R.id.loginFragment)
+        }
+        navController.setGraph(navGraph, null)
+    }
+
+    private fun getRegistrationToken(): String? {
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("registration_token", null)
+    }
+
+    private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    context,
+                    this,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
-                    context as Activity,
+                    this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
@@ -111,6 +131,25 @@ class MainActivity : AppCompatActivity(), NavColor {
         }
     }
 
+    private fun initViewModel() = with(viewModel) {
+        lifecycleScope.launch {
+            viewModel.loginState.collectLatest { loginState ->
+                val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                when (loginState) {
+                    LoginState.Init -> {}
+                    is LoginState.Login -> {
+                        navGraph.setStartDestination(R.id.navi_home)
+                    }
+                    LoginState.LoginRequire -> {
+                        navGraph.setStartDestination(R.id.loginFragment)
+                    }
+                    is LoginState.RefreshRequire -> {
+                        viewModel.refreshToken()
+                    }
+                }
+            }
+        }
+    }
 
     private fun updateNavIconTint(selected: ImageView) {
         listOf(binding.ivNavHome, binding.ivNavMypage, binding.ivNavCalendar).forEach {

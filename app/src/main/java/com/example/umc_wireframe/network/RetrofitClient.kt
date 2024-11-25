@@ -1,6 +1,5 @@
 package com.example.umc_wireframe.network
 
-import android.content.Context
 import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
@@ -9,17 +8,15 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
-class RetrofitClient(context: Context) { // context를 생성자에서 받도록 변경
+object RetrofitClient {
+    const val SHORT_TERM_FORECAST_BASE_URL =
+        "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
 
-    companion object {
-        const val SHORT_TERM_FORECAST_BASE_URL =
-            "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+    const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
 
-        const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
-
-        const val SERVER_BASE_URL = "http://43.202.248.120:8080/"
-    }
+    const val SERVER_BASE_URL = "http://43.202.248.120:8080/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -28,7 +25,7 @@ class RetrofitClient(context: Context) { // context를 생성자에서 받도록
     private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(context, AuthorizationType.SHORT_TERM_FORECAST)) // Context 전달
+            .addInterceptor(AuthorizationInterceptor(AuthorizationType.SHORT_TERM_FORECAST))
             .build()
     }
 
@@ -37,30 +34,12 @@ class RetrofitClient(context: Context) { // context를 생성자에서 받도록
             .baseUrl(SHORT_TERM_FORECAST_BASE_URL)
             .client(shortTermOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
-    }
-
-    private val midTermOkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(context, AuthorizationType.MID_TERM_FORECAST)) // Context 전달
-            .build()
-    }
-
-    private val midTermRetrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(MID_TERM_FORECAST_BASE_URL)
-            .client(midTermOkHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 
     private val serverOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(context, AuthorizationType.SHORT_TERM_FORECAST)) // Context 전달
             .build()
     }
 
@@ -69,17 +48,14 @@ class RetrofitClient(context: Context) { // context를 생성자에서 받도록
             .baseUrl(SERVER_BASE_URL)
             .client(serverOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
+
 
     val shortTermForecastDatasource: ShortTermForecastDatasource by lazy {
         shortTermRetrofit.create(ShortTermForecastDatasource::class.java)
     }
 
-    val midTermForecastDatasource: MidTermForecastDatasource by lazy {
-        midTermRetrofit.create(MidTermForecastDatasource::class.java)
-    }
 
     val serverDatasource: ServerDatasource by lazy {
         serverRetrofit.create(ServerDatasource::class.java)
