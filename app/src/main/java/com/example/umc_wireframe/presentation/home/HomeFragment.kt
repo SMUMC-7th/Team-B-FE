@@ -323,6 +323,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+
     }
 
     private fun getCurrentLocation() {

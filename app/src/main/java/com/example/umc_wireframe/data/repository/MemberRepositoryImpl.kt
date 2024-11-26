@@ -76,49 +76,37 @@ class MemberRepositoryImpl(
 
     //manage
     override suspend fun postUserWithdraw(
-        authorization: String
     ): ServerEntity<String> = datasource.postUserWithdraw(
-        authorization
     ).toTempEntity()
 
     override suspend fun postPasswordChange(
-        authorization: String
     ): ServerEntity<String> = datasource.postPasswordChange(
-        authorization
     ).toTempEntity()
 
     override suspend fun postPasswordVerify(
-        authorization: String,
         verificationCode: String
     ): ServerEntity<String> = datasource.postPasswordVerify(
-        authorization = authorization,
         VerifyCode(
             verificationCode
         )
     ).toTempEntity()
 
     override suspend fun patchPasswordSuccess(
-        authorization: String,
         newPassword: String
     ): ServerEntity<String> = datasource.patchPasswordSuccess(
-        authorization = authorization,
         newPassword = NewPassword(newPassword)
     ).toTempEntity()
 
     override suspend fun patchNicknameChange(
-        authorization: String,
         newNickname: String
     ): ServerEntity<NicknameResultEntity> = datasource.patchNicknameChange(
-        authorization = authorization,
         newNickname = NewNickname(newNickname)
     ).toNicknameEntity()
 
     override suspend fun patchAlarmSet(
-        authorization: String,
         alarmStatus: SetAlarm,
         alarmTime: LocalDateTime
     ): ServerEntity<String> = datasource.patchAlarmSet(
-        authorization = authorization,
         alarmSet = AlarmSet(
             alarmStatus = alarmStatus.setType,
             alarmTime = alarmTime.toPatchAlarmTime()
@@ -126,16 +114,12 @@ class MemberRepositoryImpl(
     ).toTempEntity()
 
     override suspend fun getMyProfile(
-        authorization: String
     ): ServerEntity<MyProfileResultEntity> = datasource.getMyProfile(
-        authorization
     ).toMyProfileEntity()
 
     override suspend fun postRefreshToken(
-        authorization: String,
         refreshToken: String
     ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
-        authorization = authorization,
         refreshToken = RefreshToken(refreshToken)
     ).toLoginEntity()
 }

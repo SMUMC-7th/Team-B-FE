@@ -7,14 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentRegisterStep1Binding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class RegisterStep1Fragment : Fragment() {
 
     private var _binding: FragmentRegisterStep1Binding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +43,6 @@ class RegisterStep1Fragment : Fragment() {
             } else if (password.isEmpty()) {
                 Toast.makeText(requireContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
-                savePassword(password)
                 findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
             }
         }
@@ -56,17 +61,21 @@ class RegisterStep1Fragment : Fragment() {
                 binding.tvEmailInput.isEnabled = false
                 binding.passwordInput.isEnabled = false
 
+                viewModel.postJoinReq(binding.tvEmailInput.text.toString(), binding.passwordInput.text.toString())
+
                 Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun savePassword(password: String) {
-        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("password", password)
-        editor.apply()
+    private fun initViewModel() = with(viewModel){
+        viewLifecycleOwner.lifecycleScope.launch {
+            loginState.collectLatest { state ->
+
+            }
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

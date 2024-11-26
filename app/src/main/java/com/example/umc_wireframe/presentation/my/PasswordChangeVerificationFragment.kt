@@ -53,8 +53,8 @@ class PasswordChangeVerificationFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val token =
-                    SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
-                val response = memberRepository.postPasswordChange("Bearer $token")
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
+                val response = memberRepository.postPasswordChange()
                 if (response.isSuccess == true) {
                     Toast.makeText(requireContext(), "인증번호가 이메일로 전송되었습니다.", Toast.LENGTH_SHORT)
                         .show()
@@ -82,9 +82,8 @@ class PasswordChangeVerificationFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val token =
-                    SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
                 val response = memberRepository.postPasswordVerify(
-                    authorization = "Bearer $token",
                     verificationCode = enteredCode
                 )
                 Log.d("API_RESPONSE", "Response: $response")

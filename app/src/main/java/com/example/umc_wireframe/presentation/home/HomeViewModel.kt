@@ -2,11 +2,9 @@ package com.example.umc_wireframe.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.umc_wireframe.domain.model.MidTermRegion
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
 import com.example.umc_wireframe.domain.repository.MemberRepository
-import com.example.umc_wireframe.domain.repository.MidTermForecastRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
@@ -16,14 +14,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.init())
     val uiState = _uiState.asStateFlow()
 
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Login("j", "j"))
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Init)
     val loginState = _loginState.asStateFlow()
 
     private val shortTermForecastRepository: ShortTermForecastRepository =
@@ -34,6 +31,11 @@ class HomeViewModel : ViewModel() {
 
     private val memberRepository: MemberRepository =
         RepositoryFactory.createMemberRepository()
+
+
+    fun logout(){
+        _loginState.value = LoginState.LoginRequire
+    }
 
     fun getDailyShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
         val now = LocalDate.now().minusDays(1)
@@ -55,17 +57,6 @@ class HomeViewModel : ViewModel() {
 
             val maxTemp = tempList.maxBy { it.second }
             val minTime = tempList.minBy { it.second }
-
-//            val pastOotd = ootdRepository.getOotdPastForTemp(
-//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-//                maxTemperature = maxTemp.second.toInt(),
-//                minTemperature = minTime.second.toInt()
-//            )
-//            val recommendedClothes = ootdRepository.getRecommendedHashtag(
-//                authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWQiOjIsImlhdCI6MTczMTkyMDkzMywiZXhwIjoxNzMxOTI0NTMzfQ.W88HJXTFuaquN3eEuB-GeSnCQGFObl6ctdmU_BCsEFM",
-//                maxTemperature = maxTemp.second.toInt(),
-//                minTemperature = minTime.second.toInt()
-//            )
 
             _uiState.update { prev ->
                 prev.copy(
@@ -91,12 +82,10 @@ class HomeViewModel : ViewModel() {
         if (loginState.value is LoginState.Login) {
             try {
                 val pastOotd = ootdRepository.getOotdPastForTemp(
-                    authorization = (loginState.value as LoginState.Login).jwtToken,
                     maxTemperature = uiState.value.maxTemp.second.toInt(),
                     minTemperature = uiState.value.minTemp.second.toInt()
                 )
                 val recommendedClothes = ootdRepository.getRecommendedHashtag(
-                    authorization = (loginState.value as LoginState.Login).jwtToken,
                     maxTemperature = uiState.value.maxTemp.second.toInt(),
                     minTemperature = uiState.value.minTemp.second.toInt()
                 )
@@ -112,7 +101,7 @@ class HomeViewModel : ViewModel() {
                     (loginState.value as? LoginState.Login)?.let {
                         _loginState.update { prev ->
                             LoginState.RefreshRequire(
-                                jwtToken = it.jwtToken,
+                                jwtToken = it.accessToken,
                                 refreshToken = it.refreshToken
                             )
                         }
@@ -121,17 +110,26 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun login(accessToken: String, refreshToken: String) {
+        _loginState.update {
+            LoginState.Login(
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            )
+        }
+    }
+
+
     fun refreshToken() = viewModelScope.launch {
         try {
             (loginState.value as? LoginState.RefreshRequire)?.let {
                 memberRepository.postRefreshToken(
-                    authorization = it.jwtToken,
                     refreshToken = it.refreshToken
                 )
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            _loginState.update { prev->
+            _loginState.update { prev ->
                 LoginState.LoginRequire
             }
         }

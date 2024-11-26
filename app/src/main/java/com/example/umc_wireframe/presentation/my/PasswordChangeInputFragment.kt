@@ -70,9 +70,8 @@ class PasswordChangeInputFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val token =
-                    SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
                 val response = RepositoryFactory.createMemberRepository().patchPasswordSuccess(
-                    authorization = "Bearer $token",
                     newPassword = newPassword
                 )
                 Log.d("API_RESPONSE", "Response: $response")

@@ -6,15 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentMyBinding
 import com.example.umc_wireframe.presentation.NavColor
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.util.SharedPreferencesManager
 
 class MyFragment : Fragment() {
-
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,6 +63,11 @@ class MyFragment : Fragment() {
         // 비밀번호 변경 화면으로 이동
         binding.btnChangePassword.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_passwordChangeFragment)
+        }
+
+        binding.logoutText.setOnClickListener {
+            SharedPreferencesManager(requireContext()).clearAll()
+            homeViewModel.logout()
         }
     }
 

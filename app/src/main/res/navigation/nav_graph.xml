@@ -32,12 +32,12 @@
         tools:layout="@layout/fragment_register_step3">
         <action
             android:id="@+id/action_registerStep3Fragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/nav_login" />
     </fragment>
 
     <!-- Login Fragment -->
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/nav_login"
         android:name="com.example.umc_wireframe.presentation.register.LoginFragment"
         tools:layout="@layout/fragment_login">
         <action

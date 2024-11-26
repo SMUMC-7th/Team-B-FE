@@ -5,15 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentLoginBinding
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.util.SharedPreferencesManager
 
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,8 +52,25 @@ class LoginFragment : Fragment() {
         }
 
         // 유효한 입력일 경우 HomeFragment로 이동
-        findNavController().navigate(R.id.navi_home)
+        loginViewModel.postLogin(
+           email = binding.tvEmailInput.text.toString(),
+            password = binding.tvPasswordInput.text.toString(),
+            isSuccess = {
+                val tokenManager = SharedPreferencesManager(requireContext())
+                val (accessToken, refreshToken) = tokenManager.getAccessToken() to tokenManager.getRefreshToken()
+
+                accessToken?.let {
+                    refreshToken?.let {
+                        homeViewModel.login(
+                            accessToken = accessToken,
+                            refreshToken = refreshToken
+                        )
+                    }
+                }
+            }
+        )
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
