@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.my
+package com.example.umc_wireframe.presentation.my.passwordchange
 
 import android.os.Bundle
 import android.util.Log

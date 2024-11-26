@@ -94,13 +94,13 @@
     <!-- Nickname Change Fragment -->
     <fragment
         android:id="@+id/navi_nickname_change"
-        android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
+        android:name="com.example.umc_wireframe.presentation.my.nicknamechange.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
 
     <!-- Password Change Verification Fragment -->
     <fragment
         android:id="@+id/navi_password_change_verification"
-        android:name="com.example.umc_wireframe.presentation.my.PasswordChangeVerificationFragment"
+        android:name="com.example.umc_wireframe.presentation.my.passwordchange.PasswordChangeVerificationFragment"
         tools:layout="@layout/fragment_password_change_verification">
 
         <!-- 인증 화면에서 입력 화면으로 이동 -->
@@ -112,7 +112,7 @@
     <!-- Password Change Input Fragment -->
     <fragment
         android:id="@+id/navi_password_change_input"
-        android:name="com.example.umc_wireframe.presentation.my.PasswordChangeInputFragment"
+        android:name="com.example.umc_wireframe.presentation.my.passwordchange.PasswordChangeInputFragment"
         tools:layout="@layout/fragment_password_change_input" >
         <action
             android:id="@+id/action_navi_password_change_input_to_navi_my"

@@ -58,6 +58,6 @@ data class MyProfileResultEntity(
 ){
     data class AlarmTime(
         val hour: Int,
-        val min: Int
+        val min: Int,
     )
 }

@@ -47,10 +47,9 @@ class HomeViewModel : ViewModel() {
             SharedPreferencesManager(UmcClothsOfTempApplication.context).clearAll()
             _loginState.value = LoginState.LoginRequire
         } catch (e: Exception) {
-            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
-            _loginState.update {
-                LoginState.LoginRequire
-            }
+            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)
+                .show()
+            failedToken()
         }
     }
 
@@ -115,11 +114,10 @@ class HomeViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)
+                    .show()
                 e.printStackTrace()
-                _loginState.update {
-                    LoginState.LoginRequire
-                }
+                failedToken()
             }
         }
     }
@@ -130,6 +128,12 @@ class HomeViewModel : ViewModel() {
                 accessToken = accessToken,
                 refreshToken = refreshToken
             )
+        }
+    }
+
+    fun failedToken() {
+        _loginState.update {
+            LoginState.LoginRequire
         }
     }
 

@@ -7,7 +7,6 @@ class NetworkSettings private constructor() {
     var token: String = ""
         set(value) {
             field = value
-            // SharedPreferences에 변경사항 저장
             sharedPreferencesManager.saveAccessToken(value)
         }
 

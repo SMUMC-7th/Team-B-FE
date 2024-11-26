@@ -9,18 +9,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentMyBinding
 import com.example.umc_wireframe.presentation.NavColor
 import com.example.umc_wireframe.presentation.home.HomeViewModel
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MyFragment : Fragment() {
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel: MyViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -83,6 +87,23 @@ class MyFragment : Fragment() {
                     dialog.dismiss()
                 }
                 .show()
+        }
+
+        getMyProfile()
+        initViewModel()
+    }
+
+    private fun getMyProfile() {
+        viewModel.getMyProfile(
+            isFailed = {homeViewModel.failedToken()}
+        )
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            uiState.collectLatest { uiState ->
+                binding.tvNickname.text = uiState.nickName
+            }
         }
     }
 

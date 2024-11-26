@@ -145,9 +145,12 @@ fun MyProfileResultResponse.toEntity(): MyProfileResultEntity {
 
 fun String.toAlarmTime(): MyProfileResultEntity.AlarmTime {
     val parts = this.split(":")
-    if (parts.size != 2) throw IllegalArgumentException("Invalid time format. Expected HH:MM.")
+    if (parts.size != 3) throw IllegalArgumentException("Invalid time format. Expected HH:MM:ss.")
     val hour = parts[0].toIntOrNull() ?: throw IllegalArgumentException("Invalid hour format.")
     val min = parts[1].toIntOrNull() ?: throw IllegalArgumentException("Invalid minute format.")
-    if (hour !in 0..23 || min !in 0..59) throw IllegalArgumentException("Hour must be between 0-23 and minute between 0-59.")
+    val sec = parts[2].toIntOrNull() ?: throw IllegalArgumentException("Invalid second format.")
+    if (hour !in 0..23 || min !in 0..59 || sec !in 0..59) {
+        throw IllegalArgumentException("Hour must be between 0-23, minute and second between 0-59.")
+    }
     return MyProfileResultEntity.AlarmTime(hour, min)
 }
