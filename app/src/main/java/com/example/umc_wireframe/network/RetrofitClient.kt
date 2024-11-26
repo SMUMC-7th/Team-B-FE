@@ -2,7 +2,6 @@ package com.example.umc_wireframe.network
 
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
-import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,6 +11,7 @@ object RetrofitClient {
     const val SHORT_TERM_FORECAST_BASE_URL =
         "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
 
+    const val MID_TERM_FORECAST_BASE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/"
 
     const val SERVER_BASE_URL = "http://43.202.248.120:8080/"
 
@@ -19,26 +19,33 @@ object RetrofitClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-
-    private val okHttpClient by lazy {
+    private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(UmcClothsOfTempApplication.context))
+            .addInterceptor(AuthorizationInterceptor())
             .build()
     }
 
     private val shortTermRetrofit by lazy {
         Retrofit.Builder()
             .baseUrl(SHORT_TERM_FORECAST_BASE_URL)
-            .client(okHttpClient)
+            .client(shortTermOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private val serverOkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(AuthorizationInterceptor())
+            .authenticator(TokenAuthenticator(TokenManager()))
             .build()
     }
 
     private val serverRetrofit by lazy {
         Retrofit.Builder()
             .baseUrl(SERVER_BASE_URL)
-            .client(okHttpClient)
+            .client(serverOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -52,4 +59,10 @@ object RetrofitClient {
     val serverDatasource: ServerDatasource by lazy {
         serverRetrofit.create(ServerDatasource::class.java)
     }
+
+    val refreshDatasource = Retrofit.Builder().baseUrl(SERVER_BASE_URL).client(
+        OkHttpClient.Builder().addInterceptor(
+            loggingInterceptor
+        ).build()
+    ).addConverterFactory(GsonConverterFactory.create()).build().create(ServerDatasource::class.java)
 }

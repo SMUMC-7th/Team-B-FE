@@ -146,11 +146,6 @@ class MainActivity : AppCompatActivity(), NavColor {
                         navGraph.setStartDestination(R.id.nav_login)
                         navController.setGraph(navGraph, null)
                     }
-
-                    is LoginState.RefreshRequire -> {
-                        viewModel.refreshToken()
-                    }
-
                 }
             }
         }

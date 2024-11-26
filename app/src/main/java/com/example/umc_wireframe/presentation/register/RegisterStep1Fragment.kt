@@ -1,6 +1,5 @@
 package com.example.umc_wireframe.presentation.register
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentRegisterStep1Binding
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class RegisterStep1Fragment : Fragment() {
 
@@ -49,30 +45,32 @@ class RegisterStep1Fragment : Fragment() {
 
         // 이메일 인증번호 받기 클릭 이벤트
         binding.tvGetVerificationNumber.setOnClickListener {
-            if (binding.getVerificationCode.visibility == View.GONE) {
-                // 인증번호 입력 필드를 표시
-                binding.getVerificationCode.visibility = View.VISIBLE
 
-                // 이메일과 비밀번호 입력 필드에 blur 효과 적용
-                binding.tvEmailInput.alpha = 0.3f
-                binding.passwordInput.alpha = 0.3f
+            viewModel.postJoinReq(binding.tvEmailInput.text.toString(),
+                binding.passwordInput.text.toString(),
+                isSuccess = {
+                    // 인증번호 입력 필드를 표시
+                    binding.getVerificationCode.visibility = View.VISIBLE
 
-                // 추가적으로 클릭 이벤트 차단 (선택사항)
-                binding.tvEmailInput.isEnabled = false
-                binding.passwordInput.isEnabled = false
+                    // 이메일과 비밀번호 입력 필드에 blur 효과 적용
+                    binding.tvEmailInput.alpha = 0.3f
+                    binding.passwordInput.alpha = 0.3f
 
-                viewModel.postJoinReq(binding.tvEmailInput.text.toString(), binding.passwordInput.text.toString())
-
-                Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
-            }
+                    // 추가적으로 클릭 이벤트 차단 (선택사항)
+                    binding.tvEmailInput.isEnabled = false
+                    binding.passwordInput.isEnabled = false
+                    binding.loginButton.isEnabled = true
+                    Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                })
         }
-    }
 
-    private fun initViewModel() = with(viewModel){
-        viewLifecycleOwner.lifecycleScope.launch {
-            loginState.collectLatest { state ->
 
-            }
+        binding.loginButton.setOnClickListener {
+            viewModel.postJoinVerify(
+                verificationCode = binding.getVerificationCode.text.toString(),
+                isSuccess = { findNavController().navigate(R.id.RegisterStep2Fragment) }
+            )
         }
     }
 

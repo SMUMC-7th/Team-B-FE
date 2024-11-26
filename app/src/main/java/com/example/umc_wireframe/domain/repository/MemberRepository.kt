@@ -30,7 +30,7 @@ interface MemberRepository {
         name: String,
         nickname: String,
         gender: Gender
-    ): ServerEntity<String>
+    ): ServerEntity<LoginResultEntity>
 
     //login
     suspend fun postLogin(

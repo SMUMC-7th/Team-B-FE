@@ -62,7 +62,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @POST("api/users/signup")
     suspend fun postJoinSuccess(
         @Body joinInfo: JoinInfo
-    ): ServerResponse<String>
+    ): ServerResponse<LoginResultResponse>
 
     //login
     @POST("api/users/login")

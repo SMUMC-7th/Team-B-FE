@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.presentation.home
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.ShortTermCategory
@@ -8,6 +9,8 @@ import com.example.umc_wireframe.domain.repository.MemberRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
+import com.example.umc_wireframe.util.SharedPreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -33,8 +36,22 @@ class HomeViewModel : ViewModel() {
         RepositoryFactory.createMemberRepository()
 
 
-    fun logout(){
+    fun logout() {
         _loginState.value = LoginState.LoginRequire
+        SharedPreferencesManager(UmcClothsOfTempApplication.context).clearAll()
+    }
+
+    fun withdraw() = viewModelScope.launch {
+        try {
+            memberRepository.postUserWithdraw()
+            SharedPreferencesManager(UmcClothsOfTempApplication.context).clearAll()
+            _loginState.value = LoginState.LoginRequire
+        } catch (e: Exception) {
+            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
+            _loginState.update {
+                LoginState.LoginRequire
+            }
+        }
     }
 
     fun getDailyShortTermForecast(selectLocation: ShortTermRegionObject) = viewModelScope.launch {
@@ -89,6 +106,7 @@ class HomeViewModel : ViewModel() {
                     maxTemperature = uiState.value.maxTemp.second.toInt(),
                     minTemperature = uiState.value.minTemp.second.toInt()
                 )
+
                 _uiState.update { prev ->
                     prev.copy(
                         recommendedClothes = recommendedClothes.result?.recommendations
@@ -97,15 +115,11 @@ class HomeViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                if (e is HttpException && e.code() == 401)
-                    (loginState.value as? LoginState.Login)?.let {
-                        _loginState.update { prev ->
-                            LoginState.RefreshRequire(
-                                jwtToken = it.accessToken,
-                                refreshToken = it.refreshToken
-                            )
-                        }
-                    } else LoginState.LoginRequire
+                Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+                _loginState.update {
+                    LoginState.LoginRequire
+                }
             }
         }
     }
@@ -116,22 +130,6 @@ class HomeViewModel : ViewModel() {
                 accessToken = accessToken,
                 refreshToken = refreshToken
             )
-        }
-    }
-
-
-    fun refreshToken() = viewModelScope.launch {
-        try {
-            (loginState.value as? LoginState.RefreshRequire)?.let {
-                memberRepository.postRefreshToken(
-                    refreshToken = it.refreshToken
-                )
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _loginState.update { prev ->
-                LoginState.LoginRequire
-            }
         }
     }
 

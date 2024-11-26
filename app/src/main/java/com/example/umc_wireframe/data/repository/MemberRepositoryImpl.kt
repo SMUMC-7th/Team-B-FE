@@ -23,6 +23,8 @@ import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
 import com.example.umc_wireframe.domain.model.toPatchAlarmTime
 import com.example.umc_wireframe.domain.repository.MemberRepository
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
+import com.example.umc_wireframe.util.SharedPreferencesManager
 import java.time.LocalDateTime
 
 class MemberRepositoryImpl(
@@ -54,14 +56,14 @@ class MemberRepositoryImpl(
         name: String,
         nickname: String,
         gender: Gender
-    ): ServerEntity<String> = datasource.postJoinSuccess(
+    ): ServerEntity<LoginResultEntity> = datasource.postJoinSuccess(
         JoinInfo(
             email = email,
             name = name,
             nickname = nickname,
             gender = gender.toString()
         )
-    ).toTempEntity()
+    ).toLoginEntity()
 
     //login
     override suspend fun postLogin(

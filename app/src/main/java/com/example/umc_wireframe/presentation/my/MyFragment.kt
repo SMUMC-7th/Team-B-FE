@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.presentation.my
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -66,8 +67,22 @@ class MyFragment : Fragment() {
         }
 
         binding.logoutText.setOnClickListener {
-            SharedPreferencesManager(requireContext()).clearAll()
             homeViewModel.logout()
+        }
+
+        binding.deleteAccountText.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("탈퇴하기")
+                .setMessage("이 작업을 진행하시겠습니까?")
+                .setPositiveButton("예") { dialog, _ ->
+                    homeViewModel.withdraw()
+                    SharedPreferencesManager(requireContext()).clearAll()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("아니오") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 

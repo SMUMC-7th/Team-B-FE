@@ -43,7 +43,7 @@ class TestServerInstrumented {
 //            testJoinRequest()
 //            testJoinVerify("451697")
 //            testJoinSuccess()
-//            testWithdraw()
+            testWithdraw()
 
 
             testLoginSuccess()
@@ -58,7 +58,7 @@ class TestServerInstrumented {
 
 //                testChangePwRequest()
 //            testChangePwVerify("165144")
-                testChangePwSuccess() // 오류, front 측에선 문제를 찾지 못했음.
+//                testChangePwSuccess() // 오류, front 측에선 문제를 찾지 못했음.
             }
         }
     }
@@ -119,7 +119,6 @@ class TestServerInstrumented {
         ).result?.accessToken
 
         memberRepository.postUserWithdraw(
-            authorization = "Bearer $token"
         ).let {
             Log.d("withdraw success", it.toString())
         }
@@ -131,13 +130,11 @@ class TestServerInstrumented {
 
         suspend fun checkOotdData() {
             val hashTagResponse = ootdRepository.getRecommendedHashtag(
-                authorization = token,
                 maxTemperature = maxTemp,
                 minTemperature = minTemp
             )
 
             val pastOotdResponseForTemp = ootdRepository.getOotdPastForTemp(
-                authorization = token,
                 maxTemperature = maxTemp,
                 minTemperature = minTemp
             )
@@ -170,7 +167,6 @@ class TestServerInstrumented {
 
     suspend fun testChangePwRequest() {
         memberRepository.postPasswordChange(
-            authorization = token
         ).let {
             Log.d("cahngePw", it.toString())
         }
@@ -178,7 +174,6 @@ class TestServerInstrumented {
 
     suspend fun testChangePwVerify(code: String) {
         memberRepository.postPasswordVerify(
-            authorization = token,
             verificationCode = code
         ).let {
             Log.d("cahngePw", it.toString())
@@ -188,7 +183,6 @@ class TestServerInstrumented {
     suspend fun testChangePwSuccess() {
         try {
             memberRepository.patchPasswordSuccess(
-                authorization = token,
                 newPassword = "1234"
             ).let {
                 Log.d("cahngePw", it.toString())
@@ -200,13 +194,11 @@ class TestServerInstrumented {
 
     suspend fun getMyInfo() {
         memberRepository.getMyProfile(
-            authorization = token
         )
     }
 
     suspend fun postRefreshToken() {
         memberRepository.postRefreshToken(
-            authorization = token,
             refreshToken = refreshToken
         ).let {
             it.result?.let {
@@ -219,7 +211,6 @@ class TestServerInstrumented {
     suspend fun postChangeNickname() {
         try {
             memberRepository.patchNicknameChange(
-                authorization = token,
                 newNickname = "change success"
             ).let {
                 Log.d("cahngeNickname", it.toString())
@@ -232,7 +223,6 @@ class TestServerInstrumented {
     suspend fun postAlaramSet() {
         try {
             memberRepository.patchAlarmSet(
-                authorization = token,
                 alarmStatus = SetAlarm.POST,
                 alarmTime = LocalDateTime.now()
             )
