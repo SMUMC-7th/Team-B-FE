@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.my
+package com.example.umc_wireframe.presentation.my.passwordchange
 
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
-import com.example.umc_wireframe.data.remote.NewPassword
 import com.example.umc_wireframe.databinding.FragmentPasswordChangeInputBinding
-import com.example.umc_wireframe.network.RetrofitClient
+import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.util.SharedPreferencesManager
 import kotlinx.coroutines.launch
 
@@ -70,10 +69,10 @@ class PasswordChangeInputFragment : Fragment() {
     private fun sendPasswordChangeRequest(newPassword: String) {
         lifecycleScope.launch {
             try {
-                val token = SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
-                val response = RetrofitClient(requireContext()).serverDatasource.postPasswordSuccess(
-                    authorization = "Bearer $token",
-                    newPassword = NewPassword(newPassword)
+                val token =
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
+                val response = RepositoryFactory.createMemberRepository().patchPasswordSuccess(
+                    newPassword = newPassword
                 )
                 Log.d("API_RESPONSE", "Response: $response")
 
@@ -81,7 +80,11 @@ class PasswordChangeInputFragment : Fragment() {
                     Toast.makeText(requireContext(), "비밀번호 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_navi_password_change_input_to_navi_my) // 마이페이지로 이동
                 } else {
-                    Toast.makeText(requireContext(), "비밀번호 변경 실패: ${response.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "비밀번호 변경 실패: ${response.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()

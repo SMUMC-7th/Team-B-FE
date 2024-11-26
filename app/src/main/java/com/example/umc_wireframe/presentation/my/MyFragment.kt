@@ -1,20 +1,30 @@
 package com.example.umc_wireframe.presentation.my
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentMyBinding
 import com.example.umc_wireframe.presentation.NavColor
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.util.SharedPreferencesManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MyFragment : Fragment() {
-
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel: MyViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,6 +68,42 @@ class MyFragment : Fragment() {
         // 비밀번호 변경 화면으로 이동
         binding.btnChangePassword.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_passwordChangeFragment)
+        }
+
+        binding.logoutText.setOnClickListener {
+            homeViewModel.logout()
+        }
+
+        binding.deleteAccountText.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("탈퇴하기")
+                .setMessage("이 작업을 진행하시겠습니까?")
+                .setPositiveButton("예") { dialog, _ ->
+                    homeViewModel.withdraw()
+                    SharedPreferencesManager(requireContext()).clearAll()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("아니오") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        getMyProfile()
+        initViewModel()
+    }
+
+    private fun getMyProfile() {
+        viewModel.getMyProfile(
+            isFailed = {homeViewModel.failedToken()}
+        )
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            uiState.collectLatest { uiState ->
+                binding.tvNickname.text = uiState.nickName
+            }
         }
     }
 

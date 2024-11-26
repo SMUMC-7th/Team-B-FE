@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.my
+package com.example.umc_wireframe.presentation.my.passwordchange
 
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
-import com.example.umc_wireframe.data.remote.VerifyCode
 import com.example.umc_wireframe.databinding.FragmentPasswordChangeVerificationBinding
-import com.example.umc_wireframe.network.RetrofitClient
+import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.util.SharedPreferencesManager
 import kotlinx.coroutines.launch
 
@@ -20,6 +19,8 @@ class PasswordChangeVerificationFragment : Fragment() {
 
     private var _binding: FragmentPasswordChangeVerificationBinding? = null
     private val binding get() = _binding!!
+
+    private val memberRepository = RepositoryFactory.createMemberRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,12 +50,18 @@ class PasswordChangeVerificationFragment : Fragment() {
     private fun requestVerificationCode() {
         lifecycleScope.launch {
             try {
-                val token = SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
-                val response = RetrofitClient(requireContext()).serverDatasource.postPasswordChange("Bearer $token")
+                val token =
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
+                val response = memberRepository.postPasswordChange()
                 if (response.isSuccess == true) {
-                    Toast.makeText(requireContext(), "인증번호가 이메일로 전송되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "인증번호가 이메일로 전송되었습니다.", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
-                    Toast.makeText(requireContext(), "인증번호 요청에 실패했습니다: ${response.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "인증번호 요청에 실패했습니다: ${response.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
@@ -72,10 +79,10 @@ class PasswordChangeVerificationFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val token = SharedPreferencesManager.getAccessToken(requireContext()) // SharedPreferences에서 토큰 가져옴
-                val response = RetrofitClient(requireContext()).serverDatasource.postPasswordVerify(
-                    authorization = "Bearer $token",
-                    verificationCode = VerifyCode(enteredCode)
+                val token =
+                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
+                val response = memberRepository.postPasswordVerify(
+                    verificationCode = enteredCode
                 )
                 Log.d("API_RESPONSE", "Response: $response")
 

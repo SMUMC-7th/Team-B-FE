@@ -1,15 +1,11 @@
 package com.example.umc_wireframe.network
 
-import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
-import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object RetrofitClient {
     const val SHORT_TERM_FORECAST_BASE_URL =
@@ -26,7 +22,7 @@ object RetrofitClient {
     private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(UmcClothsOfTempApplication.context, AuthorizationType.SHORT_TERM_FORECAST))
+            .addInterceptor(AuthorizationInterceptor())
             .build()
     }
 
@@ -41,6 +37,8 @@ object RetrofitClient {
     private val serverOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(AuthorizationInterceptor())
+            .authenticator(TokenAuthenticator(TokenManager()))
             .build()
     }
 
@@ -61,4 +59,10 @@ object RetrofitClient {
     val serverDatasource: ServerDatasource by lazy {
         serverRetrofit.create(ServerDatasource::class.java)
     }
+
+    val refreshDatasource = Retrofit.Builder().baseUrl(SERVER_BASE_URL).client(
+        OkHttpClient.Builder().addInterceptor(
+            loggingInterceptor
+        ).build()
+    ).addConverterFactory(GsonConverterFactory.create()).build().create(ServerDatasource::class.java)
 }

@@ -8,13 +8,11 @@ import okhttp3.MultipartBody
 
 interface OotdRepository {
     suspend fun getRecommendedHashtag(
-        authorization: String,
         maxTemperature: Int,
         minTemperature: Int
     ): ServerEntity<RecommendedHashtagResultEntity>
 
     suspend fun getOotdPastForTemp(
-        authorization: String,
         maxTemperature: Int,
         minTemperature: Int
     ): ServerEntity<OotdResultEntity>

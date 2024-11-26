@@ -1,12 +1,12 @@
 package com.example.umc_wireframe.presentation.register
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentRegisterStep1Binding
@@ -15,6 +15,8 @@ class RegisterStep1Fragment : Fragment() {
 
     private var _binding: FragmentRegisterStep1Binding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,36 +39,41 @@ class RegisterStep1Fragment : Fragment() {
             } else if (password.isEmpty()) {
                 Toast.makeText(requireContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
-                savePassword(password)
                 findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
             }
         }
 
         // 이메일 인증번호 받기 클릭 이벤트
         binding.tvGetVerificationNumber.setOnClickListener {
-            if (binding.getVerificationCode.visibility == View.GONE) {
-                // 인증번호 입력 필드를 표시
-                binding.getVerificationCode.visibility = View.VISIBLE
 
-                // 이메일과 비밀번호 입력 필드에 blur 효과 적용
-                binding.tvEmailInput.alpha = 0.3f
-                binding.passwordInput.alpha = 0.3f
+            viewModel.postJoinReq(binding.tvEmailInput.text.toString(),
+                binding.passwordInput.text.toString(),
+                isSuccess = {
+                    // 인증번호 입력 필드를 표시
+                    binding.getVerificationCode.visibility = View.VISIBLE
 
-                // 추가적으로 클릭 이벤트 차단 (선택사항)
-                binding.tvEmailInput.isEnabled = false
-                binding.passwordInput.isEnabled = false
+                    // 이메일과 비밀번호 입력 필드에 blur 효과 적용
+                    binding.tvEmailInput.alpha = 0.3f
+                    binding.passwordInput.alpha = 0.3f
 
-                Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
-            }
+                    // 추가적으로 클릭 이벤트 차단 (선택사항)
+                    binding.tvEmailInput.isEnabled = false
+                    binding.passwordInput.isEnabled = false
+                    binding.loginButton.isEnabled = true
+                    Toast.makeText(requireContext(), "인증번호 입력창이 활성화되었습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                })
+        }
+
+
+        binding.loginButton.setOnClickListener {
+            viewModel.postJoinVerify(
+                verificationCode = binding.getVerificationCode.text.toString(),
+                isSuccess = { findNavController().navigate(R.id.RegisterStep2Fragment) }
+            )
         }
     }
 
-    private fun savePassword(password: String) {
-        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("password", password)
-        editor.apply()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -22,7 +22,6 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     //ootd
     @GET("api/recommendation")
     suspend fun getRecommendedHashtag(
-        @Header("Authorization") authorization: String,
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int
     ): ServerResponse<RecommendedHashtagResultResponse>
@@ -30,14 +29,12 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @GET("api/ootds/past")
     suspend fun getOotdPastForTemp(
-        @Header("Authorization") authorization: String,
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int
     ): ServerResponse<OotdResultResponse>
 
     @POST("api/ootds")
     suspend fun postOotd(
-        @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part,
         @Query("maxTemperature") maxTemperature: Int,
         @Query("minTemperature") minTemperature: Int,
@@ -46,7 +43,6 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @GET("api/ootds")
     suspend fun getOotdPastForYearMonth(
-        @Header("Authorization") authorization: String,
         @Query("year") year: Int,
         @Query("month") month: Int
     ): ServerResponse<OotdResultResponse>
@@ -66,7 +62,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @POST("api/users/signup")
     suspend fun postJoinSuccess(
         @Body joinInfo: JoinInfo
-    ): ServerResponse<String>
+    ): ServerResponse<LoginResultResponse>
 
     //login
     @POST("api/users/login")
@@ -77,46 +73,38 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     //manage
     @POST("api/users/withdraw")
     suspend fun postUserWithdraw(
-        @Header("Authorization") authorization: String
     ): ServerResponse<String>
 
     @POST("api/users/password/change/request")
     suspend fun postPasswordChange(
-        @Header("Authorization") authorization: String
     ): ServerResponse<String>
 
     @POST("api/users/password/change/verify")
     suspend fun postPasswordVerify(
-        @Header("Authorization") authorization: String,
         @Body verificationCode: VerifyCode
     ): ServerResponse<String>
 
     @PATCH("api/users/password/change/complete")
     suspend fun patchPasswordSuccess(
-        @Header("Authorization") authorization: String,
         @Body newPassword: NewPassword
     ): ServerResponse<String>
 
     @PATCH("api/users/nickname")
     suspend fun patchNicknameChange(
-        @Header("Authorization") authorization: String,
         @Body newNickname: NewNickname
     ): ServerResponse<NicknameResultResponse>
 
     @PATCH("api/users/alarm-settings")
     suspend fun patchAlarmSet(
-        @Header("Authorization") authorization: String,
         @Body alarmSet: AlarmSet
     ): ServerResponse<String>
 
     @GET("api/users/profile")
     suspend fun getMyProfile(
-        @Header("Authorization") authorization: String
     ): ServerResponse<MyProfileResultResponse>
 
     @POST("api/users/token/reissue")
     suspend fun postRefreshToken(
-        @Header("Authorization") authorization: String,
         @Body refreshToken: RefreshToken
     ): ServerResponse<LoginResultResponse>
 }

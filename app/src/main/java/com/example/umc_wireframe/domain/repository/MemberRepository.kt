@@ -30,7 +30,7 @@ interface MemberRepository {
         name: String,
         nickname: String,
         gender: Gender
-    ): ServerEntity<String>
+    ): ServerEntity<LoginResultEntity>
 
     //login
     suspend fun postLogin(
@@ -40,40 +40,32 @@ interface MemberRepository {
 
     //manage
     suspend fun postUserWithdraw(
-        authorization: String
     ): ServerEntity<String>
 
     suspend fun postPasswordChange(
-        authorization: String
     ): ServerEntity<String>
 
     suspend fun postPasswordVerify(
-        authorization: String,
         verificationCode: String
     ): ServerEntity<String>
 
     suspend fun patchPasswordSuccess(
-        authorization: String,
         newPassword: String
     ): ServerEntity<String>
 
     suspend fun patchNicknameChange(
-        authorization: String,
         newNickname: String
     ): ServerEntity<NicknameResultEntity>
 
     suspend fun patchAlarmSet(
-        authorization: String,
         alarmStatus: SetAlarm,
         alarmTime: LocalDateTime
     ): ServerEntity<String>
 
     suspend fun getMyProfile(
-        authorization: String
     ): ServerEntity<MyProfileResultEntity>
 
     suspend fun postRefreshToken(
-        authorization: String,
         refreshToken: String
     ):ServerEntity<LoginResultEntity>
 }
