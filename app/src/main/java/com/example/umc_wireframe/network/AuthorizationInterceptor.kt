@@ -2,6 +2,7 @@ package com.example.umc_wireframe.network
 
 import android.content.Context
 import com.example.umc_wireframe.BuildConfig
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.example.umc_wireframe.util.SharedPreferencesManager
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -16,7 +17,10 @@ class AuthorizationInterceptor(
             .build()
 
         // NetworkSettings 싱글톤에서 최신 토큰 가져오기
-        val token = NetworkSettings.getInstance().token
+        val sharedPreferencesManager = SharedPreferencesManager(
+            UmcClothsOfTempApplication.context
+        )
+        val token: String = sharedPreferencesManager.getAccessToken() ?: ""
 
         // Authorization 헤더 추가
         val newRequest = chain.request().newBuilder()
