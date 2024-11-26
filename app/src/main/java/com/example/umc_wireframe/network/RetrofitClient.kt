@@ -3,6 +3,7 @@ package com.example.umc_wireframe.network
 import com.example.umc_wireframe.data.remote.MidTermForecastDatasource
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.data.remote.ShortTermForecastDatasource
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,7 +26,7 @@ object RetrofitClient {
     private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor(AuthorizationType.SHORT_TERM_FORECAST))
+            .addInterceptor(AuthorizationInterceptor(UmcClothsOfTempApplication.context, AuthorizationType.SHORT_TERM_FORECAST))
             .build()
     }
 
