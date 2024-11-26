@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class SharedPreferencesManager(context: Context) {
-
     companion object {
         private const val PREFS_NAME = "app_prefs" // SharedPreferences 파일 이름
         private const val KEY_ACCESS_TOKEN = "access_token" // Access Token 키
