@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
@@ -22,6 +23,8 @@ class PasswordChangeVerificationFragment : Fragment() {
 
     private val memberRepository = RepositoryFactory.createMemberRepository()
 
+    private val viewModel: PasswordChangeVerificationViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +35,8 @@ class PasswordChangeVerificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.verifyPasswordChangeReq()
 
         // 뒤로가기 버튼 클릭 시
         binding.backButton.setOnClickListener {
@@ -77,27 +82,13 @@ class PasswordChangeVerificationFragment : Fragment() {
             return
         }
 
-        lifecycleScope.launch {
-            try {
-                val token =
-                    SharedPreferencesManager(requireContext()).getAccessToken() // SharedPreferences에서 토큰 가져옴
-                val response = memberRepository.postPasswordVerify(
-                    verificationCode = enteredCode
-                )
-                Log.d("API_RESPONSE", "Response: $response")
-
-                if (response.isSuccess == true) {
-                    binding.tvEmailcodeErrorMessage.visibility = View.GONE
-                    Toast.makeText(requireContext(), "인증번호가 확인되었습니다.", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_passwordChangeVerificationFragment_to_passwordChangeInputFragment)
-                } else {
-                    binding.tvEmailcodeErrorMessage.text = "인증번호가 일치하지 않습니다."
-                    binding.tvEmailcodeErrorMessage.visibility = View.VISIBLE
-                }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        viewModel.verifyPasswordChange(
+            enteredCode,
+            isSuccess = {
+                Toast.makeText(requireContext(), "인증번호가 확인되었습니다.", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_passwordChangeVerificationFragment_to_passwordChangeInputFragment)
             }
-        }
+        )
     }
 
     override fun onDestroyView() {
