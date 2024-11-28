@@ -4,7 +4,21 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowBackground">@android:color/white</item>
+
+        <item name="switchStyle">@style/CustomSwitchStyle</item>
     </style>
 
     <style name="Theme.Umc_wireframe" parent="Base.Theme.Umc_wireframe" />
+
+
+    <style name="CustomSwitchStyle" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <!-- thumb 색상 및 track 색상 커스텀 -->
+<!--        <item name="android:thumb">@drawable/selector_switch_thumb</item>-->
+<!--        <item name="track">@drawable/selector_switch_track</item>-->
+        <!-- 기본 색상 오버라이드 -->
+        <item name="colorControlActivated">@null</item>
+        <item name="android:colorControlActivated">@null</item>
+        <item name="colorSwitchThumbNormal">@null</item>
+<!--        <item name="android:colorSwitchThumbNormal">@null</item>-->
+    </style>
 </resources>

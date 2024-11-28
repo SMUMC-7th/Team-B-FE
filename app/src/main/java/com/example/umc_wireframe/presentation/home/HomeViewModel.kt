@@ -11,12 +11,15 @@ import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.example.umc_wireframe.util.cancelAlarmWorker
+import com.example.umc_wireframe.util.scheduleDailyAlarmWorker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class HomeViewModel : ViewModel() {
@@ -57,7 +60,7 @@ class HomeViewModel : ViewModel() {
         val now = LocalDate.now().minusDays(1)
         val baseDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
-        val entity = shortTermForecastRepository.getWeatherForecast(
+        val entity = shortTermForecastRepository.getMaxMinTemp(
             pageNo = 1,
             baseDate = baseDate,
             baseTime = "2300", //"0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300")
@@ -67,9 +70,8 @@ class HomeViewModel : ViewModel() {
         )?.body?.items
 
         entity?.let { items ->
-            val tempList = items.filter { it.category == ShortTermCategory.TMP }
+            val tempList = items
                 .map { "${it.fcstDate} ${it.fcstTime}" to it.value }
-                .sortedByDescending { it.first }
 
             val maxTemp = tempList.maxBy { it.second }
             val minTime = tempList.minBy { it.second }
@@ -137,4 +139,20 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun setAlarm() = viewModelScope.launch {
+        try {
+            memberRepository.getMyProfile().result?.let {
+                if (it.alarmStatus) {
+                    it.alarmTime.let {
+                        scheduleDailyAlarmWorker(
+                            UmcClothsOfTempApplication.context,
+                            LocalDateTime.now().withHour(it.hour).withMonth(it.min)
+                        )
+                    }
+                } else cancelAlarmWorker(UmcClothsOfTempApplication.context)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
 }

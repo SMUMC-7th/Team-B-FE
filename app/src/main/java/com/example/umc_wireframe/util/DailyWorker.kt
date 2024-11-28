@@ -24,7 +24,6 @@ class DailyAlarmWorker(context: Context, params: WorkerParameters) : Worker(cont
 
 fun scheduleDailyAlarmWorker(context: Context, time: LocalDateTime) {
     val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
-    val uniqueWorkName = "DailyAlarmWork_${timeString}" // 고유한 이름 생성
     val inputData = workDataOf("time" to timeString)
 
     val dailyWorkRequest = PeriodicWorkRequestBuilder<DailyAlarmWorker>(1, TimeUnit.DAYS)
@@ -33,7 +32,7 @@ fun scheduleDailyAlarmWorker(context: Context, time: LocalDateTime) {
         .build()
 
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-        uniqueWorkName,  // 고유한 이름
+        "DailyAlarmWork",  // 고유한 이름
         ExistingPeriodicWorkPolicy.REPLACE,  // 기존 작업을 덮어씀
         dailyWorkRequest
     )
@@ -46,9 +45,7 @@ fun calculateInitialDelay(time: LocalDateTime): Long {
 }
 
 
-fun cancelAlarmWorker(context: Context, time: LocalDateTime) {
-    val timeString = time.format(DateTimeFormatter.ISO_DATE_TIME)
-    val uniqueWorkName = "DailyAlarmWork_${timeString}"
-    WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
-    cancelDailyAlarm(context, time)
+fun cancelAlarmWorker(context: Context) {
+    WorkManager.getInstance(context).cancelUniqueWork("DailyAlarmWork")
+    cancelDailyAlarm(context)
 }

@@ -23,7 +23,12 @@ class MyViewModel : ViewModel() {
                 _uiState.update { prev ->
                     prev.copy(
                         name = it.name,
-                        nickName = it.nickname
+                        nickName = it.nickname,
+                        alarmState = MyUiState.AlarmState(
+                            isSet = it.alarmStatus,
+                            hour = it.alarmTime.hour,
+                            min = it.alarmTime.min
+                        )
                     )
                 }
             }
@@ -33,4 +38,6 @@ class MyViewModel : ViewModel() {
             isFailed()
         }
     }
+
+    fun getMyAlarmState():MyUiState.AlarmState = uiState.value.alarmState
 }
