@@ -11,15 +11,17 @@ import kotlinx.coroutines.launch
 class PasswordChangeInputViewModel : ViewModel() {
     private val memberRepository: MemberRepository = RepositoryFactory.createMemberRepository()
 
-    fun verifyPasswordChangeReq(verificationCode: String, newPassword: String) =
+    fun patchPasswordSuccess(newPassword: String, isSuccess: () -> Unit) =
         viewModelScope.launch {
             try {
                 memberRepository.patchPasswordSuccess(
                     newPassword
                 )
+                isSuccess()
             } catch (e: Exception) {
                 Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)
                     .show()
+                e.printStackTrace()
             }
         }
 }

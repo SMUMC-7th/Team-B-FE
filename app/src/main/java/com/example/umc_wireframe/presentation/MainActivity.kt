@@ -21,6 +21,7 @@ import com.example.umc_wireframe.databinding.ActivityMainBinding
 import com.example.umc_wireframe.presentation.home.HomeViewModel
 import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.example.umc_wireframe.util.cancelAlarmWorker
 import com.example.umc_wireframe.util.navigateWithClear
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,12 +54,11 @@ class MainActivity : AppCompatActivity(), NavColor {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.registerStep1Fragment,
-                R.id.RegisterStep2Fragment,
-                R.id.RegisterStep3Fragment,
-                R.id.nav_login -> binding.botNavMain.visibility = View.GONE
+                R.id.navi_my,
+                R.id.navi_home,
+                R.id.navi_calendar -> binding.botNavMain.visibility = View.VISIBLE
 
-                else -> binding.botNavMain.visibility = View.VISIBLE
+                else -> binding.botNavMain.visibility = View.GONE
             }
         }
 
@@ -120,9 +120,9 @@ class MainActivity : AppCompatActivity(), NavColor {
         lifecycleScope.launch {
             viewModel.loginState.collectLatest { loginState ->
                 val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                val tokenManager = SharedPreferencesManager(this@MainActivity)
                 when (loginState) {
                     LoginState.Init -> {
-                        val tokenManager = SharedPreferencesManager(this@MainActivity)
                         val (accessToken, refreshToken) = tokenManager.getAccessToken() to tokenManager.getRefreshToken()
                         accessToken?.let {
                             refreshToken?.let {
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), NavColor {
                                 )
                             }
                         }
-                        if(accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()){
+                        if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()) {
                             viewModel.logout()
                         }
                     }
@@ -140,9 +140,12 @@ class MainActivity : AppCompatActivity(), NavColor {
                     is LoginState.Login -> {
                         navGraph.setStartDestination(R.id.navi_home)
                         navController.setGraph(navGraph, null)
+                        viewModel.setAlarm()
                     }
 
                     LoginState.LoginRequire -> {
+                        cancelAlarmWorker(UmcClothsOfTempApplication.context)
+                        tokenManager.clearAll()
                         navGraph.setStartDestination(R.id.nav_login)
                         navController.setGraph(navGraph, null)
                     }

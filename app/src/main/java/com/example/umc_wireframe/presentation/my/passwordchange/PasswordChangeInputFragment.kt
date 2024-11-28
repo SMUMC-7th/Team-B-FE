@@ -7,18 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentPasswordChangeInputBinding
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.example.umc_wireframe.util.navigateWithClear
 import kotlinx.coroutines.launch
 
 class PasswordChangeInputFragment : Fragment() {
 
     private var _binding: FragmentPasswordChangeInputBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: PasswordChangeInputViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +37,7 @@ class PasswordChangeInputFragment : Fragment() {
 
         // 뒤로 가기 버튼 클릭 시 이전 화면으로 이동
         binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateWithClear(R.id.nav_mypage)
         }
 
         // 변경 완료 버튼 클릭 이벤트
@@ -58,12 +62,14 @@ class PasswordChangeInputFragment : Fragment() {
             binding.tvChangePwErrorMessage.text = "비밀번호가 일치하지 않습니다"
             return
         } else {
-            // 에러 메시지 숨김
             binding.tvChangePwErrorMessage.visibility = View.GONE
+
+            viewModel.patchPasswordSuccess(newPassword = newPassword, isSuccess = {
+                Toast.makeText(requireContext(), "비밀번호 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                findNavController().navigateWithClear(R.id.navi_my)
+            })
         }
 
-        // 서버로 비밀번호 변경 요청
-        sendPasswordChangeRequest(newPassword)
     }
 
     private fun sendPasswordChangeRequest(newPassword: String) {

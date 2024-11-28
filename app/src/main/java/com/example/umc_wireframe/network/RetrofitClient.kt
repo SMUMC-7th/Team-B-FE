@@ -22,7 +22,7 @@ object RetrofitClient {
     private val shortTermOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor())
+            .addInterceptor(AuthorizationInterceptor(true))
             .build()
     }
 
@@ -37,7 +37,7 @@ object RetrofitClient {
     private val serverOkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(AuthorizationInterceptor())
+            .addInterceptor(AuthorizationInterceptor(false))
             .authenticator(TokenAuthenticator(TokenManager()))
             .build()
     }
