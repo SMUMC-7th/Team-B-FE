@@ -46,11 +46,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -73,9 +73,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //viewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation("androidx.fragment:fragment-ktx:1.7.1")
-    implementation("androidx.activity:activity-ktx:1.9.3")
 
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -108,5 +107,7 @@ dependencies {
     //Worker
     implementation("androidx.work:work-runtime-ktx:2.8.0")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // 최신 버전 확인 필수
 }

@@ -124,6 +124,7 @@ data class JoinInfo(
     @Query("name") val name: String,
     @Query("nickname") val nickname: String,
     @Query("gender") val gender: String
+
 )
 
 data class MaxMinTemperature(
