@@ -15,21 +15,17 @@ class OotdRepositoryImpl(
     private val datasource: ServerDatasource
 ) : OotdRepository {
     override suspend fun getRecommendedHashtag(
-        authorization: String,
         maxTemperature: Int,
         minTemperature: Int
     ): ServerEntity<RecommendedHashtagResultEntity> = datasource.getRecommendedHashtag(
-        authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
     ).toHashtagEntity()
 
     override suspend fun getOotdPastForTemp(
-        authorization: String,
         maxTemperature: Int,
         minTemperature: Int
     ): ServerEntity<OotdResultEntity> = datasource.getOotdPastForTemp(
-        authorization = authorization,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature
     ).toEntity()
@@ -41,7 +37,6 @@ class OotdRepositoryImpl(
         minTemperature: Int,
         hashtags: List<Hashtag>
     ): ServerEntity<String> = datasource.postOotd(
-        authorization = authorization,
         image = image,
         maxTemperature = maxTemperature,
         minTemperature = minTemperature,
@@ -53,7 +48,6 @@ class OotdRepositoryImpl(
         year: Int,
         month: Int
     ): ServerEntity<OotdResultEntity> = datasource.getOotdPastForYearMonth(
-        authorization = authorization,
         year = year,
         month = month
     ).toEntity()

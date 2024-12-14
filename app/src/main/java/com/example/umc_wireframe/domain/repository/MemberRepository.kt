@@ -11,6 +11,7 @@ import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import java.time.LocalDateTime
 
 interface MemberRepository {
     //join
@@ -29,7 +30,7 @@ interface MemberRepository {
         name: String,
         nickname: String,
         gender: Gender
-    ): ServerEntity<String>
+    ): ServerEntity<LoginResultEntity>
 
     //login
     suspend fun postLogin(
@@ -39,40 +40,32 @@ interface MemberRepository {
 
     //manage
     suspend fun postUserWithdraw(
-        authorization: String
     ): ServerEntity<String>
 
     suspend fun postPasswordChange(
-        authorization: String
     ): ServerEntity<String>
 
     suspend fun postPasswordVerify(
-        authorization: String,
         verificationCode: String
     ): ServerEntity<String>
 
-    suspend fun postPasswordSuccess(
-        authorization: String,
+    suspend fun patchPasswordSuccess(
         newPassword: String
     ): ServerEntity<String>
 
-    suspend fun postNicknameChange(
-        authorization: String,
+    suspend fun patchNicknameChange(
         newNickname: String
     ): ServerEntity<NicknameResultEntity>
 
-    suspend fun postAlarmSet(
-        authorization: String,
+    suspend fun patchAlarmSet(
         alarmStatus: SetAlarm,
-        alarmTime: String
+        alarmTime: LocalDateTime
     ): ServerEntity<String>
 
     suspend fun getMyProfile(
-        authorization: String
     ): ServerEntity<MyProfileResultEntity>
 
     suspend fun postRefreshToken(
-        authorization: String,
         refreshToken: String
     ):ServerEntity<LoginResultEntity>
 }

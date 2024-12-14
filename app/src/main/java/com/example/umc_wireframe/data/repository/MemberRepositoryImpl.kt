@@ -21,8 +21,11 @@ import com.example.umc_wireframe.domain.model.mapper.toLoginEntity
 import com.example.umc_wireframe.domain.model.mapper.toMyProfileEntity
 import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
+import com.example.umc_wireframe.domain.model.toPatchAlarmTime
 import com.example.umc_wireframe.domain.repository.MemberRepository
-import retrofit2.http.Header
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
+import com.example.umc_wireframe.util.SharedPreferencesManager
+import java.time.LocalDateTime
 
 class MemberRepositoryImpl(
     private val datasource: ServerDatasource
@@ -53,14 +56,14 @@ class MemberRepositoryImpl(
         name: String,
         nickname: String,
         gender: Gender
-    ): ServerEntity<String> = datasource.postJoinSuccess(
+    ): ServerEntity<LoginResultEntity> = datasource.postJoinSuccess(
         JoinInfo(
             email = email,
             name = name,
             nickname = nickname,
             gender = gender.toString()
         )
-    ).toTempEntity()
+    ).toLoginEntity()
 
     //login
     override suspend fun postLogin(
@@ -75,66 +78,50 @@ class MemberRepositoryImpl(
 
     //manage
     override suspend fun postUserWithdraw(
-        authorization: String
     ): ServerEntity<String> = datasource.postUserWithdraw(
-        authorization
     ).toTempEntity()
 
     override suspend fun postPasswordChange(
-        authorization: String
     ): ServerEntity<String> = datasource.postPasswordChange(
-        authorization
     ).toTempEntity()
 
     override suspend fun postPasswordVerify(
-        authorization: String,
         verificationCode: String
     ): ServerEntity<String> = datasource.postPasswordVerify(
-        authorization = authorization,
         VerifyCode(
             verificationCode
         )
     ).toTempEntity()
 
-    override suspend fun postPasswordSuccess(
-        authorization: String,
+    override suspend fun patchPasswordSuccess(
         newPassword: String
-    ): ServerEntity<String> = datasource.postPasswordSuccess(
-        authorization = authorization,
+    ): ServerEntity<String> = datasource.patchPasswordSuccess(
         newPassword = NewPassword(newPassword)
     ).toTempEntity()
 
-    override suspend fun postNicknameChange(
-        authorization: String,
+    override suspend fun patchNicknameChange(
         newNickname: String
-    ): ServerEntity<NicknameResultEntity> = datasource.postNicknameChange(
-        authorization = authorization,
+    ): ServerEntity<NicknameResultEntity> = datasource.patchNicknameChange(
         newNickname = NewNickname(newNickname)
     ).toNicknameEntity()
 
-    override suspend fun postAlarmSet(
-        authorization: String,
+    override suspend fun patchAlarmSet(
         alarmStatus: SetAlarm,
-        alarmTime: String
-    ): ServerEntity<String> = datasource.postAlarmSet(
-        authorization = authorization,
+        alarmTime: LocalDateTime
+    ): ServerEntity<String> = datasource.patchAlarmSet(
         alarmSet = AlarmSet(
             alarmStatus = alarmStatus.setType,
-            alarmTime = alarmTime
+            alarmTime = alarmTime.toPatchAlarmTime()
         )
     ).toTempEntity()
 
     override suspend fun getMyProfile(
-        authorization: String
     ): ServerEntity<MyProfileResultEntity> = datasource.getMyProfile(
-        authorization
     ).toMyProfileEntity()
 
     override suspend fun postRefreshToken(
-        authorization: String,
         refreshToken: String
     ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
-        authorization = authorization,
         refreshToken = RefreshToken(refreshToken)
     ).toLoginEntity()
 }

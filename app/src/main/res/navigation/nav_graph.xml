@@ -32,12 +32,12 @@
         tools:layout="@layout/fragment_register_step3">
         <action
             android:id="@+id/action_registerStep3Fragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/nav_login" />
     </fragment>
 
     <!-- Login Fragment -->
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/nav_login"
         android:name="com.example.umc_wireframe.presentation.register.LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
@@ -71,8 +71,13 @@
             app:destination="@id/navi_nickname_change" />
         <action
             android:id="@+id/action_myFragment_to_passwordChangeFragment"
-            app:destination="@id/navi_password_change" />
+            app:destination="@id/navi_password_change_verification" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navi_alarm"
+        android:name="com.example.umc_wireframe.presentation.my.alarm.SettingAlarmFragment"
+        tools:layout="@layout/fragment_setting_alarm"/>
 
     <!-- Upload OOTD Fragment -->
     <fragment
@@ -94,13 +99,33 @@
     <!-- Nickname Change Fragment -->
     <fragment
         android:id="@+id/navi_nickname_change"
-        android:name="com.example.umc_wireframe.presentation.my.NicknameChangeFragment"
+        android:name="com.example.umc_wireframe.presentation.my.nicknamechange.NicknameChangeFragment"
         tools:layout="@layout/fragment_nickname_change" />
 
-    <!-- Password Change Fragment -->
+    <!-- Password Change Verification Fragment -->
     <fragment
-        android:id="@+id/navi_password_change"
-        android:name="com.example.umc_wireframe.presentation.my.PasswordChangeFragment"
-        tools:layout="@layout/fragment_password_change" />
+        android:id="@+id/navi_password_change_verification"
+        android:name="com.example.umc_wireframe.presentation.my.passwordchange.PasswordChangeVerificationFragment"
+        tools:layout="@layout/fragment_password_change_verification">
+
+        <!-- 인증 화면에서 입력 화면으로 이동 -->
+        <action
+            android:id="@+id/action_passwordChangeVerificationFragment_to_passwordChangeInputFragment"
+            app:destination="@id/navi_password_change_input" />
+    </fragment>
+
+    <!-- Password Change Input Fragment -->
+    <fragment
+        android:id="@+id/navi_password_change_input"
+        android:name="com.example.umc_wireframe.presentation.my.passwordchange.PasswordChangeInputFragment"
+        tools:layout="@layout/fragment_password_change_input" >
+        <action
+            android:id="@+id/action_navi_password_change_input_to_navi_my"
+            app:destination="@id/navi_my" />
+    </fragment>
+
+
+    <!-- Setting Alarm Fragment -->
+
 
 </navigation>

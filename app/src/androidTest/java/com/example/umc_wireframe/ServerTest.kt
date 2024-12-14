@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.runner.RunWith
+import java.time.LocalDateTime
 
 
 @RunWith(AndroidJUnit4::class)
@@ -26,8 +27,7 @@ class TestServerInstrumented {
     private val testJoinPassword = "1234"
     private lateinit var memberRepository: MemberRepository
     private lateinit var ootdRepository: OotdRepository
-    private var token: String =
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWRlaGRkbmpzODlAZ21haWwuY29tIiwiaWQiOjcsImlhdCI6MTczMjE2MzIyMiwiZXhwIjoxNzMyMTY2ODIyfQ.9WG1w4TKf5094o-5WuEK9zbEH6ksyJISxlKQzuvXz0w"
+    private var token: String = ""
     private var refreshToken: String = ""
 
     @Before
@@ -43,18 +43,18 @@ class TestServerInstrumented {
 //            testJoinRequest()
 //            testJoinVerify("451697")
 //            testJoinSuccess()
-//            testWithdraw()
+            testWithdraw()
 
 
-//            testLoginSuccess()
+            testLoginSuccess()
 
             if (token != "") {
 //                postRefreshToken()
 //                testOotdCheck()
 
 //                postChangeNickname()
-                postAlaramSet()
-                getMyInfo()
+//                postAlaramSet()
+//                getMyInfo()
 
 //                testChangePwRequest()
 //            testChangePwVerify("165144")
@@ -119,7 +119,6 @@ class TestServerInstrumented {
         ).result?.accessToken
 
         memberRepository.postUserWithdraw(
-            authorization = "Bearer $token"
         ).let {
             Log.d("withdraw success", it.toString())
         }
@@ -131,13 +130,11 @@ class TestServerInstrumented {
 
         suspend fun checkOotdData() {
             val hashTagResponse = ootdRepository.getRecommendedHashtag(
-                authorization = token,
                 maxTemperature = maxTemp,
                 minTemperature = minTemp
             )
 
             val pastOotdResponseForTemp = ootdRepository.getOotdPastForTemp(
-                authorization = token,
                 maxTemperature = maxTemp,
                 minTemperature = minTemp
             )
@@ -170,7 +167,6 @@ class TestServerInstrumented {
 
     suspend fun testChangePwRequest() {
         memberRepository.postPasswordChange(
-            authorization = token
         ).let {
             Log.d("cahngePw", it.toString())
         }
@@ -178,7 +174,6 @@ class TestServerInstrumented {
 
     suspend fun testChangePwVerify(code: String) {
         memberRepository.postPasswordVerify(
-            authorization = token,
             verificationCode = code
         ).let {
             Log.d("cahngePw", it.toString())
@@ -187,8 +182,7 @@ class TestServerInstrumented {
 
     suspend fun testChangePwSuccess() {
         try {
-            memberRepository.postPasswordSuccess(
-                authorization = token,
+            memberRepository.patchPasswordSuccess(
                 newPassword = "1234"
             ).let {
                 Log.d("cahngePw", it.toString())
@@ -200,13 +194,11 @@ class TestServerInstrumented {
 
     suspend fun getMyInfo() {
         memberRepository.getMyProfile(
-            authorization = token
         )
     }
 
     suspend fun postRefreshToken() {
         memberRepository.postRefreshToken(
-            authorization = token,
             refreshToken = refreshToken
         ).let {
             it.result?.let {
@@ -218,8 +210,7 @@ class TestServerInstrumented {
 
     suspend fun postChangeNickname() {
         try {
-            memberRepository.postNicknameChange(
-                authorization = token,
+            memberRepository.patchNicknameChange(
                 newNickname = "change success"
             ).let {
                 Log.d("cahngeNickname", it.toString())
@@ -231,10 +222,9 @@ class TestServerInstrumented {
 
     suspend fun postAlaramSet() {
         try {
-            memberRepository.postAlarmSet(
-                authorization = token,
+            memberRepository.patchAlarmSet(
                 alarmStatus = SetAlarm.POST,
-                alarmTime = "14:00"
+                alarmTime = LocalDateTime.now()
             )
         } catch (e: Exception) {
             e.printStackTrace()

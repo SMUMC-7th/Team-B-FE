@@ -1,64 +1,70 @@
 package com.example.umc_wireframe.presentation
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.ActivityMainBinding
+import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.presentation.home.LoginState
+import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.example.umc_wireframe.util.cancelAlarmWorker
 import com.example.umc_wireframe.util.navigateWithClear
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavColor {
-
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var navController: NavController
 
-    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+    val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+
         initNavigation()
+
+        initViewModel()
         requestNotificationPermission()
     }
 
     private fun initNavigation() {
-        // 네비게이션 호스트 설정
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView_main) as NavHostFragment
         navController = navHostFragment.navController
 
-        // 화면 전환에 따른 하단 네비게이션 바 가시성 설정
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.botNavMain.visibility = when (destination.id) {
-                R.id.registerStep1Fragment,
-                R.id.RegisterStep2Fragment,
-                R.id.RegisterStep3Fragment,
-                R.id.loginFragment -> View.GONE
-                else -> View.VISIBLE
+            when (destination.id) {
+                R.id.navi_my,
+                R.id.navi_home,
+                R.id.navi_calendar -> binding.botNavMain.visibility = View.VISIBLE
+
+                else -> binding.botNavMain.visibility = View.GONE
             }
         }
 
         // 하단 네비게이션 아이템 클릭 리스너 설정
         setBottomNavigationListeners()
 
-        // 회원가입 토큰 기반 네비게이션 설정
-        val token = getRegistrationToken()
-        setNavGraph(token)
     }
 
     private fun setBottomNavigationListeners() {
@@ -87,25 +93,12 @@ class MainActivity : AppCompatActivity(), NavColor {
                         if (currentDestinationId != R.id.menu_botNav_my)
                             navController.navigateWithClear(R.id.navi_my)
                     }
+
                 }
             }
         }
     }
 
-    private fun setNavGraph(token: String?) {
-        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-        if (!token.isNullOrEmpty()) {
-            navGraph.setStartDestination(R.id.navi_home)
-        } else {
-            navGraph.setStartDestination(R.id.registerStep1Fragment)
-        }
-        navController.setGraph(navGraph, null)
-    }
-
-    private fun getRegistrationToken(): String? {
-        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("registration_token", null)
-    }
 
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -119,6 +112,44 @@ class MainActivity : AppCompatActivity(), NavColor {
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
+            }
+        }
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        lifecycleScope.launch {
+            viewModel.loginState.collectLatest { loginState ->
+                val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                val tokenManager = SharedPreferencesManager(this@MainActivity)
+                when (loginState) {
+                    LoginState.Init -> {
+                        val (accessToken, refreshToken) = tokenManager.getAccessToken() to tokenManager.getRefreshToken()
+                        accessToken?.let {
+                            refreshToken?.let {
+                                viewModel.login(
+                                    accessToken = accessToken,
+                                    refreshToken = refreshToken
+                                )
+                            }
+                        }
+                        if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()) {
+                            viewModel.logout()
+                        }
+                    }
+
+                    is LoginState.Login -> {
+                        navGraph.setStartDestination(R.id.navi_home)
+                        navController.setGraph(navGraph, null)
+                        viewModel.setAlarm()
+                    }
+
+                    LoginState.LoginRequire -> {
+                        cancelAlarmWorker(UmcClothsOfTempApplication.context)
+                        tokenManager.clearAll()
+                        navGraph.setStartDestination(R.id.nav_login)
+                        navController.setGraph(navGraph, null)
+                    }
+                }
             }
         }
     }
@@ -141,4 +172,5 @@ class MainActivity : AppCompatActivity(), NavColor {
     override fun setNavMy() {
         updateNavIconTint(binding.ivNavMypage)
     }
+
 }

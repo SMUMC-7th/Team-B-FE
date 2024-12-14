@@ -27,6 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentHomeBinding
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
@@ -49,11 +50,13 @@ import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
 import com.example.umc_wireframe.presentation.NavColor
 import com.example.umc_wireframe.util.CoordinateConverter
+import com.example.umc_wireframe.util.setDailyAlarm
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -122,7 +125,6 @@ class HomeFragment : Fragment() {
         initView()
         selectLocation()
         initViewModel()
-
     }
 
 
@@ -296,7 +298,33 @@ class HomeFragment : Fragment() {
                 homeTagListAdapter.submitList(hashtag)
                 homeRecommendedClothesListAdapter.submitList(clothesImgUrl)
             }
+
+
+
+
+            it.historyList.let {
+                if (it.size < 2) {
+                    tvHomeNoHistory.visibility = View.VISIBLE
+                    clHomeHistory.visibility = View.INVISIBLE
+                } else {
+                    tvHomeNoHistory.visibility = View.INVISIBLE
+                    clHomeHistory.visibility = View.VISIBLE
+
+                    Glide.with(requireContext())
+                        .load(it[0].image) // 로드할 이미지 URL
+                        .into(ivHomeMyHistory1)
+                    tvHomeMyHistory1.text = it[0].date
+                    homeHistoryTagListAdapterList[0].submitList(it[0].hashtags)
+
+                    Glide.with(requireContext())
+                        .load(it[1].image) // 로드할 이미지 URL
+                        .into(ivHomeMyHistory2)
+                    tvHomeMyHistory2.text = it[1].date
+                    homeHistoryTagListAdapterList[1].submitList(it[1].hashtags)
+                }
+            }
         }
+
     }
 
     private fun getCurrentLocation() {

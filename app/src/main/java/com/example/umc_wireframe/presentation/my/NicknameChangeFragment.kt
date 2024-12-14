@@ -70,8 +70,7 @@ class NicknameChangeFragment : Fragment() {
                 }
 
                 // 서버 요청
-                val response = serverDatasource.postNicknameChange(
-                    authorization = "Bearer $token",
+                val response = serverDatasource.patchNicknameChange(
                     newNickname = NewNickname(newNickname)
                 )
 
