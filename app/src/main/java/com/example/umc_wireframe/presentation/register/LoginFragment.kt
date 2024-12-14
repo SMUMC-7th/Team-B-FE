@@ -53,7 +53,7 @@ class LoginFragment : Fragment() {
 
         // 유효한 입력일 경우 HomeFragment로 이동
         loginViewModel.postLogin(
-           email = binding.tvEmailInput.text.toString(),
+            email = binding.tvEmailInput.text.toString(),
             password = binding.tvPasswordInput.text.toString(),
             isSuccess = {
                 val tokenManager = SharedPreferencesManager(requireContext())
@@ -70,7 +70,6 @@ class LoginFragment : Fragment() {
             }
         )
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
