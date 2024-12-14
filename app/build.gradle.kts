@@ -109,4 +109,5 @@ dependencies {
 
     implementation ("com.google.code.gson:gson:2.8.9")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // 최신 버전 확인 필수
 }
