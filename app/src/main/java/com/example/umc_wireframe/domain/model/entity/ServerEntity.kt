@@ -101,3 +101,14 @@ data class PostDetailEntity(
     val title: String,
     val content: String
 )
+
+data class PostCommentResultEntity(
+    val id: Int,
+    val content: String,
+    val parentId: Int?,
+    val memberId: Int,
+    val memberNickname: String,
+    val reportCount: Int,
+    val createdAt: String,
+    val children: List<CommentResultEntity.CommentEntity>?
+)

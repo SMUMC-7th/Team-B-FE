@@ -3,6 +3,7 @@ package com.example.umc_wireframe.domain.repository
 import com.example.umc_wireframe.data.model.PostDetailResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
+import com.example.umc_wireframe.domain.model.entity.PostCommentResultEntity
 import com.example.umc_wireframe.domain.model.entity.PostDetailEntity
 import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
@@ -38,7 +39,7 @@ interface CommunityRepository {
         postId: String,
         comment: String,
         parentId: Int = 0
-    ): ServerEntity<String>
+    ):ServerEntity<PostCommentResultEntity>
 
     suspend fun getCommentList(
         postId: String,

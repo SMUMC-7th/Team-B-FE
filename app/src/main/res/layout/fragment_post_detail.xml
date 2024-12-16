@@ -24,8 +24,8 @@
                 android:id="@+id/cl_postDetail_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/rv_postDetail_comment">
+                app:layout_constraintBottom_toTopOf="@id/rv_postDetail_comment"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_post_view_user"
@@ -35,15 +35,6 @@
                     android:paddingBottom="20dp"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:id="@+id/iv_post_poster"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="20dp"
-                        android:src="@drawable/ic_community"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_post_poster_nickname"
@@ -53,6 +44,7 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/tv_post_poster_ranking"
                         app:layout_constraintStart_toEndOf="@+id/iv_post_poster"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed"
                         tools:text="단짠단짠" />
@@ -103,35 +95,15 @@
                     android:id="@+id/tv_post_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="20dp"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="20dp"
-                    android:paddingBottom="60dp"
                     android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_post_title"
                     tools:text="아리랑아리랑아리랑 아리랑아라리리리컬 매지컬 나노나나나니나 니나노 라라라라 로로로로 이리ㅣㄹ리ㅣ 라랑랑라ㅣㅁ이프미\" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cv_postView_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="@id/tv_post_description"
-                    app:layout_constraintStart_toStartOf="@id/tv_post_description"
-                    app:layout_constraintTop_toBottomOf="@id/tv_post_description"
-                    app:strokeColor="@null"
-                    tools:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/iv_postView_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        tools:src="@drawable/ic_community" />
-
-                </com.google.android.material.card.MaterialCardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView

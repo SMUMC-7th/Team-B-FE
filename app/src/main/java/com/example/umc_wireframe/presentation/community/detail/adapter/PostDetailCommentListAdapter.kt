@@ -11,7 +11,9 @@ import com.example.umc_wireframe.databinding.ItemRvCommentBinding
 import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.presentation.community.detail.PostDetailCommentItem
 
-class PostDetailCommentListAdapter :
+class PostDetailCommentListAdapter(
+    val postReply: (parentId:Int) -> Unit
+) :
     PagingDataAdapter<CommentResultEntity.CommentEntity, PostDetailCommentListAdapter.ViewHolder>(
         PostDetailCommentDiffUtil()
     ) {
@@ -41,6 +43,12 @@ class PostDetailCommentListAdapter :
             tvItemCommentReplyAdd.setOnClickListener {
                 rvItemCommentReply.visibility = View.VISIBLE
             }
+
+            tvItemCommentReplyPost.setOnClickListener {
+                postReply(item.id)
+            }
+
+            tvItemCommentReplyAdd.text = "대댓글 보기(${item.children.size})"
         }
     }
 

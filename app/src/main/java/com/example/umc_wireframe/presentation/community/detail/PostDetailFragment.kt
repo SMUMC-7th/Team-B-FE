@@ -2,6 +2,7 @@ package com.example.umc_wireframe.presentation.community.detail
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.databinding.FragmentPostDetailBinding
 import com.example.umc_wireframe.presentation.community.detail.adapter.PostDetailCommentListAdapter
+import com.example.umc_wireframe.util.hideSoftKeyboard
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.internal.notifyAll
 
 class PostDetailFragment : Fragment() {
     private var _binding: FragmentPostDetailBinding? = null
@@ -24,7 +25,16 @@ class PostDetailFragment : Fragment() {
     var postId: String? = "1"
 
     private val listAdapter by lazy {
-        PostDetailCommentListAdapter()
+        PostDetailCommentListAdapter(postReply = { parentId ->
+            if(binding.etPostAddComment.text.toString().isNotEmpty()) {
+                viewModel.postReply(
+                    parentId = parentId,
+                    reply = binding.etPostAddComment.text.toString()
+                )
+                binding.etPostAddComment.setText("")
+                binding.root.hideSoftKeyboard()
+            }
+        })
     }
 
     private val viewModel: PostDetailViewModel by viewModels()
@@ -71,10 +81,11 @@ class PostDetailFragment : Fragment() {
             btnPostAddComment.setOnClickListener {
                 if (etPostAddComment.text.toString().isNotEmpty()) {
                     viewModel.postComment(etPostAddComment.text.toString())
+                    binding.etPostAddComment.setText("")
+                    binding.root.hideSoftKeyboard()
                 }
             }
         }
-
         initRv()
         backBtn()
         addComment()
@@ -111,7 +122,7 @@ class PostDetailFragment : Fragment() {
                 uiState.let {
                     tvPostTitle.text = it.title
                     tvPostDescription.text = it.content
-                    tvPostPosterNickname.text = it.wirter
+                    tvPostPosterNickname.text = it.writer
                 }
             }
         }

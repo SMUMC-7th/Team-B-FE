@@ -2,11 +2,11 @@ package com.example.umc_wireframe.data.repository
 
 import com.example.umc_wireframe.data.model.PostDetailResponse
 import com.example.umc_wireframe.data.model.ServerResponse
-import com.example.umc_wireframe.data.remote.CommentReq
 import com.example.umc_wireframe.data.remote.CommentSet
 import com.example.umc_wireframe.data.remote.PostSet
 import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
+import com.example.umc_wireframe.domain.model.entity.PostCommentResultEntity
 import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import com.example.umc_wireframe.domain.model.mapper.toCommentResultEntity
@@ -52,13 +52,13 @@ class CommunityRepositoryImpl(
         postId: String,
         comment: String,
         parentId: Int
-    ) = datasource.postComment(
+    ): ServerEntity<PostCommentResultEntity> = datasource.postComment(
         postId = postId,
         comment = CommentSet(
             content = comment,
             parentId = parentId
         )
-    ).toTempEntity()
+    )
 
 
     override suspend fun getCommentList(
@@ -67,10 +67,8 @@ class CommunityRepositoryImpl(
         size: Int
     ): ServerEntity<CommentResultEntity> = datasource.getCommentList(
         postId = postId,
-        commentReq = CommentReq(
-            cursor = cursor,
-            size = size
-        )
+        cursor = cursor,
+        size = size
     ).toCommentResultEntity()
 
 

@@ -43,6 +43,20 @@
         app:layout_constraintStart_toStartOf="@id/tv_itemComment_content"
         app:layout_constraintTop_toBottomOf="@id/tv_itemComment_content" />
 
+
+    <TextView
+        android:id="@+id/tv_itemComment_replyPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:padding="4dp"
+        android:text="대댓글 쓰기"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@id/tv_itemComment_replyAdd"
+        app:layout_constraintTop_toBottomOf="@id/tv_itemComment_content" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_itemComment_reply"
         android:layout_width="match_parent"
@@ -71,7 +85,7 @@
         android:gravity="center"
         android:text="신고된 계시글입니다. 보시겠습니까?"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

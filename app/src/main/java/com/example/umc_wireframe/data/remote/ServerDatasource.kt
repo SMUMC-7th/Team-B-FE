@@ -12,6 +12,8 @@ import com.example.umc_wireframe.data.model.PostListResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.domain.model.Hashtag
+import com.example.umc_wireframe.domain.model.entity.PostCommentResultEntity
+import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -145,12 +147,13 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     suspend fun postComment(
         @Path("postId") postId: String,
         @Body comment: CommentSet
-    ): ServerResponse<String>
+    ): ServerEntity<PostCommentResultEntity>
 
     @GET("api/posts/{postId}/comments")
     suspend fun getCommentList(
         @Path("postId") postId: String,
-        @Body commentReq: CommentReq
+        @Query("cursor") cursor: Long,
+        @Query("size") size: Int
     ): ServerResponse<CommentResultResponse>
 
     @PATCH("api/comments/{commentId}")
@@ -221,9 +224,4 @@ data class PostSet(
 data class CommentSet(
     @Query("content") val content: String,
     @Query("parentId") val parentId: Int
-)
-
-data class CommentReq(
-    @Query("cursor") val cursor: Long,
-    @Query("size") val size: Int
 )
