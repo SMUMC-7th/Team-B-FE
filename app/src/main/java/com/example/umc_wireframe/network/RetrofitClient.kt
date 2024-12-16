@@ -84,4 +84,5 @@ class RetrofitClient(context: Context) { // context를 생성자에서 받도록
     val serverDatasource: ServerDatasource by lazy {
         serverRetrofit.create(ServerDatasource::class.java)
     }
+
 }

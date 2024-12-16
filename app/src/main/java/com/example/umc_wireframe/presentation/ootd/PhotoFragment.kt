@@ -18,9 +18,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.example.umc_wireframe.R
+import com.example.umc_wireframe.data.remote.ServerDatasource
 import com.example.umc_wireframe.databinding.FragmentPhotoBinding
+import com.example.umc_wireframe.network.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -63,7 +71,7 @@ class PhotoFragment : Fragment() {
         if (allPermissionsGranted()) {
             startCamera() // 카메라 시작
         } else {
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), REQUEST_CODE_PERMISSIONS)
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_PERMISSIONS)
         }
 
         // 촬영 버튼 클릭 리스너
@@ -80,7 +88,6 @@ class PhotoFragment : Fragment() {
         }
     }
 
-    // navigateToHashtagFragment 메서드
     private fun navigateToHashtagFragment() {
         try {
             val navController = findNavController() // 현재 Fragment에 연결된 NavController 가져오기
@@ -90,12 +97,10 @@ class PhotoFragment : Fragment() {
         }
     }
 
-    // 카메라 권한 확인
     private fun allPermissionsGranted() = ContextCompat.checkSelfPermission(
-        requireContext(), android.Manifest.permission.CAMERA
+        requireContext(), Manifest.permission.CAMERA
     ) == PackageManager.PERMISSION_GRANTED
 
-    // 권한 요청 결과 처리
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -104,14 +109,13 @@ class PhotoFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                startCamera() // 카메라 시작
+                startCamera()
             } else {
                 Toast.makeText(context, "카메라 권한이 허용되지 않았습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // 카메라 시작
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -129,17 +133,16 @@ class PhotoFragment : Fragment() {
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                cameraProvider.unbindAll() // 기존 바인딩 해제
+                cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture
-                ) // 프리뷰와 캡처 바인딩
+                )
             } catch (e: Exception) {
                 Log.e(TAG, "카메라 바인딩 실패: ${e.message}")
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    // 사진 촬영
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
@@ -161,14 +164,45 @@ class PhotoFragment : Fragment() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     Toast.makeText(context, "촬영이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                    // 촬영된 이미지를 ImageView에 표시
+                    // 이미지 표시
                     binding.capturedImageView.setImageURI(photoFile.toUri())
-                    binding.capturedImageView.visibility = View.VISIBLE // ImageView 표시
-                    binding.viewFinder.visibility = View.GONE // 프리뷰 숨김
-                }
+                    binding.capturedImageView.visibility = View.VISIBLE
+                    binding.viewFinder.visibility = View.GONE
 
+                    // 서버에 이미지 업로드
+                    uploadPhoto(photoFile)
+                }
             }
         )
+    }
+
+    private fun uploadPhoto(photoFile: File) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), photoFile)
+                val imagePart = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
+
+                // RetrofitClient의 serverDatasource를 통해 API 호출
+                val response = retrofitClient.serverDatasource.postOotd(
+                    image = imagePart,
+                    maxTemperature = maxTemp,
+                    minTemperature = minTemp,
+                    hashtags = hashtags
+                )
+
+                withContext(Dispatchers.Main) {
+                    if (response.success) {
+                        Toast.makeText(context, "이미지 업로드 성공: ${response.message}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "업로드 실패: ${response.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "서버 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
