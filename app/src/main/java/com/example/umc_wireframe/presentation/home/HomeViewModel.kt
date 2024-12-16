@@ -11,13 +11,12 @@ import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.domain.repository.ShortTermForecastRepository
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.example.umc_wireframe.util.SharedPreferencesManager
-import com.example.umc_wireframe.util.cancelAlarmWorker
-import com.example.umc_wireframe.util.scheduleDailyAlarmWorker
+import com.example.umc_wireframe.util.cancelDailyAlarm
+import com.example.umc_wireframe.util.setDailyAlarm
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -144,15 +143,16 @@ class HomeViewModel : ViewModel() {
             memberRepository.getMyProfile().result?.let {
                 if (it.alarmStatus) {
                     it.alarmTime.let {
-                        scheduleDailyAlarmWorker(
+                        setDailyAlarm(
                             UmcClothsOfTempApplication.context,
                             LocalDateTime.now().withHour(it.hour).withMonth(it.min)
                         )
                     }
-                } else cancelAlarmWorker(UmcClothsOfTempApplication.context)
+                } else cancelDailyAlarm(UmcClothsOfTempApplication.context)
             }
         } catch (e: Exception) {
-            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 }

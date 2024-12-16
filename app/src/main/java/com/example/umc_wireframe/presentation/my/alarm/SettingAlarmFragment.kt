@@ -10,7 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentSettingAlarmBinding
 import com.example.umc_wireframe.presentation.my.MyUiState
-import com.example.umc_wireframe.util.scheduleDailyAlarmWorker
+import com.example.umc_wireframe.util.cancelDailyAlarm
+import com.example.umc_wireframe.util.setDailyAlarm
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -78,7 +79,9 @@ class SettingAlarmFragment : Fragment() {
                     minute
                 )
 
-                scheduleDailyAlarmWorker(requireContext(), selectedDateTime)
+                setDailyAlarm(requireContext(), selectedDateTime)
+            } else{
+                cancelDailyAlarm(requireContext())
             }
 
             viewModel.setAlarm(

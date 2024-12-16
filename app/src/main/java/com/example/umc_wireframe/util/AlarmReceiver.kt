@@ -103,6 +103,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
         }
+
+        val nextAlarmTime = LocalDateTime.now().plusDays(1).withMinute(0)
+        setDailyAlarm(context, nextAlarmTime)
     }
 
     // 권한 요청 함수
