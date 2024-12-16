@@ -139,7 +139,7 @@ class HomeFragment : Fragment() {
 
             // 오렌지색으로 설정
             spannableString.setSpan(
-                ForegroundColorSpan(Color.parseColor("#FFA500")),
+                ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.orange)),
                 targetStart,
                 targetEnd,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

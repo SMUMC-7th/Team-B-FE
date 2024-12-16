@@ -6,6 +6,7 @@ import com.example.umc_wireframe.data.model.MyProfileResultResponse
 import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
+import com.example.umc_wireframe.data.model.PostListResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
 import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
 import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
@@ -13,6 +14,8 @@ import com.example.umc_wireframe.domain.model.entity.MyProfileResultEntity
 import com.example.umc_wireframe.domain.model.entity.NicknameResultEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
+import com.example.umc_wireframe.domain.model.entity.PostEntity
+import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import com.example.umc_wireframe.domain.model.toGender
 
@@ -87,6 +90,23 @@ fun ServerResponse<MyProfileResultResponse>.toMyProfileEntity(): ServerEntity<My
     )
 }
 
+fun ServerResponse<PostListResponse>.toPostListEntity(): ServerEntity<PostListEntity> {
+    return ServerEntity(
+        status = this.status ?: "",
+        code = this.code ?: "",
+        message = this.message ?: "",
+        isSuccess = this.isSuccess ?: false,
+        result = this.result?.toEntity() ?: PostListEntity(
+            postList = emptyList(),
+            listSize = 0,
+            totalPage = 0,
+            totalElements = 0,
+            isFirst = false,
+            isLast = false
+        )
+    )
+}
+
 fun RecommendedHashtagResultResponse.toEntity(): RecommendedHashtagResultEntity {
     return RecommendedHashtagResultEntity(
         recommendations = this.recommendations?.map { recommendation ->
@@ -140,6 +160,22 @@ fun MyProfileResultResponse.toEntity(): MyProfileResultEntity {
         gender = gender.toGender(),
         alarmStatus = alarmStatus,
         alarmTime = alarmTime.toAlarmTime()
+    )
+}
+
+fun PostListResponse.toEntity(): PostListEntity {
+    return PostListEntity(
+        postList = postList?.map { postResponse ->
+            PostEntity(
+                title = postResponse.title ?: "",
+                content = postResponse.content ?: ""
+            )
+        } ?: emptyList(),
+        listSize = listSize ?: 0,
+        totalPage = totalPage ?: 0,
+        totalElements = totalElements ?: 0,
+        isFirst = isFirst ?: false,
+        isLast = isLast ?: false
     )
 }
 

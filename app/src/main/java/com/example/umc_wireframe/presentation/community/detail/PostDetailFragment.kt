@@ -11,6 +11,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.databinding.FragmentPostDetailBinding
+import com.example.umc_wireframe.presentation.community.detail.adapter.PostDetailCommentListAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

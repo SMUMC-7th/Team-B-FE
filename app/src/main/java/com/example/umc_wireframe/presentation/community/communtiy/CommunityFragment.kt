@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentCommunityBinding
 import com.example.umc_wireframe.presentation.NavColor
+import com.example.umc_wireframe.presentation.community.communtiy.adapter.CommunityListAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -78,6 +79,13 @@ class CommunityFragment : Fragment() {
             uiState.flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
                     onBind(uiState)
+                }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            communityPagingList.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest {  pagingData ->
+                    listAdapter.submitData(pagingData)
                 }
         }
     }

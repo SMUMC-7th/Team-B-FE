@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/tv_itemReply_writer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="example Title"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_itemReply_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="sample text sample text sample textsample textsample textsample textsample textsample textsample textsample textsample text"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tv_itemReply_writer"
+        app:layout_constraintStart_toStartOf="@id/tv_itemReply_writer"
+        app:layout_constraintTop_toBottomOf="@id/tv_itemReply_writer" />
+
+    <View
+        android:id="@+id/view_itemReply_bottomView"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
+        android:background="#F4F6F8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_itemReply_content" />
+
+    <TextView
+        android:id="@+id/tv_itemReply_blur"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="신고된 계시글입니다. 보시겠습니까?"
+        android:background="@drawable/bg_reply_blur"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:visibility="gone"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

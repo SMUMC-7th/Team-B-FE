@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.community.communtiy
+package com.example.umc_wireframe.presentation.community.communtiy.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,22 +6,23 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc_wireframe.databinding.ItemRvPostBinding
+import com.example.umc_wireframe.domain.model.entity.PostEntity
 
 class CommunityListAdapter(
     val clickListener: (listId: String) -> Unit
-) : PagingDataAdapter<CommunityListItem, CommunityListAdapter.ViewHolder>(
-        CommunityListItemDiffUtil()
-    ) {
+) : PagingDataAdapter<PostEntity, CommunityListAdapter.ViewHolder>(
+    CommunityListItemDiffUtil()
+) {
 
     inner class ViewHolder(
         val binding: ItemRvPostBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CommunityListItem) = with(binding) {
+        fun bind(item: PostEntity) = with(binding) {
             root.setOnClickListener {
-                clickListener(item.id)
+                clickListener(item.title)
             }
 
-            tvItemCommentWriter.text = item.writer
+            tvItemCommentTitle.text = item.title
             tvItemCommentContent.text = item.content
         }
     }
@@ -40,17 +41,17 @@ class CommunityListAdapter(
         )
 }
 
-class CommunityListItemDiffUtil : DiffUtil.ItemCallback<CommunityListItem>() {
+class CommunityListItemDiffUtil : DiffUtil.ItemCallback<PostEntity>() {
     override fun areItemsTheSame(
-        oldItem: CommunityListItem,
-        newItem: CommunityListItem,
+        oldItem: PostEntity,
+        newItem: PostEntity,
     ): Boolean {
         return oldItem.content == newItem.content
     }
 
     override fun areContentsTheSame(
-        oldItem: CommunityListItem,
-        newItem: CommunityListItem,
+        oldItem: PostEntity,
+        newItem: PostEntity,
     ): Boolean {
         return oldItem == newItem
     }

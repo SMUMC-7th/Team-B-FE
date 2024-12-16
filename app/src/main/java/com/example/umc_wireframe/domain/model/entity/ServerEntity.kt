@@ -55,9 +55,23 @@ data class MyProfileResultEntity(
     val gender: Gender,
     val alarmStatus: Boolean,
     val alarmTime: AlarmTime
-){
+) {
     data class AlarmTime(
         val hour: Int,
         val min: Int,
     )
 }
+
+data class PostListEntity(
+    val postList: List<PostEntity>,
+    val listSize: Int,
+    val totalPage: Int,
+    val totalElements: Int,
+    val isFirst: Boolean,
+    val isLast: Boolean
+)
+
+data class PostEntity(
+    val title: String,
+    val content: String
+)

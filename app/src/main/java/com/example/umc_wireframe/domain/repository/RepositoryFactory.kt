@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.domain.repository
 
+import com.example.umc_wireframe.data.repository.CommunityRepositoryImpl
 import com.example.umc_wireframe.data.repository.MemberRepositoryImpl
 import com.example.umc_wireframe.data.repository.OotdRepositoryImpl
 import com.example.umc_wireframe.data.repository.ShortTermForecastRepositoryImpl
@@ -14,8 +15,11 @@ object RepositoryFactory {
         return OotdRepositoryImpl(RetrofitClient.serverDatasource)
     }
 
-    fun createMemberRepository(): MemberRepository{
+    fun createMemberRepository(): MemberRepository {
         return MemberRepositoryImpl(RetrofitClient.serverDatasource)
     }
 
+    fun createCommunityRepository(): CommunityRepository {
+        return CommunityRepositoryImpl(RetrofitClient.serverDatasource)
+    }
 }
