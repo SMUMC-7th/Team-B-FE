@@ -105,7 +105,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @POST("api/users/token/reissue")
     suspend fun postRefreshToken(
-        @Body refreshToken: RefreshToken
+        @Header("Refresh-Token") refreshToken: String
     ): ServerResponse<LoginResultResponse>
 }
 

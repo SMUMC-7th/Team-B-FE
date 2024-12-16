@@ -122,6 +122,6 @@ class MemberRepositoryImpl(
     override suspend fun postRefreshToken(
         refreshToken: String
     ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
-        refreshToken = RefreshToken(refreshToken)
+        refreshToken = refreshToken
     ).toLoginEntity()
 }

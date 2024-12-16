@@ -18,7 +18,7 @@ class TokenManager(
 
         return try {
             // 갱신 API 호출
-            val response = repository.postRefreshToken(RefreshToken(refreshToken))
+            val response = repository.postRefreshToken(refreshToken)
 
             if (response?.isSuccess == true) {
                 // 새 토큰 저장
