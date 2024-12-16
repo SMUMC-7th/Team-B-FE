@@ -36,7 +36,7 @@ data class OotdResultResponse(
 data class LoginResultResponse(
     @SerializedName("accessToken") val accessToken: String?,
     @SerializedName("refreshToken") val refreshToken: String
-    )
+)
 
 data class NicknameResultResponse(
     @SerializedName("newNickname") val newNickname: String?
@@ -53,4 +53,19 @@ data class MyProfileResultResponse(
     val gender: String,
     val alarmStatus: Boolean,
     val alarmTime: String
+)
+
+
+data class PostListResponse(
+    @SerializedName("postList") val postList: List<PostResponse>?,
+    @SerializedName("listSize") val listSize: Int?,
+    @SerializedName("totalPage") val totalPage: Int?,
+    @SerializedName("totalElements") val totalElements: Int?,
+    @SerializedName("isFirst") val isFirst: Boolean?,
+    @SerializedName("isLast") val isLast: Boolean?
+)
+
+data class PostResponse(
+    @SerializedName("title") val title: String?,
+    @SerializedName("content") val content: String?
 )

@@ -1,4 +1,4 @@
-package com.example.umc_wireframe.presentation.community.detail
+package com.example.umc_wireframe.presentation.community.detail.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc_wireframe.databinding.ItemRvReplyBinding
+import com.example.umc_wireframe.presentation.community.detail.ReplyItem
 
 class PostDetailReplyListAdapter :
     ListAdapter<ReplyItem, PostDetailReplyListAdapter.ViewHolder>(
