@@ -53,7 +53,7 @@ class PostDetailFragment : Fragment() {
         initViewModel()
     }
 
-    private fun initView() = with(binding){
+    private fun initView() = with(binding) {
         fun initRv() {
             rvPostDetailComment.run {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -61,16 +61,26 @@ class PostDetailFragment : Fragment() {
             }
         }
 
-        fun backBtn(){
-            includePostViewAppBar.ivPostBack.setOnClickListener{
+        fun backBtn() {
+            includePostViewAppBar.ivPostBack.setOnClickListener {
                 findNavController().popBackStack()
             }
         }
+
+        fun addComment() {
+            btnPostAddComment.setOnClickListener {
+                if (etPostAddComment.text.toString().isNotEmpty()) {
+                    viewModel.postComment(etPostAddComment.text.toString())
+                }
+            }
+        }
+
         initRv()
         backBtn()
+        addComment()
     }
 
-    fun getPost(){
+    fun getPost() {
         viewModel.getPost(postId)
     }
 

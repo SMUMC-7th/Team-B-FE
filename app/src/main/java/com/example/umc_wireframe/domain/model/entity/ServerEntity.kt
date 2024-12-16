@@ -72,6 +72,7 @@ data class PostListEntity(
 )
 
 data class PostEntity(
+    val postId: String,
     val title: String,
     val content: String
 )
@@ -91,3 +92,12 @@ data class CommentResultEntity(
         val children: List<CommentEntity>
     )
 }
+
+
+
+data class PostDetailEntity(
+    val memberName: String,
+    val postId: Int,
+    val title: String,
+    val content: String
+)

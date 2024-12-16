@@ -1,5 +1,7 @@
 package com.example.umc_wireframe.data.repository
 
+import com.example.umc_wireframe.data.model.PostDetailResponse
+import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.data.remote.CommentReq
 import com.example.umc_wireframe.data.remote.CommentSet
 import com.example.umc_wireframe.data.remote.PostSet
@@ -16,9 +18,11 @@ class CommunityRepositoryImpl(
     private val datasource: ServerDatasource
 ) : CommunityRepository {
     // Post
-    override suspend fun getPost(postId: String) {
+    override suspend fun getPost(
+        postId: String
+    ): ServerResponse<PostDetailResponse> =
         datasource.getPost(postId)
-    }
+
 
     override suspend fun getPostList(
         page: Int

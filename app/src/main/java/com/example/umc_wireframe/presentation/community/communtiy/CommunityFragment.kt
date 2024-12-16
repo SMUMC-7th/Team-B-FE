@@ -27,7 +27,7 @@ class CommunityFragment : Fragment() {
         CommunityListAdapter(clickListener = { id ->
             findNavController().navigate(
                 resId = R.id.navi_postDetail,
-                args = bundleOf("id" to "1")
+                args = bundleOf("id" to id)
             )
         })
     }
@@ -84,7 +84,7 @@ class CommunityFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             communityPagingList.flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                .collectLatest {  pagingData ->
+                .collectLatest { pagingData ->
                     listAdapter.submitData(pagingData)
                 }
         }

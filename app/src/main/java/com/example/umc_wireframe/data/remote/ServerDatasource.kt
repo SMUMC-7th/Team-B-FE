@@ -7,6 +7,7 @@ import com.example.umc_wireframe.data.model.LoginResultResponse
 import com.example.umc_wireframe.data.model.MyProfileResultResponse
 import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
+import com.example.umc_wireframe.data.model.PostDetailResponse
 import com.example.umc_wireframe.data.model.PostListResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
@@ -118,7 +119,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @GET("api/posts/{postId}")
     suspend fun getPost(
         @Path("postId") postId: String
-    )
+    ):ServerResponse<PostDetailResponse>
 
     @GET("api/posts")
     suspend fun getPostList(

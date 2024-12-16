@@ -66,6 +66,7 @@ data class PostListResponse(
 )
 
 data class PostResponse(
+    @SerializedName("postId") val postId: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("content") val content: String?
 )
@@ -88,4 +89,9 @@ data class CommentResultResponse(
 }
 
 
-
+data class PostDetailResponse(
+    val memberName: String,
+    val postId: Int,
+    val title: String,
+    val content: String
+)

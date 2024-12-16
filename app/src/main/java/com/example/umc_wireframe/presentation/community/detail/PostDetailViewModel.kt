@@ -13,9 +13,7 @@ import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -81,7 +79,24 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
-    fun postComment(comment: String) = viewModelScope.launch { }
+    fun postComment(comment: String) = viewModelScope.launch {
+        try {
+            if(uiState.value is PostDetailUiState.success){
+                communityRepository.postComment(
+                    postId = (uiState.value as PostDetailUiState.success).postId,
+                    comment = comment,
+                    parentId = 0
+                    )
+            }else{
+                Toast.makeText(UmcClothsOfTempApplication.context, "게시글 로드 실패", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
 
     fun postReply(reply: String, parentId: String) = viewModelScope.launch { }
 }
