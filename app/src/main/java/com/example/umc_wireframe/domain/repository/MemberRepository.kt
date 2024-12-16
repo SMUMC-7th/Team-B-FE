@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.domain.repository
 
+import com.example.umc_wireframe.data.remote.AuthResponse
 import com.example.umc_wireframe.data.remote.RefreshToken
 import com.example.umc_wireframe.domain.model.Gender
 import com.example.umc_wireframe.domain.model.SetAlarm
@@ -68,4 +69,6 @@ interface MemberRepository {
     suspend fun postRefreshToken(
         refreshToken: String
     ):ServerEntity<LoginResultEntity>
+
+    suspend fun sendKakaoAccessToken(accessToken: String): AuthResponse
 }

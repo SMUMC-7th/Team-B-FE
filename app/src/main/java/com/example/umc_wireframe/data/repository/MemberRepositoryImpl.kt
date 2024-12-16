@@ -1,7 +1,9 @@
 package com.example.umc_wireframe.data.repository
 
+import com.example.umc_wireframe.data.remote.AccessTokenRequest
 import com.example.umc_wireframe.data.remote.AccountRequest
 import com.example.umc_wireframe.data.remote.AlarmSet
+import com.example.umc_wireframe.data.remote.AuthResponse
 import com.example.umc_wireframe.data.remote.JoinInfo
 import com.example.umc_wireframe.data.remote.JoinVerify
 import com.example.umc_wireframe.data.remote.NewNickname
@@ -23,8 +25,11 @@ import com.example.umc_wireframe.domain.model.mapper.toNicknameEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
 import com.example.umc_wireframe.domain.model.toPatchAlarmTime
 import com.example.umc_wireframe.domain.repository.MemberRepository
+import com.example.umc_wireframe.network.RetrofitClient.serverDatasource
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class MemberRepositoryImpl(
@@ -124,4 +129,10 @@ class MemberRepositoryImpl(
     ): ServerEntity<LoginResultEntity> = datasource.postRefreshToken(
         refreshToken = RefreshToken(refreshToken)
     ).toLoginEntity()
+
+    override suspend fun sendKakaoAccessToken(accessToken: String): AuthResponse {
+        return withContext(Dispatchers.IO) {
+            serverDatasource.sendAccessToken(AccessTokenRequest(accessToken))
+        }
+    }
 }

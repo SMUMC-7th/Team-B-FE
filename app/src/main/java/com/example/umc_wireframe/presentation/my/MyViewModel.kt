@@ -1,8 +1,10 @@
 package com.example.umc_wireframe.presentation.my
 
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.umc_wireframe.data.remote.AuthResponse
 import com.example.umc_wireframe.domain.repository.MemberRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
@@ -49,4 +51,23 @@ class MyViewModel : ViewModel() {
     }
 
     fun getMyAlarmState():MyUiState.AlarmState = uiState.value.alarmState
+
+    fun sendKakaoAccessToken(accessToken: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = memberRepository.sendKakaoAccessToken(accessToken)
+                Log.d("MyViewModel", "Response: $response") // 서버 응답 로그 추가
+                if (response.success) {
+                    Log.i("MyViewModel", "서버 인증 성공: ${response.message}")
+                    onSuccess()
+                } else {
+                    Log.e("MyViewModel", "서버 인증 실패: ${response.message}")
+                    onFailure("서버 인증 실패: ${response.message}")
+                }
+            } catch (e: Exception) {
+                Log.e("MyViewModel", "서버 통신 오류: ${e.message}")
+                onFailure("서버 통신 오류: ${e.message}")
+            }
+        }
+    }
 }

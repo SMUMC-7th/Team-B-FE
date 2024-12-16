@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentLoginBinding
@@ -17,6 +18,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
@@ -25,6 +27,8 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val myViewModel: MyViewModel by activityViewModels()
+
 
     // 카카오계정 로그인 공통 callback
     private val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -67,6 +71,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    // 카카오톡으로 로그인 시도함
     private fun performKakaoLogin() {
         // 카카오톡이 설치되어 있는 경우
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
@@ -80,24 +85,45 @@ class LoginFragment : Fragment() {
                     }
 
                     // 카카오톡 로그인 실패 시, 카카오계정으로 로그인
-                    UserApiClient.instance.loginWithKakaoAccount(
-                        requireContext(),
-                        callback = kakaoCallback
-                    )
+                    fetchKakaoAccessToken()
                 } else if (token != null) {
                     Log.i("LoginFragment", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    goToHomeFragment()
+                    fetchKakaoUserInfo()
                 }
             }
         } else {
             // 카카오톡이 설치되어 있지 않은 경우, 카카오계정으로 로그인
-            UserApiClient.instance.loginWithKakaoAccount(
-                requireContext(),
-                callback = kakaoCallback
-            )
+            fetchKakaoAccessToken()
         }
     }
 
+    // 카카오톡으로 로그인 시도 실패 시 여기로 옴 (카카오 계정으로 로그인 전환)
+    private fun fetchKakaoAccessToken() {
+        UserApiClient.instance.loginWithKakaoAccount(requireContext()) { token, error ->
+            if (error != null) {
+                Log.e("LoginFragment", "카카오 로그인 실패: ${error.message}")
+            } else if (token != null) {
+                val accessToken = token.accessToken
+                Log.d("AccessToken", "Token: $accessToken")
+
+                Log.i("LoginFragment", "카카오 로그인 성공. AccessToken: $accessToken")
+
+                // ViewModel을 통해 서버에 Access Token 전달
+                myViewModel.sendKakaoAccessToken(
+                    accessToken = accessToken,
+                    onSuccess = {
+                        Log.i("LoginFragment", "서버 인증 성공")
+                        fetchKakaoUserInfo()
+                    },
+                    onFailure = { errorMessage ->
+                        Log.e("LoginFragment", errorMessage)
+                    }
+                )
+            }
+        }
+    }
+
+    // 서버 인증 성공 시 아래 함수 호출
     private fun fetchKakaoUserInfo() {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -115,6 +141,8 @@ class LoginFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun validateLogin(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {

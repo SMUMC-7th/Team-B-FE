@@ -100,10 +100,14 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     //CameraX
-    implementation("androidx.camera:camera-core:1.1.0")
-    implementation("androidx.camera:camera-camera2:1.1.0")
-    implementation("androidx.camera:camera-lifecycle:1.1.0")
-    implementation("androidx.camera:camera-view:1.0.0-alpha28")
+    // 최신 CameraX 버전
+    implementation ("androidx.camera:camera-core:1.3.1")
+    implementation ("androidx.camera:camera-camera2:1.3.1")
+    implementation ("androidx.camera:camera-lifecycle:1.3.1")
+    implementation ("androidx.camera:camera-view:1.3.1")
+
+    // Guava 추가 (ListenableFuture 사용)
+    implementation ("com.google.guava:guava:31.1-android")
 
     //Worker
     implementation("androidx.work:work-runtime-ktx:2.8.0")
@@ -113,4 +117,10 @@ dependencies {
 
     // 카카오 로그인
     implementation ("com.kakao.sdk:v2-user:2.20.6")
+
+    // Google Play services
+    implementation ("com.google.gms:google-services:4.3.15")
+    implementation ("com.google.firebase:firebase-auth:22.0.0")
+    implementation ("com.google.firebase:firebase-bom:32.0.0")
+    implementation ("com.google.android.gms:play-services-auth:20.5.0")
 }

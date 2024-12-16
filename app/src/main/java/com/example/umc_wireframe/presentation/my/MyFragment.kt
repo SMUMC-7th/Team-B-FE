@@ -3,6 +3,7 @@ package com.example.umc_wireframe.presentation.my
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,10 +90,18 @@ class MyFragment : Fragment() {
     }
 
     private fun getMyProfile() {
+        // SharedPreferences에서 저장된 Access Token 가져오기
+        val accessToken = SharedPreferencesManager(requireContext()).getAccessToken()
+
+        // Access Token을 로그로 출력
+        Log.d("AccessToken", "Stored Token: $accessToken") // 로그 추가
+
+        // ViewModel을 통해 사용자 프로필 정보 가져오기
         viewModel.getMyProfile(
             isFailed = { homeViewModel.failedToken() }
         )
     }
+
 
     private fun initViewModel() = with(viewModel) {
         viewLifecycleOwner.lifecycleScope.launch {

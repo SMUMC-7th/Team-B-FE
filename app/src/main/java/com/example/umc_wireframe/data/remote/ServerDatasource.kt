@@ -107,6 +107,10 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     suspend fun postRefreshToken(
         @Body refreshToken: RefreshToken
     ): ServerResponse<LoginResultResponse>
+
+    // 카카오 Access Token 전달
+    @POST("api/auth/kakao")
+    suspend fun sendAccessToken(@Body tokenRequest: AccessTokenRequest): AuthResponse
 }
 
 data class AccountRequest(
@@ -151,3 +155,15 @@ data class AlarmSet(
     @Query("alarmStatus") val alarmStatus: Boolean, // true 추가, false 삭제
     @Query("alarmTime") val alarmTime: String // "09:00" 무조건 이 형식 5글자
 )
+
+// 요청 데이터 모델
+data class AccessTokenRequest(
+    val accessToken: String
+)
+
+// 응답 데이터 모델
+data class AuthResponse(
+    val success: Boolean,
+    val message: String
+)
+

@@ -66,7 +66,7 @@
         android:id="@+id/loginButton"
         android:layout_width="120dp"
         android:layout_height="50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:backgroundTint="@color/black"
         android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,24 +74,25 @@
         app:layout_constraintTop_toBottomOf="@id/tv_passwordInput"
         app:layout_constraintVertical_bias="0.5" />
 
+
     <ImageButton
         android:id="@+id/kakao_login_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/kakao_login_medium_wide"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/kakao_login_medium_narrow"
         app:layout_constraintBottom_toTopOf="@id/tv_login_join"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
-
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginButton" />
 
     <TextView
         android:id="@+id/tv_login_join"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:padding="4dp"
         android:text="@string/join"
         android:textStyle="bold"
