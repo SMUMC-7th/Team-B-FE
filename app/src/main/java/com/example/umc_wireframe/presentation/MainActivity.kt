@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity(), NavColor {
             when (destination.id) {
                 R.id.navi_my,
                 R.id.navi_home,
-                R.id.navi_calendar -> binding.botNavMain.visibility = View.VISIBLE
+                R.id.navi_calendar,
+                R.id.navi_community -> binding.botNavMain.visibility = View.VISIBLE
 
                 else -> binding.botNavMain.visibility = View.GONE
             }

@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
 
     <include
@@ -66,45 +68,10 @@
             android:gravity="start|top"
             android:hint="내용을 입력해주세요."
             android:inputType="textMultiLine"
-            app:layout_constraintBottom_toTopOf="@id/cv_post_write_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_post_write_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:strokeColor="@null"
-            android:visibility="gone"
-            app:cardCornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_post_write_content"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/iv_post_write_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_home_motivation"
-                android:scaleType="centerCrop"
-                tools:src="@drawable/img_example" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <ImageView
-            android:id="@+id/iv_delete_image"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_delete"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/cv_post_write_image"
-            app:layout_constraintTop_toBottomOf="@+id/et_post_write_content"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

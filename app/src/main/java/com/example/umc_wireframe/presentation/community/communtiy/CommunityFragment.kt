@@ -59,10 +59,13 @@ class CommunityFragment : Fragment() {
         }
 
         fun initFloatingBtn() {
-
+            binding.floatingActionButtonCommunity.setOnClickListener {
+                findNavController().navigate(R.id.navi_postWrite)
+            }
         }
 
         initRecyclerView()
+        initFloatingBtn()
     }
 
     override fun onDestroyView() {

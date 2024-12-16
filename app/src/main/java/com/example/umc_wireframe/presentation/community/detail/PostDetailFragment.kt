@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.presentation.community.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,13 @@ class PostDetailFragment : Fragment() {
 
     private val listAdapter by lazy {
         PostDetailCommentListAdapter()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        arguments?.getString("id")?.let {
+
+        }
     }
 
     override fun onCreateView(
@@ -38,6 +46,8 @@ class PostDetailFragment : Fragment() {
                 adapter = listAdapter
             }
         }
+
+        initRv()
     }
 
     override fun onDestroyView() {

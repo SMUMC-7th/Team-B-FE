@@ -136,6 +136,15 @@
     <fragment
         android:id="@+id/navi_postDetail"
         android:name="com.example.umc_wireframe.presentation.community.detail.PostDetailFragment"
-        tools:layout="@layout/fragment_post_detail"/>
+        tools:layout="@layout/fragment_post_detail">
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navi_postWrite"
+        android:name="com.example.umc_wireframe.presentation.community.write.PostWriteFragment"
+        tools:layout="@layout/fragment_post_write"/>
 
 </navigation>
