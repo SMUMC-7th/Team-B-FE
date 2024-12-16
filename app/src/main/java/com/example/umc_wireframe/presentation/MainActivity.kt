@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
@@ -21,7 +20,7 @@ import com.example.umc_wireframe.databinding.ActivityMainBinding
 import com.example.umc_wireframe.presentation.home.HomeViewModel
 import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.SharedPreferencesManager
-import com.example.umc_wireframe.util.cancelAlarmWorker
+import com.example.umc_wireframe.util.cancelDailyAlarm
 import com.example.umc_wireframe.util.navigateWithClear
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavColor {
                     }
 
                     LoginState.LoginRequire -> {
-                        cancelAlarmWorker(UmcClothsOfTempApplication.context)
+                        cancelDailyAlarm(UmcClothsOfTempApplication.context)
                         tokenManager.clearAll()
                         navGraph.setStartDestination(R.id.nav_login)
                         navController.setGraph(navGraph, null)
