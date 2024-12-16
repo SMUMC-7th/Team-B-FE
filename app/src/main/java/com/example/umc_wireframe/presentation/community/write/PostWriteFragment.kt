@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentPostWriteBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

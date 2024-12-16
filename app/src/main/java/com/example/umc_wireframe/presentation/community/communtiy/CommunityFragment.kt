@@ -84,7 +84,7 @@ class CommunityFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             communityPagingList.flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                .collectLatest {  pagingData ->
+                .collectLatest { pagingData ->
                     listAdapter.submitData(pagingData)
                 }
         }

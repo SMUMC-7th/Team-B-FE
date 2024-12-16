@@ -1,19 +1,23 @@
 package com.example.umc_wireframe.domain.model.mapper
 
+import com.example.umc_wireframe.data.model.CommentResultResponse
 import com.example.umc_wireframe.data.model.JoinRequestResultResponse
 import com.example.umc_wireframe.data.model.LoginResultResponse
 import com.example.umc_wireframe.data.model.MyProfileResultResponse
 import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
+import com.example.umc_wireframe.data.model.PostDetailResponse
 import com.example.umc_wireframe.data.model.PostListResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.domain.model.entity.JoinRequestResultEntity
 import com.example.umc_wireframe.domain.model.entity.LoginResultEntity
 import com.example.umc_wireframe.domain.model.entity.MyProfileResultEntity
 import com.example.umc_wireframe.domain.model.entity.NicknameResultEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import com.example.umc_wireframe.domain.model.entity.OotdResultEntity
+import com.example.umc_wireframe.domain.model.entity.PostDetailEntity
 import com.example.umc_wireframe.domain.model.entity.PostEntity
 import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
@@ -107,6 +111,19 @@ fun ServerResponse<PostListResponse>.toPostListEntity(): ServerEntity<PostListEn
     )
 }
 
+fun ServerResponse<CommentResultResponse>.toCommentResultEntity(): ServerEntity<CommentResultEntity> {
+    return ServerEntity(
+        status = this.status ?: "",
+        code = this.code ?: "",
+        message = this.message ?: "",
+        isSuccess = this.isSuccess ?: false,
+        result = this.result?.toEntity() ?: CommentResultEntity(
+            list = emptyList(),
+            lastId = 0
+        )
+    )
+}
+
 fun RecommendedHashtagResultResponse.toEntity(): RecommendedHashtagResultEntity {
     return RecommendedHashtagResultEntity(
         recommendations = this.recommendations?.map { recommendation ->
@@ -167,6 +184,7 @@ fun PostListResponse.toEntity(): PostListEntity {
     return PostListEntity(
         postList = postList?.map { postResponse ->
             PostEntity(
+                postId = postResponse.postId ?: "",
                 title = postResponse.title ?: "",
                 content = postResponse.content ?: ""
             )
@@ -178,6 +196,34 @@ fun PostListResponse.toEntity(): PostListEntity {
         isLast = isLast ?: false
     )
 }
+
+fun CommentResultResponse.toEntity() = CommentResultEntity(
+    list = this.list.map { it.toEntity() },
+    lastId = this.lastId
+)
+
+fun CommentResultResponse.CommentResponse.toEntity(): CommentResultEntity.CommentEntity {
+    return CommentResultEntity.CommentEntity(
+        id = this.id,
+        content = this.content,
+        parentId = this.parentId,
+        memberId = this.memberId,
+        memberNickname = this.memberNickname,
+        reportCount = this.reportCount,
+        createdAt = this.createdAt,
+        children = this.children.map { it.toEntity() } // 재귀적으로 children 변환
+    )
+}
+
+fun PostDetailResponse.toEntity(): PostDetailEntity {
+    return PostDetailEntity(
+        memberName = memberName,
+        postId = postId,
+        title = title,
+        content = content
+    )
+}
+
 
 fun String.toAlarmTime(): MyProfileResultEntity.AlarmTime {
     val parts = this.split(":")

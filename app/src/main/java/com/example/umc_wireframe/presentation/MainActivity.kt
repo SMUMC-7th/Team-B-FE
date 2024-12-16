@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), NavColor {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-
         initNavigation()
 
         initViewModel()

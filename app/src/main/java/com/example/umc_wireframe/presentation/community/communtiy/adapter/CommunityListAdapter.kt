@@ -9,7 +9,7 @@ import com.example.umc_wireframe.databinding.ItemRvPostBinding
 import com.example.umc_wireframe.domain.model.entity.PostEntity
 
 class CommunityListAdapter(
-    val clickListener: (listId: String) -> Unit
+    val clickListener: (postId: String) -> Unit
 ) : PagingDataAdapter<PostEntity, CommunityListAdapter.ViewHolder>(
     CommunityListItemDiffUtil()
 ) {
@@ -19,7 +19,7 @@ class CommunityListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PostEntity) = with(binding) {
             root.setOnClickListener {
-                clickListener(item.title)
+                clickListener(item.postId)
             }
 
             tvItemCommentTitle.text = item.title

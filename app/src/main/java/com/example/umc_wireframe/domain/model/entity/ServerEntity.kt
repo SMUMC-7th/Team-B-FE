@@ -72,6 +72,43 @@ data class PostListEntity(
 )
 
 data class PostEntity(
+    val postId: String,
     val title: String,
     val content: String
+)
+
+data class CommentResultEntity(
+    val list: List<CommentEntity>,
+    val lastId: Int
+) {
+    data class CommentEntity(
+        val id: Int,
+        val content: String,
+        val parentId: Int?,
+        val memberId: Int,
+        val memberNickname: String,
+        val reportCount: Int,
+        val createdAt: String,
+        val children: List<CommentEntity>
+    )
+}
+
+
+
+data class PostDetailEntity(
+    val memberName: String,
+    val postId: Int,
+    val title: String,
+    val content: String
+)
+
+data class PostCommentResultEntity(
+    val id: Int,
+    val content: String,
+    val parentId: Int?,
+    val memberId: Int,
+    val memberNickname: String,
+    val reportCount: Int,
+    val createdAt: String,
+    val children: List<CommentResultEntity.CommentEntity>?
 )
