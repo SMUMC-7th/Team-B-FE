@@ -71,29 +71,33 @@ class MainActivity : AppCompatActivity(), NavColor {
         val navItems = listOf(
             binding.navHome,
             binding.navCalendar,
-            binding.navMypage
+            binding.navMypage,
+            binding.navCommunity
         )
 
         navItems.forEach { itemLayout ->
             itemLayout.setOnClickListener {
                 val currentDestinationId = navController.currentDestination?.id
-
                 when (itemLayout.id) {
                     binding.navHome.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_home)
+                        if (currentDestinationId != R.id.navi_home)
                             navController.navigateWithClear(R.id.navi_home)
                     }
 
                     binding.navCalendar.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_calendar)
+                        if (currentDestinationId != R.id.navi_calendar)
                             navController.navigateWithClear(R.id.navi_calendar)
                     }
 
                     binding.navMypage.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_my)
+                        if (currentDestinationId != R.id.navi_my)
                             navController.navigateWithClear(R.id.navi_my)
                     }
 
+                    binding.navCommunity.id -> {
+                        if (currentDestinationId != R.id.navi_community)
+                            navController.navigateWithClear(R.id.navi_community)
+                    }
                 }
             }
         }
@@ -173,4 +177,7 @@ class MainActivity : AppCompatActivity(), NavColor {
         updateNavIconTint(binding.ivNavMypage)
     }
 
+    override fun setNavCommunity() {
+        updateNavIconTint(binding.ivNavCommunity)
+    }
 }
