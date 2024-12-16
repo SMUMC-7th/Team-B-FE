@@ -1,7 +1,5 @@
 package com.example.umc_wireframe.network
 
-import com.example.umc_wireframe.domain.repository.MemberRepository
-import com.example.umc_wireframe.util.SharedPreferencesManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request

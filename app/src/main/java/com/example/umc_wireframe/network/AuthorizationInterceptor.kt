@@ -18,8 +18,7 @@ class AuthorizationInterceptor(
                 if(isForcast) addQueryParameter("ServiceKey", BuildConfig.SHORT_TERM_FORECAST_KEY)
             }.build()
 
-        // NetworkSettings 싱글톤에서 최신 토큰 가져오기
-        val sharedPreferencesManager = SharedPreferencesManager(
+         val sharedPreferencesManager = SharedPreferencesManager(
             UmcClothsOfTempApplication.context
         )
         val token: String = sharedPreferencesManager.getAccessToken() ?: ""

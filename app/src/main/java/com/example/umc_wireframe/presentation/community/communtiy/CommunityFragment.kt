@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentCommunityBinding
 import com.example.umc_wireframe.presentation.NavColor
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class CommunityFragment : Fragment() {
     private var _binding: FragmentCommunityBinding? = null
@@ -50,6 +54,7 @@ class CommunityFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        initViewModel()
     }
 
     private fun initView() {
@@ -66,6 +71,19 @@ class CommunityFragment : Fragment() {
 
         initRecyclerView()
         initFloatingBtn()
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            uiState.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { uiState ->
+                    onBind(uiState)
+                }
+        }
+    }
+
+    private suspend fun onBind(uiState: CommunityUiState) = with(binding) {
+        listAdapter.submitData(uiState.list)
     }
 
     override fun onDestroyView() {

@@ -2,6 +2,7 @@ package com.example.umc_wireframe.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 
 class SharedPreferencesManager(context: Context) {
     companion object {
@@ -9,9 +10,9 @@ class SharedPreferencesManager(context: Context) {
         private const val KEY_ACCESS_TOKEN = "access_token" // Access Token 키
         private const val KEY_REFRESH_TOKEN = "refresh_token" // Refresh Token 키
         private const val KEY_VERIFICATION_CODE = "verification_code" // 인증 코드 키
-    }
 
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        private val prefs: SharedPreferences = UmcClothsOfTempApplication.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
 
     // Access Token 저장
     fun saveAccessToken(token: String) {
