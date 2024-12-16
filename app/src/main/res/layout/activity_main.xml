@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.333">
+            app:layout_constraintWidth_percent="0.25">
 
             <ImageView
                 android:id="@+id/iv_nav_calendar"
@@ -53,7 +53,7 @@
             android:layout_height="match_parent"
             app:layout_constraintStart_toEndOf="@id/nav_calendar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.333">
+            app:layout_constraintWidth_percent="0.25">
 
             <ImageView
                 android:id="@+id/iv_nav_home"
@@ -74,13 +74,33 @@
             android:layout_height="match_parent"
             app:layout_constraintStart_toEndOf="@id/nav_home"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.333">
+            app:layout_constraintWidth_percent="0.25">
 
             <ImageView
                 android:id="@+id/iv_nav_mypage"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_my"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/nav_community"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@id/nav_mypage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.25">
+
+            <ImageView
+                android:id="@+id/iv_nav_community"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_community"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
