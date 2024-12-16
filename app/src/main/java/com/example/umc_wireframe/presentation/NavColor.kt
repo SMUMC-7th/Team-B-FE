@@ -4,4 +4,5 @@ interface NavColor {
     fun setNavHome()
     fun seNavCalendar()
     fun setNavMy()
+    fun setNavCommunity()
 }
