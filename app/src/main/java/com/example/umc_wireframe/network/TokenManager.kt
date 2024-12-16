@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.network
 
+import android.widget.Toast
 import com.example.umc_wireframe.data.remote.RefreshToken
 import com.example.umc_wireframe.presentation.UmcClothsOfTempApplication
 import com.example.umc_wireframe.util.SharedPreferencesManager
@@ -18,7 +19,7 @@ class TokenManager(
 
         return try {
             // 갱신 API 호출
-            val response = repository.postRefreshToken(RefreshToken(refreshToken))
+            val response = repository.postRefreshToken(refreshToken)
 
             if (response?.isSuccess == true) {
                 // 새 토큰 저장

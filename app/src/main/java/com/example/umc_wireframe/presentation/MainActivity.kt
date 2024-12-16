@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
@@ -21,6 +20,7 @@ import com.example.umc_wireframe.databinding.ActivityMainBinding
 import com.example.umc_wireframe.presentation.home.HomeViewModel
 import com.example.umc_wireframe.presentation.home.LoginState
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.example.umc_wireframe.util.cancelDailyAlarm
 import com.example.umc_wireframe.util.navigateWithClear
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,12 +53,12 @@ class MainActivity : AppCompatActivity(), NavColor {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.registerStep1Fragment,
-                R.id.RegisterStep2Fragment,
-                R.id.RegisterStep3Fragment,
-                R.id.nav_login -> binding.botNavMain.visibility = View.GONE
+                R.id.navi_my,
+                R.id.navi_home,
+                R.id.navi_calendar,
+                R.id.navi_community -> binding.botNavMain.visibility = View.VISIBLE
 
-                else -> binding.botNavMain.visibility = View.VISIBLE
+                else -> binding.botNavMain.visibility = View.GONE
             }
         }
 
@@ -71,29 +71,33 @@ class MainActivity : AppCompatActivity(), NavColor {
         val navItems = listOf(
             binding.navHome,
             binding.navCalendar,
-            binding.navMypage
+            binding.navMypage,
+            binding.navCommunity
         )
 
         navItems.forEach { itemLayout ->
             itemLayout.setOnClickListener {
                 val currentDestinationId = navController.currentDestination?.id
-
                 when (itemLayout.id) {
                     binding.navHome.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_home)
+                        if (currentDestinationId != R.id.navi_home)
                             navController.navigateWithClear(R.id.navi_home)
                     }
 
                     binding.navCalendar.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_calendar)
+                        if (currentDestinationId != R.id.navi_calendar)
                             navController.navigateWithClear(R.id.navi_calendar)
                     }
 
                     binding.navMypage.id -> {
-                        if (currentDestinationId != R.id.menu_botNav_my)
+                        if (currentDestinationId != R.id.navi_my)
                             navController.navigateWithClear(R.id.navi_my)
                     }
 
+                    binding.navCommunity.id -> {
+                        if (currentDestinationId != R.id.navi_community)
+                            navController.navigateWithClear(R.id.navi_community)
+                    }
                 }
             }
         }
@@ -120,9 +124,9 @@ class MainActivity : AppCompatActivity(), NavColor {
         lifecycleScope.launch {
             viewModel.loginState.collectLatest { loginState ->
                 val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+                val tokenManager = SharedPreferencesManager(this@MainActivity)
                 when (loginState) {
                     LoginState.Init -> {
-                        val tokenManager = SharedPreferencesManager(this@MainActivity)
                         val (accessToken, refreshToken) = tokenManager.getAccessToken() to tokenManager.getRefreshToken()
                         accessToken?.let {
                             refreshToken?.let {
@@ -132,7 +136,7 @@ class MainActivity : AppCompatActivity(), NavColor {
                                 )
                             }
                         }
-                        if(accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()){
+                        if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()) {
                             viewModel.logout()
                         }
                     }
@@ -140,9 +144,12 @@ class MainActivity : AppCompatActivity(), NavColor {
                     is LoginState.Login -> {
                         navGraph.setStartDestination(R.id.navi_home)
                         navController.setGraph(navGraph, null)
+                        viewModel.setAlarm()
                     }
 
                     LoginState.LoginRequire -> {
+                        cancelDailyAlarm(UmcClothsOfTempApplication.context)
+                        tokenManager.clearAll()
                         navGraph.setStartDestination(R.id.nav_login)
                         navController.setGraph(navGraph, null)
                     }
@@ -170,4 +177,7 @@ class MainActivity : AppCompatActivity(), NavColor {
         updateNavIconTint(binding.ivNavMypage)
     }
 
+    override fun setNavCommunity() {
+        updateNavIconTint(binding.ivNavCommunity)
+    }
 }

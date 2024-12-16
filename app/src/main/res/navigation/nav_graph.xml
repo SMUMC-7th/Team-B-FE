@@ -74,6 +74,11 @@
             app:destination="@id/navi_password_change_verification" />
     </fragment>
 
+    <fragment
+        android:id="@+id/navi_alarm"
+        android:name="com.example.umc_wireframe.presentation.my.alarm.SettingAlarmFragment"
+        tools:layout="@layout/fragment_setting_alarm"/>
+
     <!-- Upload OOTD Fragment -->
     <fragment
         android:id="@+id/navi_uploadOOTD"
@@ -122,5 +127,24 @@
 
     <!-- Setting Alarm Fragment -->
 
+    <!--    community-->
+    <fragment
+        android:id="@+id/navi_community"
+        android:name="com.example.umc_wireframe.presentation.community.communtiy.CommunityFragment"
+        tools:layout="@layout/fragment_community"/>
+
+    <fragment
+        android:id="@+id/navi_postDetail"
+        android:name="com.example.umc_wireframe.presentation.community.detail.PostDetailFragment"
+        tools:layout="@layout/fragment_post_detail">
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navi_postWrite"
+        android:name="com.example.umc_wireframe.presentation.community.write.PostWriteFragment"
+        tools:layout="@layout/fragment_post_write"/>
 
 </navigation>

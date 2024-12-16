@@ -70,6 +70,17 @@ class MyFragment : Fragment() {
             findNavController().navigate(R.id.action_myFragment_to_passwordChangeFragment)
         }
 
+        binding.btnNotificationSettings.setOnClickListener{
+            val alarmState = viewModel.getMyAlarmState() // viewModel에서 Alarm 상태 가져오기
+
+            val bundle = Bundle().apply {
+                putSerializable(getString(R.string.AlarmState), alarmState)
+            }
+
+            // navigation에 Bundle 전달
+            findNavController().navigate(R.id.navi_alarm, bundle)
+        }
+
         binding.logoutText.setOnClickListener {
             homeViewModel.logout()
         }

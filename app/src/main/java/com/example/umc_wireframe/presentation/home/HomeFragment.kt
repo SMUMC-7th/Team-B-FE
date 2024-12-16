@@ -50,11 +50,13 @@ import com.example.umc_wireframe.domain.model.getUlsanRegions
 import com.example.umc_wireframe.domain.model.toShorTermRegion
 import com.example.umc_wireframe.presentation.NavColor
 import com.example.umc_wireframe.util.CoordinateConverter
+import com.example.umc_wireframe.util.setDailyAlarm
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -123,7 +125,6 @@ class HomeFragment : Fragment() {
         initView()
         selectLocation()
         initViewModel()
-
     }
 
 
