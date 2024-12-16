@@ -17,6 +17,15 @@ class MyViewModel : ViewModel() {
 
     val memberRepository: MemberRepository = RepositoryFactory.createMemberRepository()
 
+    fun updateKakaoUserInfo(nickName: String, profileImageUrl: String) {
+        _uiState.update { prev ->
+            prev.copy(
+                nickName = nickName,
+                profileImageUrl = profileImageUrl
+            )
+        }
+    }
+
     fun getMyProfile(isFailed: () -> Unit) = viewModelScope.launch {
         try {
             memberRepository.getMyProfile().result?.let {

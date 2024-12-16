@@ -25,6 +25,8 @@ import com.example.umc_wireframe.util.cancelAlarmWorker
 import com.example.umc_wireframe.util.navigateWithClear
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.kakao.sdk.common.util.Utility
+
 
 class MainActivity : AppCompatActivity(), NavColor {
     private val binding: ActivityMainBinding by lazy {
@@ -40,6 +42,8 @@ class MainActivity : AppCompatActivity(), NavColor {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        var keyHash = Utility.getKeyHash(this)
+        Log.d("key", keyHash)
 
         initNavigation()
 

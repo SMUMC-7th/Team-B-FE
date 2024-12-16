@@ -109,4 +109,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.8.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.0")
+
+
+    // 카카오 로그인
+    implementation ("com.kakao.sdk:v2-user:2.20.6")
 }

@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://devrepo.kakao.com/nexus/content/groups/public/") // 카카오 로그인 저장소 추가
     }
 }
 

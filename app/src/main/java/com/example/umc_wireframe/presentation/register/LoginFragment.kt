@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.presentation.register
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentLoginBinding
 import com.example.umc_wireframe.presentation.home.HomeViewModel
+import com.example.umc_wireframe.presentation.my.MyViewModel
 import com.example.umc_wireframe.util.SharedPreferencesManager
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 
 class LoginFragment : Fragment() {
 
@@ -19,6 +25,17 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
+
+    // 카카오계정 로그인 공통 callback
+    private val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            Log.e("LoginFragment", "카카오계정으로 로그인 실패", error)
+        } else if (token != null) {
+            Log.i("LoginFragment", "카카오계정으로 로그인 성공 ${token.accessToken}")
+            goToHomeFragment()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +49,7 @@ class LoginFragment : Fragment() {
 
         binding.tvError.visibility = View.GONE
 
+        // 기존 이메일 로그인 버튼
         binding.loginButton.setOnClickListener {
             val email = binding.tvEmailInput.text.toString().trim()
             val password = binding.tvPasswordInput.text.toString().trim()
@@ -39,8 +57,62 @@ class LoginFragment : Fragment() {
             validateLogin(email, password)
         }
 
+        // 카카오 로그인 버튼
+        binding.kakaoLoginButton.setOnClickListener {
+            performKakaoLogin()
+        }
+
         binding.tvLoginJoin.setOnClickListener {
             findNavController().navigate(R.id.registerStep1Fragment)
+        }
+    }
+
+    private fun performKakaoLogin() {
+        // 카카오톡이 설치되어 있는 경우
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+            UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
+                if (error != null) {
+                    Log.e("LoginFragment", "카카오톡으로 로그인 실패", error)
+
+                    // 사용자가 로그인 취소한 경우
+                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                        return@loginWithKakaoTalk
+                    }
+
+                    // 카카오톡 로그인 실패 시, 카카오계정으로 로그인
+                    UserApiClient.instance.loginWithKakaoAccount(
+                        requireContext(),
+                        callback = kakaoCallback
+                    )
+                } else if (token != null) {
+                    Log.i("LoginFragment", "카카오톡으로 로그인 성공 ${token.accessToken}")
+                    goToHomeFragment()
+                }
+            }
+        } else {
+            // 카카오톡이 설치되어 있지 않은 경우, 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(
+                requireContext(),
+                callback = kakaoCallback
+            )
+        }
+    }
+
+    private fun fetchKakaoUserInfo() {
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e("LoginFragment", "사용자 정보 요청 실패", error)
+            } else if (user != null) {
+                val nickname = user.kakaoAccount?.profile?.nickname ?: "사용자"
+                val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl ?: ""
+
+                // MyViewModel에 사용자 정보 업데이트
+                val myViewModel: MyViewModel by activityViewModels()
+                myViewModel.updateKakaoUserInfo(nickname, profileImageUrl)
+
+                Log.i("LoginFragment", "사용자 정보 요청 성공")
+                goToHomeFragment()
+            }
         }
     }
 
@@ -69,6 +141,11 @@ class LoginFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun goToHomeFragment() {
+        Log.i("LoginFragment", "로그인 성공, HomeFragment로 이동")
+        findNavController().navigate(R.id.navi_home)
     }
 
     override fun onDestroyView() {

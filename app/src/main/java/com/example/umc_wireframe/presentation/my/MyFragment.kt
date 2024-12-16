@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentMyBinding
 import com.example.umc_wireframe.presentation.NavColor
@@ -36,7 +37,7 @@ class MyFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMyBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -44,40 +45,22 @@ class MyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // SharedPreferences에서 저장된 정보 불러오기
-        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val savedNickname = sharedPref.getString("nickname", "기본 닉네임")
-        val savedGender = sharedPref.getString("gender", "남자") // 성별 정보 포함
-
-        // 닉네임 설정
-        binding.tvNickname.text = savedNickname
-
-        // 성별에 따른 프로필 이미지 설정
-        if (savedGender == "남자") {
-            binding.ivProfileMan.visibility = View.VISIBLE
-            binding.ivProfileWoman.visibility = View.INVISIBLE
-        } else {
-            binding.ivProfileMan.visibility = View.INVISIBLE
-            binding.ivProfileWoman.visibility = View.VISIBLE
-        }
-
         // 닉네임 변경 화면으로 이동
         binding.btnChangeNickname.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_nicknameChangeFragment)
         }
+
         // 비밀번호 변경 화면으로 이동
         binding.btnChangePassword.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_passwordChangeFragment)
         }
 
-        binding.btnNotificationSettings.setOnClickListener{
-            val alarmState = viewModel.getMyAlarmState() // viewModel에서 Alarm 상태 가져오기
-
+        // 알림 설정 화면으로 이동
+        binding.btnNotificationSettings.setOnClickListener {
+            val alarmState = viewModel.getMyAlarmState()
             val bundle = Bundle().apply {
                 putSerializable(getString(R.string.AlarmState), alarmState)
             }
-
-            // navigation에 Bundle 전달
             findNavController().navigate(R.id.navi_alarm, bundle)
         }
 
@@ -100,20 +83,32 @@ class MyFragment : Fragment() {
                 .show()
         }
 
+        // 사용자 프로필 정보 불러오기
         getMyProfile()
         initViewModel()
     }
 
     private fun getMyProfile() {
         viewModel.getMyProfile(
-            isFailed = {homeViewModel.failedToken()}
+            isFailed = { homeViewModel.failedToken() }
         )
     }
 
     private fun initViewModel() = with(viewModel) {
         viewLifecycleOwner.lifecycleScope.launch {
             uiState.collectLatest { uiState ->
+                // 닉네임 업데이트
                 binding.tvNickname.text = uiState.nickName
+
+                // Glide를 사용해 프로필 이미지 표시
+                Glide.with(this@MyFragment)
+                    .load(uiState.profileImageUrl)
+                    .placeholder(R.drawable.ic_profile_man) // 기본 이미지 설정
+                    .circleCrop()
+                    .into(binding.ivProfileMan)
+
+                // 성별 아이콘 대신 Glide 이미지 표시 후 숨김 처리
+                binding.ivProfileWoman.visibility = View.GONE
             }
         }
     }
