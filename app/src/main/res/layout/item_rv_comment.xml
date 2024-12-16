@@ -24,7 +24,6 @@
         android:id="@+id/tv_itemComment_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layorecyclerview_postview_content.xmlut_marginTop="8dp"
         android:text="sample text sample text sample textsample textsample textsample textsample textsample textsample textsample textsample text"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="@id/tv_itemComment_writer"
