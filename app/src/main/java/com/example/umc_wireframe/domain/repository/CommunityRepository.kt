@@ -1,5 +1,6 @@
 package com.example.umc_wireframe.domain.repository
 
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import retrofit2.http.Path
@@ -31,22 +32,27 @@ interface CommunityRepository {
 
     //comment
     suspend fun postComment(
-        postId: String
-    )
+        postId: String,
+        comment: String,
+        parentId: Int = 0
+    ):ServerEntity<String>
 
     suspend fun getCommentList(
-        postId: String
-    )
+        postId: String,
+        cursor: Long = 0,
+        size: Int = 10
+    ):ServerEntity<CommentResultEntity>
 
     suspend fun patchComment(
+        commentId: String,
+    )
+
+
+    suspend fun patchReport(
         commentId: String
     )
 
-    suspend fun patchReport(
-        @Path("commentId") commentId: String
-    )
-
     suspend fun deleteComment(
-        @Path("commentId") commentId: String
+        commentId: String
     )
 }

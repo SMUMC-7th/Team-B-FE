@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.umc_wireframe.domain.model.ShortTermCategory
 import com.example.umc_wireframe.domain.model.ShortTermRegionObject
+import com.example.umc_wireframe.domain.model.entity.RecommendedHashtagResultEntity
 import com.example.umc_wireframe.domain.repository.MemberRepository
 import com.example.umc_wireframe.domain.repository.OotdRepository
 import com.example.umc_wireframe.domain.repository.RepositoryFactory
@@ -98,13 +99,15 @@ class HomeViewModel : ViewModel() {
     fun getOotd() = viewModelScope.launch {
         if (loginState.value is LoginState.Login) {
             try {
+                val maxTemp = uiState.value.maxTemp.second.toInt()
+                val minTemp = uiState.value.minTemp.second.toInt()
                 val pastOotd = ootdRepository.getOotdPastForTemp(
-                    maxTemperature = uiState.value.maxTemp.second.toInt(),
-                    minTemperature = uiState.value.minTemp.second.toInt()
+                    maxTemperature = maxTemp,
+                    minTemperature = minTemp
                 )
                 val recommendedClothes = ootdRepository.getRecommendedHashtag(
-                    maxTemperature = uiState.value.maxTemp.second.toInt(),
-                    minTemperature = uiState.value.minTemp.second.toInt()
+                    maxTemperature = maxTemp,
+                    minTemperature = minTemp
                 )
 
                 _uiState.update { prev ->
@@ -113,6 +116,16 @@ class HomeViewModel : ViewModel() {
                             ?: emptyList(),
                         historyList = pastOotd.result?.ootds ?: emptyList()
                     )
+                }
+
+                val difference = Math.abs(maxTemp - minTemp)
+                if (difference >= 10) {
+                    _uiState.update { prev ->
+                        prev.copy(
+                            recommendedClothes = prev.recommendedClothes +
+                                    RecommendedHashtagResultEntity.Recommendation("일교차주의", "")
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 Toast.makeText(UmcClothsOfTempApplication.context, e.toString(), Toast.LENGTH_SHORT)

@@ -75,3 +75,19 @@ data class PostEntity(
     val title: String,
     val content: String
 )
+
+data class CommentResultEntity(
+    val list: List<CommentEntity>,
+    val lastId: Int
+) {
+    data class CommentEntity(
+        val id: Int,
+        val content: String,
+        val parentId: Int?,
+        val memberId: Int,
+        val memberNickname: String,
+        val reportCount: Int,
+        val createdAt: String,
+        val children: List<CommentEntity>
+    )
+}

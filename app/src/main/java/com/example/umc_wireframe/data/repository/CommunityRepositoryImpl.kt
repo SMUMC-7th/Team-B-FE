@@ -1,9 +1,13 @@
 package com.example.umc_wireframe.data.repository
 
+import com.example.umc_wireframe.data.remote.CommentReq
+import com.example.umc_wireframe.data.remote.CommentSet
 import com.example.umc_wireframe.data.remote.PostSet
 import com.example.umc_wireframe.data.remote.ServerDatasource
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.domain.model.entity.PostListEntity
 import com.example.umc_wireframe.domain.model.entity.ServerEntity
+import com.example.umc_wireframe.domain.model.mapper.toCommentResultEntity
 import com.example.umc_wireframe.domain.model.mapper.toPostListEntity
 import com.example.umc_wireframe.domain.model.mapper.toTempEntity
 import com.example.umc_wireframe.domain.repository.CommunityRepository
@@ -40,13 +44,31 @@ class CommunityRepositoryImpl(
     }
 
     // Comment
-    override suspend fun postComment(postId: String) {
-        datasource.postComment(postId)
-    }
+    override suspend fun postComment(
+        postId: String,
+        comment: String,
+        parentId: Int
+    ) = datasource.postComment(
+        postId = postId,
+        comment = CommentSet(
+            content = comment,
+            parentId = parentId
+        )
+    ).toTempEntity()
 
-    override suspend fun getCommentList(postId: String) {
-        datasource.getCommentList(postId)
-    }
+
+    override suspend fun getCommentList(
+        postId: String,
+        cursor: Long,
+        size: Int
+    ): ServerEntity<CommentResultEntity> = datasource.getCommentList(
+        postId = postId,
+        commentReq = CommentReq(
+            cursor = cursor,
+            size = size
+        )
+    ).toCommentResultEntity()
+
 
     override suspend fun patchComment(commentId: String) {
         datasource.patchComment(commentId)

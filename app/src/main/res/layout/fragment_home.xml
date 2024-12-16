@@ -145,7 +145,7 @@
                 android:layout_marginTop="-80dp"
                 android:layout_marginEnd="@dimen/home_horizon_margin"
                 android:adjustViewBounds="true"
-                android:src="@drawable/img_clothy"
+                android:src="@drawable/img_clothy2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_home_weatherDescription" />
 

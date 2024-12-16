@@ -8,25 +8,34 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc_wireframe.databinding.ItemRvCommentBinding
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.presentation.community.detail.PostDetailCommentItem
 
 class PostDetailCommentListAdapter :
-    PagingDataAdapter<PostDetailCommentItem, PostDetailCommentListAdapter.ViewHolder>(
+    PagingDataAdapter<CommentResultEntity.CommentEntity, PostDetailCommentListAdapter.ViewHolder>(
         PostDetailCommentDiffUtil()
     ) {
 
     inner class ViewHolder(
         val binding: ItemRvCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: PostDetailCommentItem) = with(binding) {
-            tvItemCommentTitle.text = item.writer
+        fun bind(item: CommentResultEntity.CommentEntity) = with(binding) {
+            tvItemCommentTitle.text = item.memberNickname
             tvItemCommentContent.text = item.content
 
             val listAdapter = PostDetailReplyListAdapter()
+
+            if (item.reportCount >= 1) tvItemReplyBlur.visibility = View.VISIBLE
+            else tvItemReplyBlur.visibility = View.GONE
+
+            tvItemReplyBlur.setOnClickListener {
+                tvItemReplyBlur.visibility = View.GONE
+            }
+
             rvItemCommentReply.run {
                 layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = listAdapter
-                listAdapter.submitList(item.replyList)
+                listAdapter.submitList(item.children)
             }
 
             tvItemCommentReplyAdd.setOnClickListener {
@@ -50,17 +59,17 @@ class PostDetailCommentListAdapter :
 
 }
 
-class PostDetailCommentDiffUtil : DiffUtil.ItemCallback<PostDetailCommentItem>() {
+class PostDetailCommentDiffUtil : DiffUtil.ItemCallback<CommentResultEntity.CommentEntity>() {
     override fun areItemsTheSame(
-        oldItem: PostDetailCommentItem,
-        newItem: PostDetailCommentItem
+        oldItem: CommentResultEntity.CommentEntity,
+        newItem: CommentResultEntity.CommentEntity
     ): Boolean {
         return oldItem.content == newItem.content
     }
 
     override fun areContentsTheSame(
-        oldItem: PostDetailCommentItem,
-        newItem: PostDetailCommentItem
+        oldItem: CommentResultEntity.CommentEntity,
+        newItem: CommentResultEntity.CommentEntity
     ): Boolean {
         return oldItem == newItem
     }

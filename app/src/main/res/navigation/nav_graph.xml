@@ -139,7 +139,7 @@
         tools:layout="@layout/fragment_post_detail">
         <argument
             android:name="id"
-            app:argType="string" />
+            app:argType="Int" />
     </fragment>
 
     <fragment

@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.data.remote
 
 import androidx.paging.PagingData
+import com.example.umc_wireframe.data.model.CommentResultResponse
 import com.example.umc_wireframe.data.model.JoinRequestResultResponse
 import com.example.umc_wireframe.data.model.LoginResultResponse
 import com.example.umc_wireframe.data.model.MyProfileResultResponse
@@ -127,7 +128,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @POST("api/posts")
     suspend fun postPost(
         @Body post: PostSet
-    ):ServerResponse<String>
+    ): ServerResponse<String>
 
     @PATCH("api/posts/{postId}")
     suspend fun patchPost(
@@ -141,13 +142,15 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @POST("api/posts/{postId}/comments")
     suspend fun postComment(
-        @Path("postId") postId: String
-    )
+        @Path("postId") postId: String,
+        @Body comment: CommentSet
+    ): ServerResponse<String>
 
     @GET("api/posts/{postId}/comments")
     suspend fun getCommentList(
-        @Path("postId") postId: String
-    )
+        @Path("postId") postId: String,
+        @Body commentReq: CommentReq
+    ): ServerResponse<CommentResultResponse>
 
     @PATCH("api/comments/{commentId}")
     suspend fun patchComment(
@@ -212,4 +215,14 @@ data class AlarmSet(
 data class PostSet(
     @Query("title") val title: String,
     @Query("content") val content: String
+)
+
+data class CommentSet(
+    @Query("content") val content: String,
+    @Query("parentId") val parentId: Int
+)
+
+data class CommentReq(
+    @Query("cursor") val cursor: Long,
+    @Query("size") val size: Int
 )

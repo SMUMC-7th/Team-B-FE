@@ -5,11 +5,10 @@ import androidx.paging.PagingData
 sealed class PostDetailUiState {
     data object init : PostDetailUiState()
     data class success(
-        val id: String,
-        val wirter: String,
-        val title: String,
-        val content: String,
-        val commentList: PagingData<PostDetailCommentItem>
+        val postId: String,
+        val wirter: String = "",
+        val title: String = "",
+        val content: String = "",
     ) : PostDetailUiState()
 
     data object fail : PostDetailUiState()

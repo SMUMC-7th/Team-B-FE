@@ -69,3 +69,23 @@ data class PostResponse(
     @SerializedName("title") val title: String?,
     @SerializedName("content") val content: String?
 )
+
+
+data class CommentResultResponse(
+    val list: List<CommentResponse>,
+    val lastId: Int
+) {
+    data class CommentResponse(
+        val id: Int,
+        val content: String,
+        val parentId: Int?,
+        val memberId: Int,
+        val memberNickname: String,
+        val reportCount: Int,
+        val createdAt: String,
+        val children: List<CommentResponse>
+    )
+}
+
+
+
