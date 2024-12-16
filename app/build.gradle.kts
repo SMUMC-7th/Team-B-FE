@@ -55,6 +55,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
 }
@@ -109,5 +110,6 @@ dependencies {
     //Worker
     implementation("androidx.work:work-runtime-ktx:2.8.0")
 
+    implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.0")
 }

@@ -50,6 +50,18 @@ object RetrofitClient {
             .build()
     }
 
+    private val calendarRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(SERVER_BASE_URL)
+            .client(serverOkHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    fun <T> create(service: Class<T>): T {
+        return calendarRetrofit.create(service)
+    }
+
 
     val shortTermForecastDatasource: ShortTermForecastDatasource by lazy {
         shortTermRetrofit.create(ShortTermForecastDatasource::class.java)
