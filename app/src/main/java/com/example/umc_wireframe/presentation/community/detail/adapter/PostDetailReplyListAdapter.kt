@@ -7,20 +7,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc_wireframe.databinding.ItemRvReplyBinding
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.example.umc_wireframe.presentation.community.detail.ReplyItem
 
 class PostDetailReplyListAdapter :
-    ListAdapter<ReplyItem, PostDetailReplyListAdapter.ViewHolder>(
+    ListAdapter<CommentResultEntity.CommentEntity, PostDetailReplyListAdapter.ViewHolder>(
         PostDetailReplyDiffUtil()
     ) {
     inner class ViewHolder(
         val binding: ItemRvReplyBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ReplyItem) = with(binding) {
-            tvItemReplyWriter.text = item.writer
+        fun bind(item: CommentResultEntity.CommentEntity) = with(binding) {
+            tvItemReplyWriter.text = item.memberNickname
             tvItemReplyContent.text = item.content
 
-            if (item.report) tvItemReplyBlur.visibility = View.VISIBLE
+            if (item.reportCount >= 1) tvItemReplyBlur.visibility = View.VISIBLE
             else tvItemReplyBlur.visibility = View.GONE
 
             tvItemReplyBlur.setOnClickListener {
@@ -44,17 +45,17 @@ class PostDetailReplyListAdapter :
 
 }
 
-class PostDetailReplyDiffUtil : DiffUtil.ItemCallback<ReplyItem>() {
+class PostDetailReplyDiffUtil : DiffUtil.ItemCallback<CommentResultEntity.CommentEntity>() {
     override fun areItemsTheSame(
-        oldItem: ReplyItem,
-        newItem: ReplyItem
+        oldItem: CommentResultEntity.CommentEntity,
+        newItem: CommentResultEntity.CommentEntity
     ): Boolean {
         return oldItem.content == newItem.content
     }
 
     override fun areContentsTheSame(
-        oldItem: ReplyItem,
-        newItem: ReplyItem
+        oldItem: CommentResultEntity.CommentEntity,
+        newItem: CommentResultEntity.CommentEntity
     ): Boolean {
         return oldItem == newItem
     }

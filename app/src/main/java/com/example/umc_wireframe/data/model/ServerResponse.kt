@@ -1,6 +1,7 @@
 package com.example.umc_wireframe.data.model
 
 
+import com.example.umc_wireframe.domain.model.entity.CommentResultEntity
 import com.google.gson.annotations.SerializedName
 
 data class ServerResponse<T>(
@@ -66,6 +67,33 @@ data class PostListResponse(
 )
 
 data class PostResponse(
+    @SerializedName("postId") val postId: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("content") val content: String?
 )
+
+
+data class CommentResultResponse(
+    val list: List<CommentResponse>,
+    val lastId: Int
+) {
+    data class CommentResponse(
+        val id: Int,
+        val content: String,
+        val parentId: Int?,
+        val memberId: Int,
+        val memberNickname: String,
+        val reportCount: Int,
+        val createdAt: String,
+        val children: List<CommentResponse>
+    )
+}
+
+data class PostDetailResponse(
+    val memberName: String,
+    val postId: Int,
+    val title: String,
+    val content: String
+)
+
+

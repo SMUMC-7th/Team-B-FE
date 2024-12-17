@@ -1,15 +1,19 @@
 package com.example.umc_wireframe.data.remote
 
 import androidx.paging.PagingData
+import com.example.umc_wireframe.data.model.CommentResultResponse
 import com.example.umc_wireframe.data.model.JoinRequestResultResponse
 import com.example.umc_wireframe.data.model.LoginResultResponse
 import com.example.umc_wireframe.data.model.MyProfileResultResponse
 import com.example.umc_wireframe.data.model.NicknameResultResponse
 import com.example.umc_wireframe.data.model.OotdResultResponse
+import com.example.umc_wireframe.data.model.PostDetailResponse
 import com.example.umc_wireframe.data.model.PostListResponse
 import com.example.umc_wireframe.data.model.RecommendedHashtagResultResponse
 import com.example.umc_wireframe.data.model.ServerResponse
 import com.example.umc_wireframe.domain.model.Hashtag
+import com.example.umc_wireframe.domain.model.entity.PostCommentResultEntity
+import com.example.umc_wireframe.domain.model.entity.ServerEntity
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -117,7 +121,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @GET("api/posts/{postId}")
     suspend fun getPost(
         @Path("postId") postId: String
-    )
+    ):ServerResponse<PostDetailResponse>
 
     @GET("api/posts")
     suspend fun getPostList(
@@ -127,7 +131,7 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
     @POST("api/posts")
     suspend fun postPost(
         @Body post: PostSet
-    ):ServerResponse<String>
+    ): ServerResponse<String>
 
     @PATCH("api/posts/{postId}")
     suspend fun patchPost(
@@ -141,13 +145,16 @@ interface ServerDatasource { // 회원가입, 비밀번호 변경 추가 필요
 
     @POST("api/posts/{postId}/comments")
     suspend fun postComment(
-        @Path("postId") postId: String
-    )
+        @Path("postId") postId: String,
+        @Body comment: CommentSet
+    ): ServerEntity<PostCommentResultEntity>
 
     @GET("api/posts/{postId}/comments")
     suspend fun getCommentList(
-        @Path("postId") postId: String
-    )
+        @Path("postId") postId: String,
+        @Query("cursor") cursor: Long,
+        @Query("size") size: Int
+    ): ServerResponse<CommentResultResponse>
 
     @PATCH("api/comments/{commentId}")
     suspend fun patchComment(
@@ -212,4 +219,9 @@ data class AlarmSet(
 data class PostSet(
     @Query("title") val title: String,
     @Query("content") val content: String
+)
+
+data class CommentSet(
+    @Query("content") val content: String,
+    @Query("parentId") val parentId: Int
 )
