@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_register_step1">
         <action
             android:id="@+id/action_registerStep1Fragment_to_registerStep2Fragment"
-            app:destination="@id/RegisterStep2Fragment" />
+            app:destination="@id/RegisterStep2Fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_in_left"/>
     </fragment>
 
     <!-- Register Step 2 -->
@@ -22,7 +24,9 @@
         tools:layout="@layout/fragment_register_step2">
         <action
             android:id="@+id/action_registerStep2Fragment_to_registerStep3Fragment"
-            app:destination="@id/RegisterStep3Fragment" />
+            app:destination="@id/RegisterStep3Fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_in_left"/>
     </fragment>
 
     <!-- Register Step 3 -->
@@ -52,7 +56,9 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navi_home_to_photoFragment"
-            app:destination="@id/navi_uploadOOTD" />
+            app:destination="@id/navi_uploadOOTD"
+            app:enterAnim="@anim/slide_in_fade_out"
+            app:exitAnim="@anim/slide_in_fade_in"/>
     </fragment>
 
     <!-- Calendar Fragment -->
