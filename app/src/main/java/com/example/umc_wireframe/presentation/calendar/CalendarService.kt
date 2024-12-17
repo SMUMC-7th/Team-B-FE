@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface CalendarService {
-    @GET("apis/ootd")
+    @GET("api/ootds")
     fun getOOTD(
         @Query("year") year: Int,
         @Query("month") month: Int

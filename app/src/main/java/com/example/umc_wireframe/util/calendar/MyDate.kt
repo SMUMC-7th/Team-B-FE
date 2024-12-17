@@ -4,5 +4,5 @@ import java.util.Date
 
 data class MyDate(
     val date: Date,
-    val imageResId: String?
+    val imageResId: String? = null
 )

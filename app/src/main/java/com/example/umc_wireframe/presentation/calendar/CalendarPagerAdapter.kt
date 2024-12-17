@@ -1,16 +1,11 @@
 package com.example.umc_wireframe.presentation.calendar
 
-import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc_wireframe.databinding.CalendarPageBinding
 import com.example.umc_wireframe.util.calendar.MyDate
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class CalendarPagerAdapter(
     private val datesList: List<List<MyDate>>,
@@ -36,6 +31,8 @@ class CalendarPagerAdapter(
 
         holder.calendarRecyclerView.adapter = adapter
         holder.calendarRecyclerView.layoutManager = GridLayoutManager(holder.itemView.context, 7)
+
+        holder.calendarRecyclerView.addItemDecoration(CalendarItemDecoration(5, 10))
 
         val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
         val dayOfWeekAdapter = DayOfTheWeekAdapter(daysOfWeek)

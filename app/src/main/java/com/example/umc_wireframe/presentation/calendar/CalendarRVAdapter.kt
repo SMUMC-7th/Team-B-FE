@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.CalendarItemBinding
 import com.example.umc_wireframe.util.calendar.MyDate
 import timber.log.Timber
@@ -36,19 +37,20 @@ class CalendarRVAdapter(
             } else {
                 when (dayOfWeek) {
                     Calendar.SATURDAY -> {
-                        binding.dayText.setTextColor(Color.BLACK)
+                        binding.dayText.setTextColor(Color.WHITE)
                     }
                     Calendar.SUNDAY -> {
-                        binding.dayText.setTextColor(Color.RED)
+                        binding.dayText.setTextColor(Color.WHITE)
                     }
                     else -> {
-                        binding.dayText.setTextColor(Color.BLACK)
+                        binding.dayText.setTextColor(Color.WHITE)
                     }
                 }
             }
 
             // 이미지 설정
             if (!imageResId.isNullOrEmpty()) {
+                Timber.tag("CalendarRVAdapter").d(imageResId)
                 Glide.with(binding.root.context)
                     .load(imageResId)  // 이미지 URL을 Glide로 로드
                     .into(binding.myrecordImageView)  // ImageView에 이미지 설정

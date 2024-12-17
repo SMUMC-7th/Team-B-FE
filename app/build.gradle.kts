@@ -98,8 +98,9 @@ dependencies {
 
     //glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("jp.wasabeef:glide-transformations:4.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+//    implementation("jp.wasabeef:glide-transformations:4.3.0")
 
     //CameraX
     implementation("androidx.camera:camera-core:1.1.0")

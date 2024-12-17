@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.example.umc_wireframe.R
 import com.example.umc_wireframe.databinding.FragmentCalendarContainerBinding
 import com.example.umc_wireframe.network.RetrofitClient
 import com.example.umc_wireframe.util.calendar.MyDate
@@ -54,6 +56,10 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+
+        binding.btnHomeOotd.setOnClickListener {
+            findNavController().navigate(R.id.navi_uploadOOTD)
+        }
 
         startCalendar.time = calendar.time
 
@@ -120,7 +126,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun mapDiaryCardsToImages(diaryCards: List<Ootd>): Map<Pair<Int, Int>, Map<Int, String>> {
+    private fun mapDiaryCardsToImages(diaryCards: List<Ootd>): Map<Pair<Int, Int>, Map<Int, String?>> {
         Timber.tag("CalendarFragment").d("Mapping diary cards to images")
 
         val imageMap = mutableMapOf<Pair<Int, Int>, MutableMap<Int, String>>()
@@ -143,7 +149,7 @@ class CalendarFragment : Fragment() {
         return imageMap
     }
 
-    private fun updateCalendarWithImages(imageMap: Map<Pair<Int, Int>, Map<Int, String>>) {
+    private fun updateCalendarWithImages(imageMap: Map<Pair<Int, Int>, Map<Int, String?>>) {
         Timber.tag("CalendarFragment").d("Updating calendar with images")
 
         binding.yearMonthTextView.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
@@ -157,7 +163,7 @@ class CalendarFragment : Fragment() {
         Timber.tag("CalendarFragment").d("Calendar update with images complete")
     }
 
-    private fun generateMonths(calendar: Calendar, imageMap: Map<Pair<Int, Int>, Map<Int, String>>): List<List<MyDate>> {
+    private fun generateMonths(calendar: Calendar, imageMap: Map<Pair<Int, Int>, Map<Int, String?>>): List<List<MyDate>> {
 
         val months = mutableListOf<List<MyDate>>()
 
