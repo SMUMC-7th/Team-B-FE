@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.umc_wireframe.R
@@ -23,6 +25,8 @@ class RegisterStep1Fragment : Fragment() {
     private var _binding: FragmentRegisterStep1Binding? = null
     private val binding get() = _binding!!
     private lateinit var serverDatasource: ServerDatasource
+
+    private val viewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,48 +55,21 @@ class RegisterStep1Fragment : Fragment() {
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch {
-                try {
-                    val requestBody = AccountRequest(email, password)
-                    val response = serverDatasource.postJoinResquest(requestBody)
-                    if (response.isSuccess == true) {
-                        showToast("인증번호가 발송되었습니다. 이메일을 확인해주세요.")
-                        binding.getVerificationCode.visibility = View.VISIBLE
-                        binding.verifyCodeButton.visibility = View.VISIBLE
-                    } else {
-                        showToast(response.message ?: "인증번호 발송 실패. 다시 시도해주세요.")
-                    }
-                } catch (e: Exception) {
-                    showToast("오류 발생: ${e.message}")
-                }
-            }
+            viewModel.postJoinReq(email = email, password = password, isSuccess = {
+                showToast("인증번호가 발송되었습니다. 이메일을 확인해주세요.")
+                binding.getVerificationCode.visibility = View.VISIBLE
+                binding.verifyCodeButton.visibility = View.VISIBLE
+            })
         }
 
         binding.verifyCodeButton.setOnClickListener {
-            val email = binding.tvEmailInput.text.toString().trim()
-            val password = binding.passwordInput.text.toString().trim()
             val verificationCode = binding.getVerificationCode.text.toString().trim()
 
             if (verificationCode.isEmpty()) {
                 showToast("인증번호를 입력해주세요.")
                 return@setOnClickListener
             }
-
-            lifecycleScope.launch {
-                try {
-                    val requestBody = JoinVerify(email, verificationCode)
-                    val response = serverDatasource.postJoinVerify(requestBody)
-                    if (response.isSuccess == true) {
-                        showToast("인증이 완료되었습니다.")
-                        saveEmailAndPassword(email, password)
-                        findNavController().navigate(R.id.action_registerStep1Fragment_to_registerStep2Fragment)
-                    } else {
-                        showToast(response.message ?: "인증 실패. 다시 시도해주세요.")
-                    }
-                } catch (e: Exception) {
-                    showToast("오류 발생: ${e.message}")
-                }
-            }
+            viewModel.postJoinVerify(verificationCode, isSuccess = {findNavController().navigate(R.id.RegisterStep2Fragment)})
         }
     }
 
